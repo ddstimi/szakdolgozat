@@ -1,20 +1,27 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <div id="concert-container">
+      <img
+        id="concert"
+        src="../../../assets/images/homepage-concert.jpg"
+        alt="concert"
+      />
+      <button id="sign-in-btn">Sign in</button>
+    </div>
+    <h1>Top picks</h1>
+
+    <ion-content scrollX="true">
+      <div id="fy-content">
+        <div *ngFor="let concert of concerts">
+          <app-concert-card
+            [title]="concert.title"
+            [date]="concert.date"
+            [location]="concert.location"
+            [image]="concert.image"
+          >
+          </app-concert-card>
+        </div>
+      </div>
+    </ion-content>
   </div>
 </ion-content>
