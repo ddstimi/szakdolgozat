@@ -1,0 +1,73 @@
+:host {
+    display: block;
+    background: rgba(0, 0, 0, 0.366);
+    color: #f9f4f5;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    
+  }
+ 
+ ion-card {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  
+
+
+  ion-card-header{
+    background: rgba(0, 0, 0, 0.358);
+    justify-content: space-evenly;
+    ion-card-title{
+      font-size: smaller;
+    }
+    ion-card-subtitle{
+      font-size: smaller;
+    }
+    ion-card-content{
+      font-size: smaller;
+      margin-top: -4px;
+    }
+  }
+
+ion-card > ion-img {
+    width: 40%; /* Adjust the image width */
+    height: 100%;
+    object-fit: cover;
+ /* Optional: Rounded corners for the image */
+  }
+  
+ion-card > div {
+    width: 60%; /* Content section takes the remaining width */
+  }
+  
+ion-card-content {
+
+    background-color: rgba(0, 0, 0, 0.558);
+    color: #fff;
+  }
+ion-card-header ion-card-content{
+    background: none;
+  }
+
+ion-card-header{
+    font-size: large;
+    width: 60%;
+  }
+  
+  @media (max-width: 768px) {
+
+  
+    ion-card > ion-img {
+        width: 40%; /* Adjust the image width */
+        height: 100%;
+     /* Optional: Rounded corners for the image */
+      }
+ion-card > div {
+      width: 100%;
+    }
+  }
+  

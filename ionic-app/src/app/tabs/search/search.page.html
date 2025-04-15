@@ -1,7 +1,52 @@
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">search</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="search-content">
+  <!-- Search Bar -->
+  <div class="search-wrapper">
+    <div *ngIf="searchQuery">
+      <ion-list>
+        <ion-item *ngFor="let concert of filteredResults">
+          <ion-label>
+            <h2>{{ concert.title }}</h2>
+            <p>{{ concert.artist }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div *ngIf="!searchQuery">
+      <!-- Recent Searches -->
+      <div class="recent-searches">
+        <ion-chip *ngFor="let item of recentSearches">
+          <ion-label>{{ item }}</ion-label>
+        </ion-chip>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <ion-select placeholder="Select city" [(ngModel)]="selectedCity">
+          <ion-select-option *ngFor="let city of cities" [value]="city"
+            >{{ city }}</ion-select-option
+          >
+        </ion-select>
+
+        <ion-select placeholder="Select genre" [(ngModel)]="selectedGenre">
+          <ion-select-option *ngFor="let genre of genres" [value]="genre"
+            >{{ genre }}</ion-select-option
+          >
+        </ion-select>
+      </div>
+
+      <!-- Search Results -->
+      <div class="results">
+        <app-concert-card-full
+          class="search-page"
+          *ngFor="let concert of filteredResults"
+          [title]="concert.title"
+          [date]="concert.date"
+          [location]="concert.location"
+          [image]="concert.image"
+          [genre]="concert.genre"
+          [artist]="concert.artist"
+        ></app-concert-card-full>
+      </div>
+    </div>
+  </div>
 </ion-content>

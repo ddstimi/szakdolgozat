@@ -1,0 +1,147 @@
+ion-content {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--ion-background-color);
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(12, 12, 12, 0.801); // translucent black background
+
+    ion-searchbar {
+      width: 40%;
+      max-width: 30rem;
+      border-radius: 12px;
+    }
+  }
+  app-concert-card-full ion-card{
+    flex-direction: column !important;
+  }
+  .filter-section {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 1rem;
+  
+    ion-select {
+      width: 45%;
+      --placeholder-color: #999;
+    }
+  }
+  
+  .recent-searches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    padding: 0.5rem 1rem;
+  
+    ion-chip {
+      background-color: #c17b8c;
+      border-radius: 20px;
+      color: #1a1829;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        transform: scale(1.05);
+        transition: transform 0.1s ease-in-out;
+
+      }
+    }
+
+  }
+  
+  .results {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    app-concert-card-full{
+      width: 45%;
+      min-width: 20rem;
+      
+      ion-img{
+        flex-grow: 2;
+      }
+      &:hover {
+        transform: scale(1.03);
+        transition: transform 0.3s ease-in-out;
+
+      }
+    }
+    ion-concert-card ion-card-header{
+      height: 100% !important;
+    }
+  }
+
+  .search-wrapper {
+    width: 85%;
+    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5rem;
+    transform: translateX(5%); // slight push to the right
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: rgba(18, 18, 18, 0.192);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.422);
+    
+  }
+
+  
+  @media (max-width: 768px) {
+    .search-wrapper {
+      width: 90%;
+      transform: none;
+      margin-top: 4rem;
+      padding: 0.75rem;
+      box-shadow: none;
+    }
+  
+    ion-searchbar {
+      width: 70%;
+      max-width: none;
+    }
+    .search-container {
+      padding: 0.5rem 0.5rem;
+      
+    }
+  
+    .filter-section {
+      flex-direction: column;
+      gap: 0.5rem;
+      ion-select {
+        width: 100%;
+      }
+    }
+  
+    .recent-searches {
+      justify-content: flex-start;
+      padding: 0.5rem 0;
+      gap: 0.4rem;
+  
+      ion-chip {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+      }
+    }
+  
+    .results {
+      padding: 0.5rem;
+      gap: 0.75rem;
+    }
+  }
+  
+
+  ion-card{
+    background: rgba(0, 0, 0, 0.3);
+  }
+  ion-card-content {
+    background-color: rgba(0, 0, 0, 0.5); /* Add a translucent black background */
+    color: #fff; /* Set text color to white for contrast */
+    padding: 1rem; /* Optional: Adjust padding */
+  }
+  
+  
