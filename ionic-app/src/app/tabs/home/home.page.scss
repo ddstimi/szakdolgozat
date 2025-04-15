@@ -5,12 +5,14 @@
   right: 0;
   margin-top: 1rem;
   transform: translateY(-50%);
+  height: fit-content;
 }
 #concert-container {
   position: relative !important;
   width: 100% !important;
   overflow: hidden !important;
   z-index: 0 !important;
+  
 }
 
 @media (max-width: 768px) { 
@@ -31,36 +33,49 @@
   }
   #sign-in-btn {
     position: absolute;
-    bottom: 3rem;
-    right: 6rem;
+    bottom: 2.5rem;
+    right: 3.5rem;
   }
 
 }
 @media (min-width: 769px) { 
   #container {
-    top: 23%;
+    top: 12rem;
+    bottom: auto;
   }
   #concert-container{
-    max-height: 15rem;
+    max-height: 20rem;
+    min-height: 18;
   }
   h1{
     position: absolute;
-    left: 6rem;  }
+    left: 10rem;  
+    font-size: 2.5rem;
+  }
     #concert{
-      max-height: 20rem;
-      min-height: 15rem;
+      max-height: 15rem;
+      min-height: 12rem;
       margin-left: 5%;
       margin-right: auto;
   }
 
   #sign-in-btn {
     position: absolute;
-    bottom: 3.5rem;
-    right: 8rem;
+    bottom: 3rem;
+    right: 7rem;
     left: auto;
     top: auto;
+    width: 8rem;
+    height: 3.5rem;
   }  
 }
+
+#sign-in-btn{
+  font-size:larger;
+  z-index: 10;
+  box-shadow: 4px rgba(0, 0, 0, 0.67);
+}
+
 #container strong {
   --font-size: 16px;
   --line-height: 22px;

@@ -1,4 +1,121 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
-@import '../global.scss';
+//@import '../global.scss';
+
+:root {
+	--ion-color-primary: #c17b8c;
+	--ion-color-primary-rgb: 0,0,0;
+	--ion-color-primary-contrast: #f9f4f5;
+	--ion-color-primary-contrast-rgb: 255,255,255;
+	--ion-color-primary-shade: #e3aab8;
+	--ion-color-primary-tint: #c17b8c;
+
+	--ion-color-secondary: #28253e;
+	--ion-color-secondary-rgb: 40,37,62;
+	--ion-color-secondary-contrast: #f9f4f5;
+	--ion-color-secondary-contrast-rgb: 255,255,255;
+	--ion-color-secondary-shade: #232137;
+	--ion-color-secondary-tint: #3e3b51;
+
+	--ion-color-tertiary: #c17b8c;
+	--ion-color-tertiary-rgb: 193,123,140;
+	--ion-color-tertiary-contrast: #28253e;
+	--ion-color-tertiary-contrast-rgb: 0,0,0;
+	--ion-color-tertiary-shade: #aa6c7b;
+	--ion-color-tertiary-tint: #c78898;
+
+    --ion-background-color: #28253e;
+    --ion-text-color: #f9f4f5;
+
+    --ion-color-success: #42d96b;
+    --ion-color-warning: #ffc409;
+    --ion-color-danger: #ff5c77;
+
+    --ion-font-family: 'Garet W05 Extra Bold', sans-serif;
+    font-variant-caps: all-petite-caps;
+
+
+    ion-tab-bar {
+      background-color: rgba(0, 0, 0, 0.411); // translucent black background
+      backdrop-filter: blur(5px);          // optional: adds frosted glass effect
+      -webkit-backdrop-filter: blur(4px);  // for Safari support
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.752);  // soft shadow
+      filter: contrast(1);
+    }
+
+    ion-tab-button{
+      background-color: rgba(0, 0, 0, 0.001); // translucent black background
+    }
+
+    ion-searchbar {
+        --background: #1c1a30;
+        --color: #c9b3e0;
+        --placeholder-color: #c9b3e0;
+        --icon-color: #c9b3e0;
+        --cancel-button-color: #c9b3e0;
+        --clear-button-color: #c9b3e0;
+        --box-shadow: none;
+        --border-radius:8px;
+      
+        input {
+          color: #f9f4f5;
+        }
+      }
+      
+}
+
+
+  body.light {
+    // Apply the light theme variables directly
+    --ion-color-primary: #c17b8c;
+    --ion-color-primary-contrast: #28253e;
+    --ion-color-primary-shade: #aa6c7b;
+    --ion-color-primary-tint: #d88c9e;
+  
+    --ion-color-secondary: #f9f4f5;
+    --ion-color-secondary-contrast: #28253e;
+  
+    --ion-color-tertiary: #c9b3e0;
+    --ion-color-tertiary-contrast: #28253e;
+  
+    --ion-color-success: #2dd55b;
+    --ion-color-warning: #ffc409;
+    --ion-color-danger: #cb1a27;
+  
+    --ion-color-light: #ffffff;
+    --ion-color-medium: #dcd2e8;
+    --ion-color-dark: #28253e;
+  
+    --ion-background-color: #ededf8;
+    --ion-text-color: #28253e;
+    --ion-font-family: 'Garet W05 Extra Bold', sans-serif;
+
+    ion-tab-bar {
+    --background: #ceced7;
+    --color: #49456b;
+    --color-selected: #19172b;
+    border-top-color:rgba(0, 0, 0, 0.001);
+    }
+    ion-searchbar {
+        --background: #ededf8;
+        --color: #28253e;
+        --placeholder-color: #555268;
+        --icon-color: #28253e;
+        --cancel-button-color: #28253e;
+        --clear-button-color: #28253e;
+        --box-shadow: none;
+        --border-radius:8px;
+        --min-height: 60px; // 👈 key for making it taller
+        --font-size: 1.2rem;
+      
+        // Optional: override the native input inside
+        input {
+          color: #000;
+          font-size: 1.2rem; // make text bigger too
+    padding: 12px; 
+        }
+    }
+  }
+
+  
 
