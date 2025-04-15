@@ -11,10 +11,9 @@ import { IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardC
 })
 export class ConcertCardComponent {
   @Input() title?: string;
-@Input() date?: string;
-@Input() location?: string;
-@Input() image?: string;
+  @Input() date?: string;
+  @Input() location?: string;
+  @Input() image?: string;
 
-  
   
 }

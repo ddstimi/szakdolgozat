@@ -1,6 +1,48 @@
 ion-toolbar{
     z-index: 0;
     top: -2px; 
-    --background: rgba(31, 31, 31, 0.112);
+    --background: rgba(31, 31, 31, 0.211);
     width: 100%;
+}
+
+@media (max-width: 768px) { 
+
+
+    ion-searchbar{
+        display: block;
+        height: 2rem;
+        margin-bottom: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+
+
+    }
+
+
+
+/* Search bar styling */
+ion-searchbar {
+    margin-left: auto; /* Push it to the right */
+    margin-right: 1rem;
+    --box-shadow: none !important;
+
+}
+
+@media (min-width: 768px) { 
+    .centered-search {
+        margin-left: auto;
+        margin-right: auto;
+        width: 60%;
+        transform: translateX(0) !important; /* Centering the search bar */
+        transition: transform 0.3s ease, width 0.3s ease;
+      }
+    ion-searchbar{
+    display: block;
+    max-width: 25rem;
+    min-width: 20rem;
+    height: 3rem;
+    margin-right: 2rem !important;
+}
 }

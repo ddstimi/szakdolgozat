@@ -10,7 +10,7 @@
   width: 100% !important;
   overflow: hidden !important;
   z-index: 0 !important;
-  
+
 }
 
 
@@ -74,11 +74,14 @@
     app-concert-card {
       width: 11rem; // 🎯 make the card smaller here
       height: 12rem; // 🎯 optional: shrink height
-      flex-shrink: 0;
       border-radius: 8px;
       overflow: hidden;
       transition: transform 0.3s ease-in-out;
   
+      .concert-card ion-card-header{
+        height: 100% !important;
+      }
+
       &:hover {
         transform: scale(1.05);
       }
