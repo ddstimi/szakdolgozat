@@ -47,7 +47,19 @@ export class HomePage {
       date: '2025-07-18',
       location: 'Vienna, Austria',
       image: 'assets/images/asd.jpg'
-    }
+    },
+    {
+      title: 'Arctic Monkeys',
+      date: '2025-08-02',
+      location: 'Sziget Festival',
+      image: 'assets/images/aa.jpg',
+    },
+    {
+      title: 'Billie Eilish',
+      date: '2025-09-10',
+      location: 'Papp László Sportaréna',
+      image: 'assets/images/aa.jpg',
+    },
   ];
   
   

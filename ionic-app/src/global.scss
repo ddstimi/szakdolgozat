@@ -63,7 +63,7 @@ ion-header {
     justify-content:center ;
     margin-bottom: auto;
     object-fit: cover;
-    filter:blur(1.2px);
+    filter:blur(1px);
 }
 ion-infinite-scroll {
     width: 100%;
@@ -178,7 +178,7 @@ ion-infinite-scroll {
   
   
   ion-button {
-    --border-radius: 12px; 
+    --border-radius: 8px; 
     box-shadow: 5px rgba(0, 0, 0, 0.718);
   }
 

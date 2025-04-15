@@ -13,61 +13,7 @@
   
 }
 
-.concert-scroll-wrapper {
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 1rem 2rem 1rem;
-  -webkit-overflow-scrolling: touch;
-  scroll-padding: 1rem;
-  margin: 1rem auto;
-  width: calc(100% - 7rem); // leaves space for tabs on the left
-  margin-left: 5rem;
-  margin-right: 2rem; // shift the cards right
 
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-    
-  }
-}
-
-
-.concert-scroll-container {
-  margin-top: 3rem;
-
-  display: flex;
-  gap: 1rem;
-
-
-  > div {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-  }
-
-  app-concert-card {
-    width: 12rem; // 🎯 make the card smaller here
-    height: 13rem; // 🎯 optional: shrink height
-    flex-shrink: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out;
-
-    &:hover {
-      transform: scale(1.05);
-    }
-
-    img{
-      max-height: 4rem;
-    }
-  }
-  ion-title{
-    font-size: small !important;
-  }
-}
 
 
 @media (max-width: 768px) { 
@@ -81,7 +27,7 @@
       height:fit-content;
     }
     #concert{
-      max-height: 10rem;
+      max-height: 8rem;
       min-height: 7rem;
       margin-left: auto;
       margin-right: auto;
@@ -90,6 +36,60 @@
     position: absolute;
     bottom: 2.5rem;
     right: 3.5rem;
+  }
+
+  .concert-scroll-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1rem 2rem 1rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    margin: 1rem auto;
+    width: calc(100% - 2rem); // leaves space for tabs on the left
+    margin-left: 1rem;
+    margin-right: 1rem; // shift the cards right
+  
+  
+    &::-webkit-scrollbar {
+      display: none;
+      
+    }
+  }
+  
+  
+  .concert-scroll-container {
+    margin-top: 3rem;
+  
+    display: flex;
+    gap: 1rem;
+  
+  
+    > div {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+  
+    app-concert-card {
+      width: 11rem; // 🎯 make the card smaller here
+      height: 12rem; // 🎯 optional: shrink height
+      flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out;
+  
+      &:hover {
+        transform: scale(1.05);
+      }
+  
+      img{
+        max-height: 4rem;
+      }
+    }
+    ion-title{
+      font-size: small !important;
+    }
   }
 
 }
@@ -123,6 +123,62 @@
     width: 8rem;
     height: 3.5rem;
   }  
+
+  .concert-scroll-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1rem 2rem 1rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    margin: 1rem auto;
+    width: calc(100% - 7rem); // leaves space for tabs on the left
+    margin-left: 5rem;
+    margin-right: 2rem; // shift the cards right
+  
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      scrollbar-width: none;
+  
+    &::-webkit-scrollbar {
+      display: none;
+      
+    }
+  }
+  
+  
+  .concert-scroll-container {
+    margin-top: 3rem;
+  
+    display: flex;
+    gap: 1rem;
+  
+  
+    > div {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+  
+    app-concert-card {
+      width: 12rem; // 🎯 make the card smaller here
+      height: 13rem; // 🎯 optional: shrink height
+      flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out;
+  
+      &:hover {
+        transform: scale(1.05);
+      }
+  
+      img{
+        max-height: 4rem;
+      }
+    }
+    ion-title{
+      font-size: small !important;
+    }
+  }
 }
 
 #sign-in-btn{
