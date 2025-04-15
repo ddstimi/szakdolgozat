@@ -44,7 +44,8 @@
     }
 
     ion-tab-button{
-      background-color: rgba(0, 0, 0, 0.001); // translucent black background
+      background-color: rgba(0, 0, 0, 0.001);
+      --color-selected:#f9f4f5; // translucent black background
     }
 
     ion-searchbar {
