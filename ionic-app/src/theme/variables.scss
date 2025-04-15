@@ -62,6 +62,10 @@
           color: #f9f4f5;
         }
       }
+
+      ion-card-title{
+        color: #f9f4f5;
+      }
       
 }
 
@@ -118,6 +122,16 @@
           font-size: 1.2rem; // make text bigger too
     padding: 12px; 
         }
+    }
+
+    ion-card-title{
+      color: #28253e;
+    }
+    ion-card-subtitle{
+      color: #28253ebe;
+    }
+    ion-card-content{
+      color: #28253ebe;
     }
   }
 

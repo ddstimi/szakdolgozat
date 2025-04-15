@@ -27,6 +27,17 @@
 }
   
 
+ion-searchbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 999;
+    background-color: white;
+    padding: 0.5rem;
+  }
+  
+
 ion-header {
     display: flex;
     align-items: center;
@@ -119,7 +130,6 @@ ion-infinite-scroll {
         margin-left: auto; /* Push it to the right */
         margin-right: 1rem;
         --box-shadow: none !important;
-        z-index: 111;
 
     }
 
@@ -171,3 +181,4 @@ ion-infinite-scroll {
     --border-radius: 12px; 
     box-shadow: 5px rgba(0, 0, 0, 0.718);
   }
+
