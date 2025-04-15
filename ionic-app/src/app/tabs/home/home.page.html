@@ -1,13 +1,12 @@
 <ion-content [fullscreen]="true">
   <div id="container">
     <div id="concert-container">
-      <img
-        id="concert"
-        src="../../../assets/images/homepage-concert.jpg"
-        alt="concert"
-      />
-      <button id="sign-in-btn">Sign in</button>
+      <img id="concert" src="../../../assets/images/aa.jpg" alt="concert" />
+      <ion-button id="sign-in-btn" [routerLink]="['/login']"
+        >Sign in</ion-button
+      >
     </div>
+    <ion-button (click)="toggleTheme()">toggle</ion-button>
     <h1>Top picks</h1>
 
     <ion-content scrollX="true">

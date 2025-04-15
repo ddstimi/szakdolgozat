@@ -15,29 +15,44 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 /* Dark Mode */
-@import '@ionic/angular/css/palettes/dark.system.css';
-
+@import url(https://db.onlinewebfonts.com/c/0c1b1565e8b9ee3c19050302aedf2120?family=Garet+W05+Extra+Bold); 
+@font-face {
+    font-family: "Garet W05 Extra Bold";
+    src: url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot");
+    src: url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.svg#Garet W05 Extra Bold")format("svg");
+}
+  
 
 ion-header {
     display: flex;
-    justify-content:right;
-    --background: rgba(255, 255, 255, 0.1); 
+    align-items: center;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: none;
+    height: fit-content;
+    padding: 2px;
+    --ion-border-color: transparent;
     --box-shadow: none;
-    box-shadow: none !important;
-    z-index: 10;
-    --margin-bottom:0;
-}
+    box-shadow: none !important; /* fallback override */
+    border: none !important;     /* just in case */
+  }
+  
 
 #concert{
     border-radius: 8px;
-    box-shadow: 4px rgba(0, 0, 0, 0.619);
+    box-shadow: 2px rgba(0, 0, 0, 0.778);
     max-width: 90%;
     min-width: 90%;
     justify-content:center ;
     margin-bottom: auto;
     object-fit: cover;
-    opacity: 0.4;
-    filter: blur(30%);
+    filter:blur(1.2px);
 }
 ion-infinite-scroll {
     width: 100%;
@@ -53,17 +68,7 @@ ion-infinite-scroll {
     z-index: 2;
   }
 
-  #sign-in-btn {
-    position: relative;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    background-color: #3880ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    z-index: 2;
-  }
+ 
 
 
 
@@ -73,7 +78,7 @@ ion-infinite-scroll {
         display: flex;
         flex-direction: column;
         height: 100%;
-        z-index: 3;
+        z-index: 10;
     }
     
     ion-tab-bar {
@@ -81,31 +86,26 @@ ion-infinite-scroll {
         flex-direction: column;
         height: 100%;
         min-width: 3.5rem;
-        width: 5%;
-        z-index: 3;
+        width: 3%;
+        z-index: 10;
     }
 
     ion-tab-button {
         max-height: 5rem;
         margin-top: 3rem;
-        z-index: 3;
+        z-index: 10;
     }
 
- 
-
-    /* Search bar styling */
-    #search-bar {
+    #search-bar{
         display: block;
         max-width: 25rem;
         min-width: 20rem;
-        height: 2rem;
-        margin-left: auto; /* Push it to the right */
-        margin-right: 1rem;
-        --box-shadow: none !important;
+        height: 3rem;
+        margin-right: 2rem !important;
     }
-    #search-icon{
-        display: none;
-    }
+
+
+
 
     #logout-button {
         margin-top: 5rem;
@@ -114,13 +114,25 @@ ion-infinite-scroll {
     
 }
 
-/* Hide search bar on small screens */
+    /* Search bar styling */
+    #search-bar {
+        margin-left: auto; /* Push it to the right */
+        margin-right: 1rem;
+        --box-shadow: none !important;
+        z-index: 111;
+
+    }
+
 @media (max-width: 768px) { 
 
 
-    #search-bar {
-        display: none;
-    }
+#search-bar{
+    display: block;
+    height: 2rem;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
 
     #search-icon {
         display: block;
@@ -128,7 +140,7 @@ ion-infinite-scroll {
         margin-left: auto;
         height: 3rem;
         margin-right: 3rem;
-        z-index: 10;
+        z-index: 11;
     }
     #logout-button {
         display: none;
@@ -142,3 +154,20 @@ ion-infinite-scroll {
         z-index: 7;
     }
 }
+
+
+  
+.hollow {
+    font-family: 'Garet W05 Extra Bold', sans-serif;
+    font-size: 2rem; // or any size you prefer
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px;
+  }
+  
+  
+  
+  
+  ion-button {
+    --border-radius: 12px; 
+    box-shadow: 5px rgba(0, 0, 0, 0.718);
+  }
