@@ -9,18 +9,17 @@
     <ion-button (click)="toggleTheme()">toggle</ion-button>
     <h1>Top picks</h1>
 
-    <ion-content scrollX="true">
-      <div id="fy-content">
-        <div *ngFor="let concert of concerts">
-          <app-concert-card
-            [title]="concert.title"
-            [date]="concert.date"
-            [location]="concert.location"
-            [image]="concert.image"
-          >
-          </app-concert-card>
-        </div>
+    <div class="concert-scroll-wrapper">
+      <div class="concert-scroll-container">
+        <app-concert-card
+          *ngFor="let concert of concerts"
+          [title]="concert.title"
+          [date]="concert.date"
+          [location]="concert.location"
+          [image]="concert.image"
+        ></app-concert-card>
       </div>
-    </ion-content>
+      <div class="custom-scrollbar"></div>
+    </div>
   </div>
 </ion-content>
