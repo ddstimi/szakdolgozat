@@ -97,6 +97,9 @@
     --color-selected: #19172b;
     border-top-color:rgba(0, 0, 0, 0.001);
     }
+    ion-tab-button{
+      --color-selected:#19172b; // translucent black background
+    }
     ion-searchbar {
         --background: #ededf8;
         --color: #28253e;
