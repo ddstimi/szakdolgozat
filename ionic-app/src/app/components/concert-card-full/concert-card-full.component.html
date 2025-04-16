@@ -2,15 +2,27 @@
   <ion-img [src]="image" alt="Concert image"></ion-img>
   <ion-card-header>
     <ion-card-title>{{ title }}</ion-card-title>
-    <ion-card-subtitle>{{ date }}</ion-card-subtitle>
-    <ion-card-content>
-      {{ location }}
-    </ion-card-content>
-    <ion-card-content>
-      {{ genre }}
-    </ion-card-content>
-    <ion-card-content>
-      {{ artist }}
-    </ion-card-content>
+    <div class="infos">
+      <div class="artist-div">
+        <ion-card-content class="artist">
+          {{ artist }}
+        </ion-card-content>
+      </div>
+
+      <div class="location-div">
+        <ion-icon name="location-outline"></ion-icon>
+        <ion-card-content class="location">
+          {{ location }}
+        </ion-card-content>
+      </div>
+      <div class="calendar">
+        <ion-icon name="calendar-number-outline"></ion-icon>
+        <ion-card-content class="date">{{ date }}</ion-card-content>
+      </div>
+
+      <ion-card-content class="genre">
+        <ion-chip>{{ genre }}</ion-chip>
+      </ion-card-content>
+    </div>
   </ion-card-header>
 </ion-card>

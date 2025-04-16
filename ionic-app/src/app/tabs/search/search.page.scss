@@ -51,30 +51,7 @@ ion-content {
 
   }
   
-  .results {
-    padding: 1rem;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    app-concert-card-full{
-      width: 45%;
-      min-width: 20rem;
-      
-      ion-img{
-        flex-grow: 2;
-      }
-      &:hover {
-        transform: scale(1.03);
-        transition: transform 0.3s ease-in-out;
-
-      }
-    }
-    ion-concert-card ion-card-header{
-      height: 100% !important;
-    }
-  }
+  
 
   .search-wrapper {
     width: 85%;
