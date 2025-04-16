@@ -11,26 +11,69 @@
  ion-card {
     display: flex;
     flex-direction: row;
-    padding: 0;
-    margin: 0;
+    padding: 0px;
+    margin: 0px;
     height: 100%;
   }
   
-
+.infos{
+height: 100%;
+}
 
   ion-card-header{
     background: rgba(0, 0, 0, 0.358);
     justify-content: space-evenly;
+    margin: 0px;
     ion-card-title{
-      font-size: smaller;
+      font-size: 22px;
     }
     ion-card-subtitle{
-      font-size: smaller;
+      right: 0px;
+      align-self: flex-end;
     }
     ion-card-content{
       font-size: smaller;
       margin-top: -4px;
     }
+    .artist{
+      font-size: medium;
+    }
+
+ion-card-content .genre{
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-evenly;
+  gap: 0.2rem;
+  padding: 0.5rem 1rem;
+
+  ion-chip {
+    border-radius: 12px;
+    padding: 0.5rem;
+    font-size: smaller;
+  }
+  
+}
+
+.calendar , .location-div{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  ion-icon{
+    font-size: 24px;
+    align-self: center;
+  }
+  .date{
+    right: 0;
+    align-self: flex-end;
+  }
+}
+
+
+.location-div, .calendar{
+  gap: 0.3rem;
+}
+
+   
   }
 
 ion-card > ion-img {
@@ -67,7 +110,42 @@ ion-card-header{
      /* Optional: Rounded corners for the image */
       }
 ion-card > div {
-      width: 100%;
+      width: 90%;
+    }
+    ion-card-header{
+      font-size: 14px;
+      width: 60%;
+      justify-content: space-evenly;
+      max-height: 100%;
+    }
+
+    ion-card {
+      height: 10rem;
+    }
+
+    ion-card-header{
+      ion-card-title, ion-card-subtitle, ion-card-content{
+        padding: 1px;
+        font-size: smaller;
+      }
+       .location-div ion-card-content{
+        margin-top: 6px;
+
+      }
+
+      ion-card-title{
+        font-size: 18px;
+        margin-top: -6px;
+
+      }
+
+      .calendar ion-icon, .location-div ion-icon{
+        font-size: 18px;
+      }
+    }
+
+    ion-chip{
+      margin-top: 7px;
     }
   }
   

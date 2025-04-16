@@ -81,8 +81,40 @@ ion-infinite-scroll {
 
  
 
+  .genre{
 
+    ion-chip {
+      border-radius: 12px;
+      padding: 0.4rem;
+      font-size: 0.65rem !important;
+    }
+    
+  }
 
+  .results {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    app-concert-card-full{
+      width: 45%;
+      min-width: 20rem;
+      
+      ion-img{
+        flex-grow: 2;
+      }
+      &:hover {
+        transform: scale(1.03);
+        transition: transform 0.3s ease-in-out;
+
+      }
+    }
+    ion-concert-card ion-card-header{
+      height: 100% !important;
+    }
+  }
 
 @media (min-width: 769px) { 
     ion-tabs {
@@ -111,6 +143,17 @@ ion-infinite-scroll {
     #logout-button {
         margin-top: 5rem;
     }
+
+    .genre{
+      ion-chip {
+        margin-top: -12px;
+      }
+    }
+
+    .concert-card .infos > div{
+      height: 2.4rem;
+    }
+
 
 }
 

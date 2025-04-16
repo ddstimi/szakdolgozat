@@ -19,7 +19,21 @@
           [image]="concert.image"
         ></app-concert-card>
       </div>
-      <div class="custom-scrollbar"></div>
+    </div>
+
+    <h1>Near me</h1>
+
+    <div class="results">
+      <app-concert-card-full
+        class="search-page"
+        *ngFor="let concert of results"
+        [title]="concert.title"
+        [date]="concert.date"
+        [location]="concert.location"
+        [image]="concert.image"
+        [genre]="concert.genre"
+        [artist]="concert.artist"
+      ></app-concert-card-full>
     </div>
   </div>
 </ion-content>

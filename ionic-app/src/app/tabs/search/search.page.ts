@@ -55,7 +55,7 @@ export class SearchPage implements OnInit {
       artist: 'Norah Jones',
     },
     {
-      title: 'Rocking Budapest',
+      title: 'Rocking Budapest After Midnight',
       date: '2025-05-12',
       location: 'Budapest',
       image: 'assets/images/asd.jpg',

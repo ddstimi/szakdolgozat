@@ -135,10 +135,10 @@
     padding: 1rem 1rem 2rem 1rem;
     -webkit-overflow-scrolling: touch;
     scroll-padding: 1rem;
-    margin: 1rem auto;
-    width: calc(100% - 7rem); // leaves space for tabs on the left
-    margin-left: 5rem;
-    margin-right: 2rem; // shift the cards right
+    margin: 4rem auto;
+    width: calc(100% - 16rem); // leaves space for tabs on the left
+    margin-left: 10rem;
+    margin-right: 6rem; // shift the cards right
   
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
       scrollbar-width: none;
@@ -181,6 +181,16 @@
     ion-title{
       font-size: small !important;
     }
+  }
+
+  app-concert-card-full ion-card{
+    gap: 2rem;
+  }
+  .results{
+    max-width: 100%;
+    margin-left: 7rem;
+    margin-right: 1rem;
+    margin-top: 8rem;
   }
 }
 
