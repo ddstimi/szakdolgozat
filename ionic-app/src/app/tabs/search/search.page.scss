@@ -1,7 +1,7 @@
 ion-content {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 1000;
     background: var(--ion-background-color);
     padding: 0.5rem 1rem;
     display: flex;
@@ -59,11 +59,11 @@ ion-content {
     margin-left: auto;
     margin-right: auto;
     margin-top: 5rem;
-    transform: translateX(5%); // slight push to the right
+    transform: translateX(3%); // slight push to the right
     border-radius: 1rem;
     padding: 1rem;
-    background-color: rgba(18, 18, 18, 0.192);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.422);
+    background-color: rgba(18, 18, 18, 0.36);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.282);
     
   }
 

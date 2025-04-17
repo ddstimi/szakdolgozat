@@ -1,29 +1,70 @@
 <ion-content [fullscreen]="true">
-  <div class="content-wrapper">
-    <!-- Left side: Login card -->
-    <ion-card class="ion-margin">
+  <div class="content-wrapper" [class.signup-active]="isSignUp">
+    <div class="image-container"></div>
+
+    <!-- Sign In -->
+    <ion-card class="form-card sign-in-card" *ngIf="!isSignUp">
       <h1>Sign in</h1>
-      <form action="">
+      <form>
         <ion-item lines="solid">
           <ion-input
             label="Email"
             labelPlacement="floating"
             placeholder="Email address"
-            ><div slot="label">Email</div></ion-input
           >
+            <div slot="label">Email</div>
+          </ion-input>
         </ion-item>
         <ion-item lines="solid">
           <ion-input
             label="Password"
             labelPlacement="floating"
             placeholder="Password"
-            ><div slot="label">Password</div></ion-input
           >
+            <div slot="label">Password</div>
+          </ion-input>
         </ion-item>
         <ion-button>Sign in</ion-button>
       </form>
+      <h5>You don't have an account?</h5>
+      <ion-button id="signup" (click)="isSignUp = true">Sign Up</ion-button>
     </ion-card>
 
-    <div class="image-container"></div>
+    <!-- Sign Up -->
+    <ion-card class="form-card sign-up-card" *ngIf="isSignUp">
+      <h1>Sign up</h1>
+      <form>
+        <ion-item lines="solid">
+          <ion-input
+            label="Email"
+            labelPlacement="floating"
+            placeholder="Email address"
+          >
+            <div slot="label">Email</div>
+          </ion-input>
+        </ion-item>
+        <ion-item lines="solid">
+          <ion-input
+            label="Password"
+            labelPlacement="floating"
+            placeholder="Password"
+          >
+            <div slot="label">Password</div>
+          </ion-input>
+        </ion-item>
+        <ion-item lines="solid">
+          <ion-input
+            label="Confirm Password"
+            labelPlacement="floating"
+            placeholder="Confirm Password"
+          >
+            <div slot="label">Confirm Password</div>
+          </ion-input>
+        </ion-item>
+        <ion-button>Sign Up</ion-button>
+      </form>
+      <h5>Already have an account?</h5>
+      <ion-button id="signin" (click)="isSignUp = false">Sign In</ion-button>
+    </ion-card>
   </div>
 </ion-content>

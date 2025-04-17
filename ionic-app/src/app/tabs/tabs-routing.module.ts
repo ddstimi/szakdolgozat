@@ -5,6 +5,7 @@ import { HomePage } from './home/home.page';
 import { SearchPage } from './search/search.page';
 import { ProfilePage } from './profile/profile.page';
 import { EventsPage } from './events/events.page';
+import { ConcertDetailsPage } from './concert-details/concert-details.page';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
       { path: 'search', component: SearchPage },
       { path: 'events', component: EventsPage },
       { path: 'profile', component: ProfilePage },
+      { path: 'concert-details', component: ConcertDetailsPage },
       { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
     ]
   },
