@@ -26,6 +26,33 @@
     url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.svg#Garet W05 Extra Bold")format("svg");
 }
   
+ion-app {
+  position: relative;
+  min-height: 100vh;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(20, 18, 32, 1) 0%, rgba(49, 31, 55, 1) 37%, rgba(49, 31, 55, 1) 66%, rgba(21, 30, 59, 1) 100%);
+    filter: blur(6px);
+    -webkit-filter: blur(6px); // Safari
+    background-attachment: fixed;
+    background-size: cover;
+  }
+}
+
+ion-content, ion-header, ion-footer, ion-card {
+  --background: transparent !important;
+  background: transparent !important;
+}
+
+
+
 
 ion-searchbar {
     position: fixed;
@@ -33,7 +60,6 @@ ion-searchbar {
     right: 0;
     width: 100%;
     z-index: 999;
-    background-color: white;
     padding: 0.5rem;
   }
   
@@ -159,15 +185,9 @@ ion-infinite-scroll {
 
 
 @media (max-width: 768px) { 
-
-
     #logout-button {
         display: none;
     }
-
-   
-    
-
 
     ion-tabs,ion-tab-bar,ion-tab-button{
         z-index: 7;
@@ -183,12 +203,56 @@ ion-infinite-scroll {
     -webkit-text-stroke: 1px;
   }
   
-  
-  
-  
   ion-button {
     --border-radius: 8px; 
     box-shadow: 5px rgba(0, 0, 0, 0.718);
   }
 
 /* Define styles specific to the search page */
+body.modal-open .page-container {
+  filter: blur(8px);
+  transition: filter 0.3s ease-in-out;
+}
+body.modal-open {
+  position: relative;
+}
+/* This applies blur to the background content */
+body.modal-open #container {
+  filter: blur(8px);
+  transition: filter 0.3s ease-in-out;
+  z-index: 2;
+}
+
+/* Make sure the modal stays clear */
+ion-modal {
+  filter: none !important;
+  z-index: 300; /* Make sure modal appears above the background */
+}
+
+body.modal-open::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(8px);
+
+}
+
+ion-modal::part(backdrop) {
+  backdrop-filter: none !important;
+  background: rgba(0, 0, 0, 0.493) !important; // optional dim background
+}
+
+ion-modal::part(content) {
+  backdrop-filter: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  height: 100%;
+  @media (min-width: 769px) {
+  max-width: 60%;}
+  align-self: center !important;
+  justify-self: center !important;
+}
+

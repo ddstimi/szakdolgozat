@@ -1,0 +1,53 @@
+#container {
+    text-align: center;
+    position: relative; /* ✅ Changed from absolute */
+    height: fit-content;
+    overflow: hidden;
+  }
+  
+  #concert-container {
+    position: relative !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    z-index: 0 !important;
+  }
+
+  #concert{
+    filter: blur(1px);
+  }
+  
+  @media (max-width: 768px) { 
+    #container {
+      top:8%;}
+      h1{
+        position: absolute;
+        left: 2rem;
+      }
+      #concert-container {
+        height:fit-content;
+      }
+      #concert{
+        max-height: 8rem;
+        min-height: 7rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 769px) { 
+    #container {
+      top: 4rem;
+      bottom: auto;
+    }
+    #concert-container{
+      max-height: 20rem;
+      min-height: 18;
+    }
+
+      #concert{
+        max-height: 15rem;
+        min-height: 12rem;
+        margin-left: 5%;
+        margin-right: auto;
+    }
+}

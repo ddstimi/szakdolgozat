@@ -1,17 +1,22 @@
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import {  RouterModule } from '@angular/router';
+import {  Router, RouterModule } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonGrid, IonRow, IonCol, IonLabel, IonButton } from '@ionic/angular/standalone';
 import { ConcertCardComponent } from 'src/app/components/concert-card/concert-card.component';
 import { ConcertCardFullComponent } from "../../components/concert-card-full/concert-card-full.component";
+import { ModalController } from '@ionic/angular';
+import { ConcertDetailsPage } from '../concert-details/concert-details.page'; // adjust the path if needed
 
 @Component({
   selector: 'home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [RouterModule, IonButton, IonLabel, IonCol, IonRow, IonGrid, IonSegmentButton, IonSegment, IonContent, ConcertCardComponent, IonInfiniteScrollContent, IonInfiniteScroll, IonHeader, IonToolbar, IonTitle, IonContent, CommonModule, NgFor, ConcertCardFullComponent],
+  providers: [ModalController]
 })
 export class HomePage {
+
+  constructor(private router: Router,private modalController: ModalController) {}
   concerts = [
     {
       title: 'Coldplay - Music of the Spheres Tour',
@@ -99,7 +104,6 @@ export class HomePage {
     // Add more dummy concert objects
   ];
   
-  constructor() {}
 
   toggleTheme() {
     const isDark = document.body.classList.contains('dark');
@@ -114,5 +118,21 @@ export class HomePage {
       localStorage.setItem('theme', 'dark');
     }
   }
+ 
+  async openDetails(concert: any) {
+    const modal = await this.modalController.create({
+      component: ConcertDetailsPage,
+      componentProps: { concert }
+    });
   
+    // Add a class to blur the background content
+    document.body.classList.add('modal-open');
+  
+    modal.onDidDismiss().then(() => {
+      // Remove the blur class when the modal is closed
+      document.body.classList.remove('modal-open');
+    });
+  
+    await modal.present();
+  }
 }

@@ -1,138 +1,161 @@
-
-@media (min-width: 769px) {
-    .image-container {
-      background: url("src/assets/images/liveWhite2-Photoroom.png") no-repeat center center/contain;
-      width: 70%;
-      height: auto;
-      margin-left: 5rem;
-      z-index: 1;
-    }
-  }
-  
 ion-content {
-    position: relative;
-    --background: none;
-    --font-family:'Garet W05 Extra Bold', sans-serif;
-  
-    /* Set the background image with blur */
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background: url("src/assets/images/abstract-800x1427.jpg") no-repeat center center/cover;
-      filter: blur(4px);
-      z-index: 0;
-    }
+  position: relative;
+  --background: none;
+  --font-family: 'Garet W05 Extra Bold', sans-serif;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: url("src/assets/images/bb.jpg") no-repeat center center / cover;
+    filter: blur(4px);
+    z-index: 0;
+  }
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+  align-items: center;
+  height: 100vh;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+  gap: 2rem;
+
+  // Signup active layout flip
+  &.signup-active {
+    flex-direction: row-reverse;
   }
 
-  .content-wrapper {
-    display: flex;
-    justify-content: space-between; /* Places content on both sides */
-    height: 100vh; /* Full screen height */
+  sign-in-card{
+    margin-right: 2rem;
   }
-  
-  ion-card {
-    font-variant-caps: all-petite-caps;
-    background-color: rgba(12, 12, 12, 0.801); // translucent black background
-    backdrop-filter: blur(5px);          // optional: adds frosted glass effect
-    -webkit-backdrop-filter: blur(4px);  // for Safari support
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.752);  // soft shadow
-    filter: contrast(1);
+  sign-up-card{
+    margin-left: 4rem !important;
+  }
 
-    h1 {
-      color: #f9f4f5;
-      font-size: xx-large;
-    }
-  
-    margin-top: 4rem;
-    border-radius: 12px;
-    width: fit-content;
-    height: 16rem;
-    padding: 0.5rem;
-    display: flex;
+  // Mobile layout
+  @media (max-width: 768px) {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-    position: relative;
-  
-    // Left-align the card on larger screens (PC)
-    @media (min-width: 769px) {
-        
-      width: 18rem; /* or adjust to your preferred width */
-      margin-left: 6rem; /* Adjust left margin as needed */
-      margin-top: 12%;
-      height: 22rem;
-      justify-content: space-evenly;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 1rem;
 
-      ion-button {
-        width: 50%;
-        height: 2.5rem;
-        margin-bottom: 0.5rem;
-        margin-top: 2rem;
-        font-size: large;
-      }/* Keep some space from the top */
-      font-size: larger;
-      
+    .sign-in-card{
+      margin-top:auto;
+      margin-bottom: auto;
     }
-  
-    // Center the card on smaller screens (phones)
-    @media (max-width: 768px) {
-        width: 80%; /* Make card width responsive */
-        height: 24rem;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 40%;
-
-        
-    h1 {
-        margin-top: 2rem;
-      }
-
-      ion-button {
-        margin-top: 2rem;
-        height: 3rem;
-        width: 50% !important;
-      }
-    }
-
   }
-  
+}
+
+// Image container on one side
+.image-container {
+  background: url("src/assets/images/liveWhite2-Photoroom.png") no-repeat center center / contain;
+  width: 60%;
+  height: 80%;
+  transition: all 0.5s ease-in-out;
+  align-self:auto;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Shared card styles
+ion-card.form-card {
+  width: 30%;
+  min-width: 320px;
+  background-color: #09080ec8 !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75);
+  padding: 1rem;
+  color: #f9f4f5;
+  font-variant-caps: all-petite-caps;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.4s ease-in-out;
+
+
+  h1 {
+    font-size: 38px;
+    margin-bottom: 1rem;
+  }
+
+  h5 {
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  ion-button {
+    width: 60%;
+    height: 2.5rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
   form {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 1rem;
-  
-    ion-input,
-    ion-button {
-      width: 90%;
-    }
-    ion-button {
-        width: 60%;
-        margin-bottom: 4rem;
-      }
-  
-    ion-input {
-      --color: #f9f4f5;
-
-    }
 
     ion-item {
-        --background: rgba(49, 49, 49, 0.137); // translucent background
-        --color: #f9f4f5; // text color (labels, placeholders)
-        --highlight-color-focused: #c17b8c; // underline/focus color
-        --highlight-color-invalid: #ff5c77;
-        --border-color: #f9f4f5;
-        backdrop-filter: blur(4px);
-        border-radius: 8px;
-        margin-bottom: 1rem;
-      }
-    
+      --background: rgba(49, 49, 49, 0.025);
+      --color: #f9f4f5;
+      --highlight-color-focused: #c17b8c;
+      --highlight-color-invalid: #ff5c77;
+      --border-color: #f9f4f5;
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      width: 90%;
+      font-size: 22px;
+    }
+
+    ion-input {
+      --color: #f9f4f5;
+    }
+
+    ion-button {
+      margin-top: 1rem;
+      width: 60%;
+    }
   }
-  
-  
+
+  @media (max-width: 768px) {
+    width: 90%;
+    margin-top: 2rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    form {
+      ion-button {
+        width: 80%;
+      }
+    }
+  }
+}
+
+
+// Toggle visibility using *ngIf, but keep fallback classes if needed:
+.sign-in-card,
+.sign-up-card {
+  display: none;
+}
+
+.content-wrapper:not(.signup-active) .sign-in-card {
+  display: flex;
+}
+
+.content-wrapper.signup-active .sign-up-card {
+  display: flex;
+}

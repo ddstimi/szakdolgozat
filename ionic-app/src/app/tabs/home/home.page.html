@@ -6,7 +6,6 @@
         >Sign in</ion-button
       >
     </div>
-    <ion-button (click)="toggleTheme()">toggle</ion-button>
     <h1>Top picks</h1>
 
     <div class="concert-scroll-wrapper">
@@ -17,11 +16,13 @@
           [date]="concert.date"
           [location]="concert.location"
           [image]="concert.image"
-        ></app-concert-card>
+          (click)="openDetails(concert)"
+        >
+          ></app-concert-card
+        >
       </div>
     </div>
-
-    <h1>Near me</h1>
+    <h1 id="near">Near me</h1>
 
     <div class="results">
       <app-concert-card-full

@@ -47,10 +47,11 @@
     -webkit-overflow-scrolling: touch;
     scroll-padding: 1rem;
     margin: 1rem auto;
-    width: calc(100% - 2rem); // leaves space for tabs on the left
-    margin-left: 1rem;
-    margin-right: 1rem; // shift the cards right
-  
+    width: calc(100% + 2.5rem); // leaves space for tabs on the left
+    margin-left: -1.5rem;
+    margin-right: -1.5rem; // shift the cards right
+    transform: scale(0.75) !important;
+
   
     &::-webkit-scrollbar {
       display: none;
@@ -60,10 +61,10 @@
   
   
   .concert-scroll-container {
-    margin-top: 3rem;
+    margin-top: 0.5rem;
   
     display: flex;
-    gap: 1rem;
+    gap: 8px;
   
   
     > div {
@@ -76,6 +77,7 @@
       height: 12rem; // 🎯 optional: shrink height
       border-radius: 8px;
       overflow: hidden;
+
       transition: transform 0.3s ease-in-out;
   
       .concert-card ion-card-header{
@@ -94,6 +96,15 @@
       font-size: small !important;
     }
   }
+
+  #near {
+  margin-top: -2rem !important;
+}
+
+  .results{
+margin-top: 2rem !important;  
+}
+  
 
 }
 @media (min-width: 769px) { 
@@ -185,12 +196,37 @@
 
   app-concert-card-full ion-card{
     gap: 2rem;
+
   }
-  .results{
-    max-width: 100%;
+  .results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; // or `center` if you prefer
+    gap: 0.5rem;
     margin-left: 7rem;
     margin-right: 1rem;
-    margin-top: 8rem;
+    margin-top: 6rem;
+    border-radius: 12px;
+    max-width: 100%;  
+    padding: 1rem;   
+    background-color: rgba(0, 0, 0, 0.222);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+
+  
+    app-concert-card-full {
+      width: calc(33.33% - 0.5rem); // 3 cards per row with spacing
+      transform: scale(0.9);
+      transition: transform 0.3s ease-in-out;
+  
+      &:hover {
+        transform: scale(0.94);
+      }
+    }
+
+  }
+      
+  #near {
+    margin-top: -2rem !important;
   }
 }
 
@@ -219,3 +255,11 @@
 }
 
 
+
+app-concert-details{
+  .modal-content{
+    background-color: #0e0e10df !important;
+    margin-top: 3rem !important;
+  }
+
+}
