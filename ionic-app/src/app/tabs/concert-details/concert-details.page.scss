@@ -6,6 +6,9 @@
     box-shadow: none !important;
     top: 5%;
     background: none;
+    ion-toolbar{
+      --background: none;
+    }
   }
 
   #div{

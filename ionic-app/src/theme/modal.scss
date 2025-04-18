@@ -1,0 +1,48 @@
+:host {
+    --background: none !important;
+    background: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  ion-modal {
+    --width: 90%;
+    --height: auto;
+    filter: none !important;
+  
+    ion-toolbar {
+      --background: none !important;
+      background: none !important;
+    }
+  }
+  
+  .modal-content {
+    background-color: #0e0e10ae;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow: hidden;
+    transform: scale(0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  @media (min-width: 769px) {
+    .modal-content {
+      margin-top: 3rem;
+      transform: scale(0.9);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .modal-content {
+      margin-top: 20%;
+    }
+  
+    ion-toolbar ion-title {
+      font-size: small;
+    }
+  }
+  
