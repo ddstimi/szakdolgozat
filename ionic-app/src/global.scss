@@ -256,3 +256,16 @@ ion-modal::part(content) {
   justify-self: center !important;
 }
 
+hr.section-divider {
+  width: 80%;
+  margin: 2rem auto;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  opacity: 0.5;
+}

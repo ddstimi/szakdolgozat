@@ -1,6 +1,10 @@
 #container {
     text-align: center;
     padding: 2rem;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 0;
   }
 
   :host{
@@ -9,7 +13,7 @@
   .profile-card {
     margin: 2rem auto;
     align-self: center;
-    width: 80%;
+    width: 60%;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
     background-color: #0e0e1074 !important;
@@ -40,12 +44,21 @@
   ion-modal {
     --width: 90%;
     --height: auto;
-
-    ion-toolbar{
-        background: none !important;
-        --background: none !important;
+    ion-modal::part(content) {
+        background-color: #0e0e10a4 !important;
 
     }
+
+    ion-content{
+        background-color: #0e0e10a4 !important;
+    }
+
+    ion-toolbar{
+        background-color: #0e0e10a4 !important;
+    }
+  }
+  .concert-modal-container{
+    border-radius: 1rem;
   }
   
   ion-list {
@@ -60,4 +73,61 @@
         --width: 80%;
         --height: auto;
       }
+
+      ion-card{
+        width: 100% !important;
+      }
+
+      .pref-group ion-chip{
+        transform: scale(0.8);
+      }
+      .modal-content {
+        margin-top: 20%;
+        align-self: center;
+        background-color: #0e0e10ae;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+        border-radius: 12px;
+      }
+      ion-toolbar ion-title{
+        font-size: small;
+      }
+  }
+  
+  .modal-content {
+    transform: scale(0.9);
+  height: 100% !important;
+  margin-top: 3rem !important;
+  background-color: #0e0e10a4 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.concert-modal-container {
+    
+  max-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background-color: #0e0e10a4 !important;
+
+
+  ion-card{
+    margin-top: 15%;
+    height: fit-content !important;
+    width: 70%;
+  }
+}
+.concert-modal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: #0e0e10a4 !important;
+
   }

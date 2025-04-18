@@ -26,6 +26,7 @@
             >{{ genre }}</ion-chip
           >
         </div>
+        <hr class="section-divider" />
 
         <div class="pref-group">
           <strong>Locations:</strong>
@@ -33,6 +34,7 @@
             >{{ location }}</ion-chip
           >
         </div>
+        <hr class="section-divider" />
 
         <div class="pref-group">
           <strong>Artists:</strong>
@@ -54,7 +56,7 @@
     [isOpen]="showUserModal"
     (didDismiss)="showUserModal = false"
   >
-    <ng-template>
+    <div class="concert-modal-container">
       <ion-header>
         <ion-toolbar>
           <ion-title>Edit Info</ion-title>
@@ -74,7 +76,7 @@
         </ion-item>
         <ion-button expand="block" (click)="saveUser()">Save</ion-button>
       </ion-content>
-    </ng-template>
+    </div>
   </ion-modal>
 
   <!-- Edit Preferences Modal -->
