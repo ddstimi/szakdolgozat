@@ -1,0 +1,100 @@
+<ion-content class="modal-content">
+  <div class="modal-container">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Edit Preferences</ion-title>
+        <ion-button fill="clear" slot="end" (click)="closeModal()"
+          >Close</ion-button
+        >
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-list>
+      <!-- GENRES -->
+      <ion-item>
+        <ion-label position="stacked">Add Genre</ion-label>
+        <ion-input
+          [(ngModel)]="selectedGenre"
+          placeholder="e.g., Rock"
+        ></ion-input>
+      </ion-item>
+      <ion-button expand="block" size="small" (click)="add('genre')"
+        >Add Genre</ion-button
+      >
+
+      <ion-item>
+        <ion-label>Selected Genres</ion-label>
+        <div class="chip-group">
+          <ion-chip *ngFor="let genre of genres; let i = index">
+            {{ genre }}
+            <ion-icon
+              name="close-circle"
+              color="danger"
+              (click)="remove('genre', i)"
+            ></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-item>
+
+      <hr class="section-divider" />
+
+      <!-- LOCATIONS -->
+      <ion-item>
+        <ion-label position="stacked">Add Location</ion-label>
+        <ion-input
+          [(ngModel)]="selectedLocation"
+          placeholder="e.g., Budapest"
+        ></ion-input>
+      </ion-item>
+      <ion-button expand="block" size="small" (click)="add('location')"
+        >Add Location</ion-button
+      >
+
+      <ion-item>
+        <ion-label>Selected Locations</ion-label>
+        <div class="chip-group">
+          <ion-chip *ngFor="let location of locations; let i = index">
+            {{ location }}
+            <ion-icon
+              name="close-circle"
+              color="danger"
+              (click)="remove('location', i)"
+            ></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-item>
+
+      <hr class="section-divider" />
+
+      <!-- ARTISTS -->
+      <ion-item>
+        <ion-label position="stacked">Add Artist</ion-label>
+        <ion-input
+          [(ngModel)]="selectedArtist"
+          placeholder="e.g., Imagine Dragons"
+        ></ion-input>
+      </ion-item>
+      <ion-button expand="block" size="small" (click)="add('artist')"
+        >Add Artist</ion-button
+      >
+
+      <ion-item>
+        <ion-label>Selected Artists</ion-label>
+        <div class="chip-group">
+          <ion-chip *ngFor="let artist of artists; let i = index">
+            {{ artist }}
+            <ion-icon
+              name="close-circle"
+              color="danger"
+              (click)="remove('artist', i)"
+            ></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="primary" (click)="savePrefs()"
+      >Save</ion-button
+    >
+  </div>
+</ion-content>

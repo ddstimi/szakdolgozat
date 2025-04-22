@@ -9,8 +9,8 @@ import { AppComponent } from './app/app.component';  // Make sure the standalone
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),  // Provides necessary Ionic Angular services
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-    provideRouter(routes),  // Ensure the routes are provided correctly
+    provideIonicAngular(),
+    provideRouter(routes, withPreloading(PreloadAllModules)),  // ✅ Keep this one
   ],
 });
+

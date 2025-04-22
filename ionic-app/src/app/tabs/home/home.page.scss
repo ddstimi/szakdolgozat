@@ -3,6 +3,8 @@
   position: relative; /* ✅ Changed from absolute */
   height: fit-content;
   overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+
 }
 
 #concert-container {

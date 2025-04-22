@@ -1,0 +1,28 @@
+<ion-content class="modal-content">
+  <div class="modal-container">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Edit User Info</ion-title>
+        <ion-button fill="clear" slot="end" (click)="closeModal()"
+          >Close</ion-button
+        >
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Password</ion-label>
+        <ion-input type="password"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="primary" (click)="closeModal()"
+      >Save</ion-button
+    >
+  </div>
+</ion-content>

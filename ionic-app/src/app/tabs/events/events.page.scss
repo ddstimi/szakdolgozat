@@ -1,53 +1,89 @@
 #container {
-    text-align: center;
-    position: relative; /* ✅ Changed from absolute */
-    height: fit-content;
-    overflow: hidden;
-  }
-  
-  #concert-container {
-    position: relative !important;
-    width: 100% !important;
-    overflow: hidden !important;
-    z-index: 0 !important;
-  }
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: 80%;
+  justify-self: center;
+  background-color: #0e0e1070 !important;
+  border-radius: 1rem;
+  margin-top: 5%;
+margin-left: 3rem;
+box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
 
-  #concert{
-    filter: blur(1px);
-  }
-  
-  @media (max-width: 768px) { 
-    #container {
-      top:8%;}
-      h1{
-        position: absolute;
-        left: 2rem;
-      }
-      #concert-container {
-        height:fit-content;
-      }
-      #concert{
-        max-height: 8rem;
-        min-height: 7rem;
-        margin-left: auto;
-        margin-right: auto;
-    }
 }
 
-@media (min-width: 769px) { 
-    #container {
-      top: 4rem;
-      bottom: auto;
-    }
-    #concert-container{
-      max-height: 20rem;
-      min-height: 18;
-    }
-
-      #concert{
-        max-height: 15rem;
-        min-height: 12rem;
-        margin-left: 5%;
-        margin-right: auto;
-    }
+.statDiv{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: auto;
+  height: 20%;
 }
+
+ion-header {
+  --background: #222428;
+  color: white;
+}
+
+.ion-padding {
+  padding: 16px;
+}
+
+.statistics {
+  text-align: center;
+  margin: 20px 0;
+
+  .stat-label {
+    font-size: 1.1rem;
+    color: #666;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #3880ff;
+  }
+}
+
+.event-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .event-card {
+    width: 80%;
+    max-width: 350px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
+    background-color: #0e0e1070 !important;
+    border-radius: 8px;
+  }
+}
+
+.statistics,
+swiper-container {
+  flex: 1 1 50%; // grow/shrink evenly and take about 45% each
+  max-width: 50%;
+  height: fit-content;
+  margin-top: 20px;
+  padding: 0;
+  align-self: center;
+}
+
+swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  height: fit-content;
+  width: fit-content;
+}
+
+canvas {
+  width: 50% !important;
+  height: auto !important; /* Or whatever fits your layout */
+  margin: 0 auto;
+  display: block;
+}
+
