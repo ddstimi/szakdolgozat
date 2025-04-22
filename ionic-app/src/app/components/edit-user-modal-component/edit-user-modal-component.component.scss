@@ -1,0 +1,63 @@
+@import "../../../theme/modal.scss";
+
+.modal-content {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  
+    ion-header {
+      background: transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+      ion-title {
+        color: white;
+      }
+      ion-button {
+        color: white;
+      }
+    }
+  
+    ion-toolbar {
+      --background: transparent;
+      --ion-border-color: transparent;
+      box-shadow: none;
+    }
+  
+    ion-label,
+    ion-input {
+      color: white;
+    }
+  
+    ion-item {
+      background: rgba(7, 7, 7, 0.05);
+      --background:rgba(7, 7, 7, 0.05);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      width: 70%;
+      z-index: 10;
+    }
+  
+    ion-button {
+      margin-top: 1rem;
+    }
+  }
+  
+  .modal-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.5); /* darker tone */
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.4s ease-in-out;
+    margin-left: 1.5rem !important;
+    margin-top: 15%;
+
+  }
+  ion-modal {
+    filter: none !important;
+    z-index: 300; /* Make sure modal appears above the background */
+  }

@@ -4,11 +4,27 @@
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    z-index: 0;
+    animation: fadeIn 0.3s ease-in-out;
   }
 
-  :host{
+  app-edit-user-modal, app-edit-preference-modal {
+    z-index: 1000 !important;
   }
+  
+  ion-modal {
+    z-index: 20000 !important;
+  }
+  
+  .modal-content {
+    z-index: 20001 !important; /* Ensure modal content is above other layers */
+  }
+  
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
   
   .profile-card {
     margin: 2rem auto;
@@ -93,18 +109,9 @@
       }
   }
   
-  .modal-content {
-    transform: scale(0.9);
-  height: 100% !important;
-  margin-top: 3rem !important;
-  background-color: #0e0e10a4 !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
-  border-radius: 12px;
-  padding: 1rem;
-  overflow: hidden;
-}
 
-.concert-modal-container {
+
+.modal-container {
     
   max-height: 100%;
   overflow-y: auto;
@@ -114,15 +121,15 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   background-color: #0e0e10a4 !important;
-
-
-  ion-card{
-    margin-top: 15%;
-    height: fit-content !important;
-    width: 70%;
-  }
 }
-.concert-modal-container {
+ion-modal {
+    filter: none !important;
+    z-index: 300;
+    --width: 90%;
+    --height: auto; /* Make sure modal appears above the background */
+  }
+
+modal-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,3 +138,5 @@
     background-color: #0e0e10a4 !important;
 
   }
+  
+  

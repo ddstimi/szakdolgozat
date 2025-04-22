@@ -13,6 +13,8 @@ ion-content {
       max-width: 30rem;
       border-radius: 12px;
     }
+    animation: fadeIn 0.3s ease-in-out;
+
   }
   app-concert-card-full ion-card{
     flex-direction: column !important;
