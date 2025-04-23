@@ -53,7 +53,13 @@ ion-content, ion-header, ion-footer, ion-card {
   background: transparent !important;
 }
 
+.alert-wrapper.sc-ion-alert-md {
+  background: rgba(0, 0, 0, 0.5) !important;
+  .alert-radio-label.sc-ion-alert-md{
+  color: #f9f4f5 !important;
+  }
 
+}
 
 
 ion-searchbar {
@@ -238,13 +244,12 @@ body.modal-open::before {
   left: 0;
   right: 0;
   bottom: 0;
-  filter: blur(8px);
-
+  filter: blur(9px);
 }
 
 ion-modal::part(backdrop) {
   backdrop-filter: none !important;
-  background: rgba(0, 0, 0, 0.493) !important; // optional dim background
+  background: rgba(0, 0, 0, 0.878) !important; // optional dim background
 }
 
 
@@ -272,7 +277,7 @@ hr.section-divider {
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255, 255, 255, 0.15),
+    #f9f4f571,
     transparent
   );
   opacity: 0.5;

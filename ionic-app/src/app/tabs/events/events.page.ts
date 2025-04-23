@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { IonicSlides } from '@ionic/angular';
+import { grid } from 'ionicons/icons';
 
 
 Chart.register(RadarController, PointElement, LineElement, ArcElement, RadialLinearScale, CategoryScale, Title, Tooltip, Legend);
@@ -35,13 +36,13 @@ export class EventsPage implements OnInit, AfterViewInit {
   swiperModules = [IonicSlides];
   selectedChart: string = 'genre';
   events: Event[] = [
-    { title: 'Rock Concert', date: '2025-04-01', location: 'Budapest', genres: ['Rock'], locationName: 'Budapest' },
-    { title: 'Pop Concert', date: '2025-03-15', location: 'Hungary', genres: ['Pop'], locationName: 'Hungary' },
-    { title: 'Jazz Concert', date: '2024-09-01', location: 'New York', genres: ['Jazz'], locationName: 'New York' },
-    { title: 'Rock Concert', date: '2024-12-01', location: 'Los Angeles', genres: ['Rock'], locationName: 'Los Angeles' },
-    { title: 'Pop Concert', date: '2023-07-15', location: 'Berlin', genres: ['Pop'], locationName: 'Berlin' },
-    { title: 'Pop Concert', date: '2023-07-15', location: 'Berlin', genres: ['HipHop'], locationName: 'Berlin' },
-    { title: 'Pop Concert', date: '2023-07-15', location: 'Berlin', genres: ['Metal'], locationName: 'Berlin' },
+    { title: 'Rocking Budapest After Midnight', date: '2025-04-01', location: 'Budapest, Akvárium Klub', genres: ['Rock'], locationName: 'Budapest' },
+    { title: 'Arctic Monkeys Live', date: '2025-03-15', location: 'Budapest, A38', genres: ['Pop'], locationName: 'Hungary' },
+    { title: 'Jazz Concert', date: '2024-09-01', location: 'Szeged, JATE Klub', genres: ['Jazz'], locationName: 'New York' },
+    { title: 'Metallica', date: '2024-12-01', location: 'Szeged, Hungi', genres: ['Rock'], locationName: 'Los Angeles' },
+    { title: 'Korda Gyuri és Balázs Klári esti vigadás', date: '2023-07-15', location: 'Szeged, Nyugi', genres: ['Pop'], locationName: 'Berlin' },
+    { title: 'Pop Concert', date: '2023-07-15', location: 'Budapest, Budapest Park', genres: ['HipHop'], locationName: 'Berlin' },
+    { title: 'Pop Concert', date: '2023-07-15', location: 'Szeged, JATE Klub', genres: ['Metal'], locationName: 'Berlin' },
 
   ];
 
@@ -146,36 +147,51 @@ export class EventsPage implements OnInit, AfterViewInit {
         datasets: [{
           label: 'Genres Attended',
           data: genreValues,
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          fill: 'origin',
+          backgroundColor: 'rgba(255, 99, 132, 0.6)', // More opaque
           borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 2
+          pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255, 99, 132, 1)'
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { position: 'top' },
-          title: { display: false }
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#fff' // optional for dark background
+            }
+          },
+          title: {
+            display: false
+          }
         },
         scales: {
           r: {
             beginAtZero: true,
-            suggestedMax: Math.max(...genreValues, 1) + 1,
-            angleLines: { color: '#ddd' },
-        grid: { color: '#eee' },
-        pointLabels: {
-        font: {
+            grid: {
+              color: '#afafaf'
+            },
+            angleLines: {
+              color: '#ddd'
+            },
+            pointLabels: {
+              color: '#fff',
+              font: {
                 size: 13
-        },
+              }
+            },
+            ticks: {
+              color: '#fff'
+            }
+          }
         }
-          
-      }
-        },
-        
       }
     });
-  
-    // Location Radar Chart
+    
     const locationLabels = Object.keys(this.locationData);
     const locationValues = locationLabels.map(location => this.locationData[location]);
   
@@ -186,25 +202,50 @@ export class EventsPage implements OnInit, AfterViewInit {
         datasets: [{
           label: 'Locations Attended',
           data: locationValues,
-          backgroundColor: 'rgba(53, 162, 235, 0.2)',
-          borderColor: 'rgba(53, 162, 235, 1)',
-          borderWidth: 2
+          fill: 'origin',
+          backgroundColor: 'rgba(74, 195, 144, 0.5)', // More opaque fill
+          borderColor: 'rgb(74, 195, 144)',
+          borderWidth: 2,
+          pointBackgroundColor: 'rgb(74, 195, 144)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgb(74, 195, 144)'
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { position: 'top' },
-          title: { display: false }
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#fff' // good for dark themes
+            }
+          },
+          title: {
+            display: false
+          }
         },
         scales: {
           r: {
             beginAtZero: true,
-            suggestedMax: Math.max(...locationValues, 1) + 1
+            grid: {
+              color: '#afafaf'
+            },
+            angleLines: {
+              color: '#ddd'
+            },
+            pointLabels: {
+              color: '#fff',
+              font: {
+                size: 13
+              }
+            },
+            ticks: {
+              color: '#fff'
+            }
           }
         }
       }
     });
-  }
-  
+  }    
 }

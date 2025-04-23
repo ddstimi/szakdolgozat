@@ -7,6 +7,7 @@ import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-edit-preferences-modal',
   templateUrl: './edit-preferences-modal-component.component.html',
+  styleUrls: ['./edit-preferences-modal-component.component.scss'],
   standalone: true,
   imports: [IonIcon, IonChip,IonContent, CommonModule, FormsModule, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLabel, IonInput, IonList]})
   export class EditPreferencesModalComponent {
