@@ -1,10 +1,19 @@
 @import "../../../theme/modal.scss";
 
+
+.modal-container::-webkit-scrollbar {
+  display: none;
+}
+
 .modal-content {
-  height: 100%;
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+  width: 45rem;
+  --background: transparent;
+  overflow-y: auto; // Make it scrollable
   padding: 1rem;
 
   ion-header {
@@ -30,33 +39,40 @@
   ion-label,
   ion-input {
     color: white;
+    margin: 4px;
   }
+
+ion-input{
+  background: rgba(0, 0, 0, 0.5) !important; /* Darker but transparent background */
+border-radius: 8px;
+padding-left: 8px !important;
+}
 
   ion-item {
     background: rgba(7, 7, 7, 0.05);
     --background: rgba(7, 7, 7, 0.05);
-    border-radius: 8px;
+    border-radius: 8px !important;
     margin-bottom: 1rem;
-    width: 70%;
+    width: 100%;
     z-index: 10;
   }
 
   ion-button {
     margin-top: 1rem;
+    width: fit-content;
+    right: 0;
   }
 }
 
 .modal-container {
-  width: 100%;
-  max-width: 500px;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.85) !important; /* Darker but transparent background */
+  width: 90%;
+  background: rgba(0, 0, 0, 0.5) !important; /* Darker but transparent background */
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(10px);
   animation: fadeIn 0.4s ease-in-out;
   margin-left: 1.5rem !important;
-  margin-top: 15%;
+  margin-top: 10%;
 }
 
 ion-modal {
@@ -73,5 +89,23 @@ ion-modal {
   }
   to {
     opacity: 1;
+  }
+}
+
+
+
+
+@media (max-width: 769px) {
+  .modal-content {
+    height: 100%;
+    overflow-y: auto; // Ensures scrolling
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-container {
+    height: 80%;
+    overflow: scroll;
+    width: 90%;
+    margin-top: 15%;
   }
 }

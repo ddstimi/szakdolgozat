@@ -4,9 +4,11 @@
     height: 100%;
     display: flex;
     justify-content: center;
+    width: 100%;
     align-items: center;
     padding: 1rem;
-  
+    font-size: larger !important;/* Make sure modal appears above the background */
+
     ion-header {
       background: transparent;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -28,14 +30,16 @@
     ion-label,
     ion-input {
       color: white;
+      font-size: 22px !important;/* Make sure modal appears above the background */
+
     }
   
     ion-item {
-      background: rgba(7, 7, 7, 0.05);
+      background: rgba(7, 7, 7, 0.367);
       --background:rgba(7, 7, 7, 0.05);
       border-radius: 8px;
       margin-bottom: 1rem;
-      width: 70%;
+      width: 90%;
       z-index: 10;
     }
   
@@ -46,14 +50,15 @@
   
   .modal-container {
     width: 100%;
-    max-width: 500px;
+    height: fit-content;
     padding: 2rem;
+    justify-content: center;
+    justify-self: center;
     background: rgba(0, 0, 0, 0.5); /* darker tone */
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
     animation: fadeIn 0.4s ease-in-out;
-    margin-left: 1.5rem !important;
     margin-top: 15%;
 
   }
@@ -61,3 +66,26 @@
     filter: none !important;
     z-index: 300; /* Make sure modal appears above the background */
   }
+  .modal-content {
+    --background: transparent;
+    overflow-y: auto; // Make it scrollable
+    padding: 1rem;
+  }
+  
+
+  
+  @media (max-width: 769px) {
+    .modal-content {
+      height: 100%;
+      overflow-y: auto; // Ensures scrolling
+      -webkit-overflow-scrolling: touch;
+    }
+  
+    .modal-container {
+      height: fit-content;
+      overflow: scroll;
+      width: 90%;
+      margin-top: 35%;
+    }
+  }
+  

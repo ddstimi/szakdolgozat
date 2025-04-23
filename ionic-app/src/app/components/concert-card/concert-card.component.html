@@ -2,9 +2,15 @@
   <ion-img [src]="image" alt="Concert image"></ion-img>
   <ion-card-header>
     <ion-card-title>{{ title }}</ion-card-title>
-    <ion-card-subtitle>{{ date }}</ion-card-subtitle>
     <ion-card-content>
       {{ location }}
     </ion-card-content>
+    <div id="flex">
+      <ion-card-subtitle>
+        <ion-icon name="calendar-outline"></ion-icon
+        >{{ date }}</ion-card-subtitle
+      >
+      <ion-icon name="checkmark-circle-outline" id="checkmark"></ion-icon>
+    </div>
   </ion-card-header>
 </ion-card>

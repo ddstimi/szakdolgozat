@@ -29,11 +29,26 @@ ion-card-header{
     font-size: smaller;
   }
   ion-card-subtitle{
-    font-size: smaller;
+    color: #c17b8c;
+    ion-icon{
+      margin-bottom: -2px;
+      margin-right: 4px;  
+    }
+  }
+  #checkmark{
+    font-size: 1.3rem !important;
   }
   ion-card-content{
     font-size: smaller;
-    margin-top: -4px;
+    padding: 5%;
+  }
+  #flex{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    gap: 30%;
+    padding: auto 8px !important;
   }
 }
 

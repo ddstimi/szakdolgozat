@@ -12,17 +12,52 @@ box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
 
 }
 
+.stat-cont{
+  width: 100%;
+  height: 25rem;
+}
+
 .statDiv{
   display: flex;
   justify-content: center;
   flex-direction: row;
-  width: auto;
-  height: 20%;
+  width: 100%;
+  height: 20rem;
+  margin-top: 5%;
+  margin-bottom: 10rem;
+
 }
 
-ion-header {
-  --background: #222428;
-  color: white;
+ion-title {
+  color: #f9f4f5;
+  margin: 1rem;
+  font-size: 2rem;
+}
+
+ion-card-header{
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+}
+
+ion-card-content{
+  display: flex;
+  gap: 1rem;
+  color: #f9f4f5c2;
+  justify-content: space-around;
+  align-items: center;
+  .date{
+    margin-right: 1rem;
+    color: #c17b8c;
+    font-size: medium;
+  }
+  .location{
+    font-size: smaller;
+  }
+  ion-icon{
+    margin-bottom: -2px !important;
+    margin-right: 4px;
+  }
 }
 
 .ion-padding {
@@ -33,44 +68,83 @@ ion-header {
   text-align: center;
   margin: 20px 0;
 
-  .stat-label {
-    font-size: 1.1rem;
-    color: #666;
+  ion-card{
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.425);
+    background-color: rgba(0, 0, 0, 0.142) !important;
+    padding: 1rem;
+    width: 20rem;
+    height: fit-content;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 0.5rem;
+
+    .stat-label{
+      font-size: 1.5rem !important;
+      color: #f9f4f5c2;
+    }
+
+    .stat-number{
+      font-size: 4rem !important;
+      color: #4ac390;
+      font-family:sans-serif !important;
+      font-weight: 800;
+    }
+
   }
 
-  .stat-number {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #3880ff;
-  }
+
 }
 
 .event-cards {
-  display: flex;
+  display:flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
+  gap: 8px;
+  justify-items:flex-start;
   margin-bottom: 20px;
-
+  padding: 8px;
+  width: fit-content !important;
+  justify-self: center;
+  padding-left: 15%;
   .event-card {
     width: 80%;
     max-width: 350px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
-    background-color: #0e0e1070 !important;
+    background-color: rgba(0, 0, 0, 0.274) !important;
     border-radius: 8px;
   }
 }
 
-.statistics,
+.stat-column{
+  flex: 1;
+  max-width: 50%;
+  align-items: center;
+  justify-items: center;
+  #statLabel{
+    width: 70% !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.566);
+    background-color: rgba(0, 0, 0, 0.142) !important;
+  }
+  ion-label{
+    margin-left: 1rem !important;
+  }
+
+}
 swiper-container {
-  flex: 1 1 50%; // grow/shrink evenly and take about 45% each
+  flex: 1;
   max-width: 50%;
   height: fit-content;
   margin-top: 20px;
   padding: 0;
   align-self: center;
 }
-
+swiper-container::part(bullet-active) {
+  opacity: 1;
+  background: #4ac390;
+}
 swiper-slide {
   display: flex;
   justify-content: center;
@@ -81,9 +155,84 @@ swiper-slide {
 }
 
 canvas {
-  width: 50% !important;
+  width: 80% !important;
   height: auto !important; /* Or whatever fits your layout */
   margin: 0 auto;
   display: block;
 }
 
+
+@media (min-width: 768px) { 
+
+
+
+}
+
+
+@media (max-width: 768px) { 
+
+  #container{
+    width: 90% !important;
+    margin-left: 0.3rem;
+    margin-top: 20%;
+  }
+
+ ion-title, ion-card-header{
+    font-size: 1.5rem;
+  }
+
+  .event-cards{
+    width: 100% !important;
+    margin: 0;
+    padding-left: 1.5rem;
+    padding-right: 1rem;
+    .event-card{
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  .statDiv{
+    flex-direction: column;
+  }
+
+
+  .statistics ion-card{
+    width: 10rem;
+    gap: 1rem;
+    margin-left: 9rem;
+    .stat-label{
+      font-size: 1rem!important;
+    }
+    .stat-number{
+      font-size: 2rem !important;
+    }
+  }
+  
+  .stat-column{
+    width: 100% ;
+    max-width: 100%;
+
+    
+  #statLabel{
+    width: 80% !important;
+    font-size: smaller;
+    padding: 2px !important;
+    height: fit-content;
+    min-height: auto !important;
+  }
+  }
+
+  swiper-container {
+    max-width: 80%;
+  }
+  
+  canvas {
+    width: 90% !important;
+  }
+
+  .stat-cont{
+    margin-top: 4rem;
+  }
+
+}

@@ -15,15 +15,16 @@
       <ion-card-header>
         <ion-card-title>{{ concert?.title }}</ion-card-title>
         <ion-card-subtitle>
+          <ion-icon name="calendar-outline"></ion-icon>
           {{ concert?.date }} • {{ concert?.location }}
         </ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
-        <div id="div">
-          <ion-button color="primary" id="attend">I’m attending</ion-button>
-          <ion-button color="primary" id="attend">Attending</ion-button>
-        </div>
+        <ion-button id="attend">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Attending</ion-button
+        >
         <p>
           {{ concert?.description || 'Concert details will be added soon.' }}
         </p>

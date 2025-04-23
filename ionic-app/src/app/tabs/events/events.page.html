@@ -1,10 +1,6 @@
 <ion-content [fullscreen]="true">
   <div id="container">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>My Events</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <ion-title>Upcoming Events</ion-title>
 
     <!-- Event Cards -->
     <div class="event-cards">
@@ -13,40 +9,54 @@
           <ion-card-title>{{ event.title }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <div>Date: {{ event.date }}</div>
-          <div>Location: {{ event.location }}</div>
+          <div class="location">
+            <ion-icon name="location-outline"></ion-icon>{{ event.location }}
+          </div>
+          <div class="date">
+            <ion-icon name="calendar-outline"></ion-icon> {{ event.date }}
+          </div>
         </ion-card-content>
       </ion-card>
     </div>
     <hr class="section-divider" />
+    <ion-title>Past Events</ion-title>
 
     <div class="ion-padding">
-      <!-- Filter section for time intervals -->
-      <ion-item>
-        <ion-label>Time Interval</ion-label>
-        <ion-select
-          [(ngModel)]="selectedInterval"
-          (ionChange)="updateStatistics()"
-        >
-          <ion-select-option value="6months">Last 6 months</ion-select-option>
-          <ion-select-option value="1year">Last 1 year</ion-select-option>
-          <ion-select-option value="all">All time</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <div class="statDiv">
-        <swiper-container>
-          <swiper-slide>
-            <canvas #genreRadarChart></canvas>
-          </swiper-slide>
-          <swiper-slide>
-            <canvas #locationRadarChart></canvas>
-          </swiper-slide>
-        </swiper-container>
+      <div class="stat-cont">
+        <!-- Filter section for time intervals -->
 
-        <!-- Statistics Display -->
-        <div class="statistics">
-          <div class="stat-label">Total Concerts Attended</div>
-          <div class="stat-number">{{ totalConcerts }}</div>
+        <div class="statDiv">
+          <div class="stat-column">
+            <ion-item id="statLabel">
+              <ion-label>Selected interval :</ion-label>
+              <ion-select
+                interface="alert"
+                [(ngModel)]="selectedInterval"
+                (ionChange)="updateStatistics()"
+              >
+                <ion-select-option value="6months"
+                  >Last 6 months</ion-select-option
+                >
+                <ion-select-option value="1year">Last year</ion-select-option>
+                <ion-select-option value="all">All</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <div class="statistics">
+              <ion-card id="stat">
+                <div class="stat-label">Total Concerts Attended:</div>
+                <div class="stat-number">{{ totalConcerts }}</div>
+              </ion-card>
+            </div>
+          </div>
+          <swiper-container pagination="true" pager>
+            <swiper-slide>
+              <canvas #genreRadarChart></canvas>
+            </swiper-slide>
+            <swiper-slide>
+              <canvas #locationRadarChart></canvas>
+            </swiper-slide>
+          </swiper-container>
         </div>
       </div>
     </div>
