@@ -35,7 +35,8 @@ export class ProfilePage implements OnInit {
 
   user = {
     email: 'user@example.com',
-    password: '********'
+    password: '********',
+    username: 'user.name'
   };
 
   genres = ['Rock', 'Jazz', 'Indie'];
@@ -208,7 +209,7 @@ export class ProfilePage implements OnInit {
     this.filteredArtists = [];
   }
   
-  saveUser(updatedUser: { email: string; password: string }) {
+  saveUser(updatedUser: { email: string; password: string , username: string}) {
     this.user = updatedUser;
     this.showUserModal = false;
   }

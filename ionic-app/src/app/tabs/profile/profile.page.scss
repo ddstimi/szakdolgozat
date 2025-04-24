@@ -1,141 +1,160 @@
 #container {
-    text-align: center;
-    padding: 2rem;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-
-  app-edit-user-modal, app-edit-preference-modal {
-    z-index: 1000 !important;
-  }
-  
-  ion-modal {
-    z-index: 20000 !important;
-  }
-  
-  .modal-content {
-    z-index: 20001 !important; /* Ensure modal content is above other layers */
-  }
-  
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  
-  .profile-card {
-    margin: 2rem auto;
-    align-self: center;
-    width: 60%;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
-    background-color: #0e0e1074 !important;
+  text-align: center;
+  padding: 2rem;
+  width: 90%;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
-  
-  .pref-group {
-    margin-bottom: 1rem;
-  
-    ion-chip {
-      margin: 0.25rem;
-    }
+
+app-edit-user-modal,
+app-edit-preference-modal {
+  z-index: 1000 !important;
+}
+
+ion-button{
+  width: 9rem !important;
+  padding: 0.5rem !important;
+}
+
+ion-modal {
+  z-index: 20000 !important;
+  --width: 90%;
+  --height: auto;
+  filter: none !important;
+}
+
+ion-modal::part(content),
+ion-modal ion-content,
+ion-modal ion-toolbar {
+  background-color: #0e0e10a4 !important;
+}
+
+.modal-content {
+  z-index: 20001 !important;
+  margin-top: 5%;
+  align-self: center;
+  background-color: #0e0e10ae;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+  border-radius: 12px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #0e0e1074 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
+  align-items: flex-start;
+  color: #f9f4f5;
+
+.card-flex{
+  width: 100%;
+}
+
+  p{
+    font-size: larger;
   }
-  
-  ion-card-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    background: none !important;
 
+  ion-button{
+    align-self: center;
   }
+}
 
-  :host{
-    --background: none !important;
-    background: none !important;
+.profile-card ion-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
 
+.pref-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
 
-  }
-  
-  ion-modal {
-    --width: 90%;
-    --height: auto;
-    ion-modal::part(content) {
-        background-color: #0e0e10a4 !important;
+ion-chip {
+  margin: 0.25rem;
+}
 
-    }
+ion-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: none !important;
+  text-align: left;
+}
 
-    ion-content{
-        background-color: #0e0e10a4 !important;
-    }
+:host {
+  --background: none !important;
+  background: none !important;
+}
 
-    ion-toolbar{
-        background-color: #0e0e10a4 !important;
-    }
-  }
-  .concert-modal-container{
-    border-radius: 1rem;
-  }
-  
-  ion-list {
-    margin: 0 0 1rem 0;
-    border-radius: 8px;
-    background: #070707;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (max-width: 769px) { 
-    ion-modal {
-        --width: 80%;
-        --height: auto;
-      }
+.concert-modal-container {
+  border-radius: 1rem;
+}
 
-      ion-card{
-        width: 100% !important;
-      }
-
-      .pref-group ion-chip{
-        transform: scale(0.8);
-      }
-      .modal-content {
-        margin-top: 20%;
-        align-self: center;
-        background-color: #0e0e10ae;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
-        border-radius: 12px;
-      }
-      ion-toolbar ion-title{
-        font-size: small;
-      }
-  }
-  
-
+ion-list {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background: #070707;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
 .modal-container {
-    
   max-height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: #0e0e10a4 !important;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  background-color: #0e0e10a4 !important;
 }
-ion-modal {
-    filter: none !important;
-    z-index: 300;
-    --width: 100%;
-    --height: auto; 
+
+@media (max-width: 769px) {
+  ion-modal {
+    --width: 80%;
   }
 
-modal-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background-color: #0e0e10a4 !important;
-
+  ion-card {
+    width: 100% !important;
   }
-  
+
+  ion-card-content{
+    padding: 0;
+  }
+
+  .pref-group ion-chip {
+    transform: scale(0.7);
+  }
+
+  .pref-group{
+    gap: 0;
+  }
+
+  .modal-content {
+    margin-top: 20%;
+  }
+
+  ion-toolbar ion-title {
+    font-size: small;
+  }
+}
