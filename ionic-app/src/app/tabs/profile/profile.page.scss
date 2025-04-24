@@ -9,6 +9,8 @@
   gap: 2rem;
 }
 
+
+
 app-edit-user-modal,
 app-edit-preference-modal {
   z-index: 1000 !important;
@@ -156,5 +158,11 @@ ion-list {
 
   ion-toolbar ion-title {
     font-size: small;
+  }
+  h1{
+    margin-top: 2rem !important;
+  }
+  #container{
+    gap: 1rem !important;
   }
 }
