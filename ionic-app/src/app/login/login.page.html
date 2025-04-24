@@ -2,7 +2,6 @@
   <div class="content-wrapper" [class.signup-active]="isSignUp">
     <div class="image-container"></div>
 
-    <!-- Sign In -->
     <ion-card class="form-card sign-in-card" *ngIf="!isSignUp">
       <h1>Sign in</h1>
       <form>
@@ -30,7 +29,6 @@
       <ion-button id="signup" (click)="isSignUp = true">Sign Up</ion-button>
     </ion-card>
 
-    <!-- Sign Up -->
     <ion-card class="form-card sign-up-card" *ngIf="isSignUp">
       <h1>Sign up</h1>
       <form>

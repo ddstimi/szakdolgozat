@@ -7,7 +7,7 @@ import {IonCardContent, IonCard, IonCardTitle, IonCardHeader, IonCardSubtitle, I
   templateUrl: './concert-card-full.component.html',
   styleUrls: ['./concert-card-full.component.scss'],
   standalone:true,
-    imports: [IonChip, IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonImg, IonCard, CommonModule], // Required for structural directives like *ngIf, *ngFor
+    imports: [IonChip, IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonImg, IonCard, CommonModule], 
   
 
 })

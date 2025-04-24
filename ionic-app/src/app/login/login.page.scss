@@ -24,7 +24,6 @@ ion-content {
   z-index: 1;
   gap: 2rem;
 
-  // Signup active layout flip
   &.signup-active {
     flex-direction: row-reverse;
   }
@@ -36,7 +35,6 @@ ion-content {
     margin-left: 4rem !important;
   }
 
-  // Mobile layout
   @media (max-width: 768px) {
     flex-direction: column;
     justify-content: flex-start;
@@ -50,7 +48,6 @@ ion-content {
   }
 }
 
-// Image container on one side
 .image-container {
   background: url("src/assets/images/liveWhite2-Photoroom.png") no-repeat center center / contain;
   width: 60%;
@@ -63,7 +60,6 @@ ion-content {
   }
 }
 
-// Shared card styles
 ion-card.form-card {
   width: 30%;
   min-width: 320px;
@@ -146,7 +142,6 @@ ion-card.form-card {
 }
 
 
-// Toggle visibility using *ngIf, but keep fallback classes if needed:
 .sign-in-card,
 .sign-up-card {
   display: none;

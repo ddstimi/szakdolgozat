@@ -25,7 +25,7 @@ interface Event {
   templateUrl: './events.page.html',
   styleUrls: ['./events.page.scss'],
   imports: [IonicModule, CommonModule, FormsModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Ensure you import necessary Ionic components
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], 
 
 })
 export class EventsPage implements OnInit, AfterViewInit {
@@ -40,7 +40,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     { title: 'Arctic Monkeys Live', date: '2025-03-15', location: 'Budapest, A38', genres: ['Pop'], locationName: 'Hungary' },
     { title: 'Jazz Concert', date: '2024-09-01', location: 'Szeged, JATE Klub', genres: ['Jazz'], locationName: 'New York' },
     { title: 'Metallica', date: '2024-12-01', location: 'Szeged, Hungi', genres: ['Rock'], locationName: 'Los Angeles' },
-    { title: 'Korda Gyuri és Balázs Klári esti vigadás', date: '2023-07-15', location: 'Szeged, Nyugi', genres: ['Pop'], locationName: 'Berlin' },
+    { title: 'Korda Gyuri és Balázs Klári esti vigadás', date: '2023-07-15', location: 'Szeged, Nyugi kert', genres: ['Pop'], locationName: 'Berlin' },
     { title: 'Pop Concert', date: '2023-07-15', location: 'Budapest, Budapest Park', genres: ['HipHop'], locationName: 'Berlin' },
     { title: 'Pop Concert', date: '2023-07-15', location: 'Szeged, JATE Klub', genres: ['Metal'], locationName: 'Berlin' },
 
@@ -50,7 +50,7 @@ export class EventsPage implements OnInit, AfterViewInit {
   private locationChart: Chart | undefined;
   
 
-  selectedInterval = 'all';  // Default selected interval
+  selectedInterval = 'all';  
   totalConcerts = 0;
   filteredEvents: Event[] = [];
   genreData: { [key: string]: number } = {};
@@ -67,7 +67,7 @@ export class EventsPage implements OnInit, AfterViewInit {
       if (this.genreRadarChartCanvas && this.locationRadarChartCanvas) {
         this.createRadarCharts();
       }
-    }, 0); // Let Angular finish rendering
+    }, 0);
   }
 
   slideToChart() {
@@ -78,7 +78,6 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   }
 
-  // Function to update the statistics based on the selected interval
   updateStatistics() {
     const intervalStart = this.getIntervalStartDate();
 
@@ -105,7 +104,7 @@ export class EventsPage implements OnInit, AfterViewInit {
       case '1year':
         return new Date(now.setFullYear(now.getFullYear() - 1));
       case 'all':
-        return new Date(0);  // No date limit
+        return new Date(0);
       default:
         return new Date();
     }

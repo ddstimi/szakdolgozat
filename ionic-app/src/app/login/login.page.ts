@@ -12,7 +12,6 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonButt
 })
 export class LoginPage implements OnInit {
 
-// Inside your .ts file
 isSignUp: boolean = false;
 
 

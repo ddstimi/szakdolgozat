@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { EditUserModalComponentComponent } from './edit-user-modal-component.component';
+import { EditUserModalComponent } from './edit-user-modal-component.component';
 
 describe('EditUserModalComponentComponent', () => {
-  let component: EditUserModalComponentComponent;
-  let fixture: ComponentFixture<EditUserModalComponentComponent>;
+  let component: EditUserModalComponent;
+  let fixture: ComponentFixture<EditUserModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditUserModalComponentComponent ],
+      declarations: [ EditUserModalComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditUserModalComponentComponent);
+    fixture = TestBed.createComponent(EditUserModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
