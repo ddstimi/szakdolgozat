@@ -23,6 +23,7 @@ export class HomePage {
       date: '2025-06-12',
       location: 'Budapest, Hungary',
       image: 'assets/images/asd.jpg',
+      genres: ['Rock', 'Pop', 'Indie'],
     },
     {
       title: 'Arctic Monkeys Live',
