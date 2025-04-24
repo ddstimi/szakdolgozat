@@ -12,10 +12,10 @@ import { ModalController } from '@ionic/angular';
 export class EditUserModalComponent  implements OnInit {
 
   @Input() isOpen = false;
-  @Input() user: { email: string; password: string } = { email: '', password: '' };
+  @Input() user: { email: string; password: string, username:string } = { email: '', password: '' , username: ''};
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<{ email: string; password: string }>();
-  editedUser = { email: '', password: '' };
+  @Output() save = new EventEmitter<{ email: string; password: string , username: string}>();
+  editedUser = { email: '', password: '' , username: ''};
 
   constructor(private modalController: ModalController) {}
 
