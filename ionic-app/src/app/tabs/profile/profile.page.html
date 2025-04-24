@@ -7,9 +7,14 @@
       <ion-card-header>
         <ion-card-title>User Info</ion-card-title>
       </ion-card-header>
-      <ion-card-content>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Password:</strong> ********</p>
+      <ion-card-content class="card-flex">
+        <div class="info-group">
+          <p><strong>Username:</strong> {{ user.username }}</p>
+          <hr class="section-divider" />
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <hr class="section-divider" />
+          <p><strong>Password:</strong> ********</p>
+        </div>
         <ion-button size="small" (click)="openEditUser()">Modify</ion-button>
       </ion-card-content>
     </ion-card>
@@ -19,30 +24,29 @@
       <ion-card-header>
         <ion-card-title>Preferences</ion-card-title>
       </ion-card-header>
-      <ion-card-content>
-        <div class="pref-group">
-          <strong>Genres:</strong>
-          <ion-chip color="primary" *ngFor="let genre of genres"
-            >{{ genre }}</ion-chip
-          >
+      <ion-card-content class="card-flex">
+        <div class="pref-section">
+          <div class="pref-group">
+            <strong>Genres:</strong>
+            <ion-chip color="primary" *ngFor="let genre of genres"
+              >{{ genre }}</ion-chip
+            >
+          </div>
+          <hr class="section-divider" />
+          <div class="pref-group">
+            <strong>Locations:</strong>
+            <ion-chip color="secondary" *ngFor="let location of locations"
+              >{{ location }}</ion-chip
+            >
+          </div>
+          <hr class="section-divider" />
+          <div class="pref-group">
+            <strong>Artists:</strong>
+            <ion-chip color="tertiary" *ngFor="let artist of artists"
+              >{{ artist }}</ion-chip
+            >
+          </div>
         </div>
-        <hr class="section-divider" />
-
-        <div class="pref-group">
-          <strong>Locations:</strong>
-          <ion-chip color="secondary" *ngFor="let location of locations"
-            >{{ location }}</ion-chip
-          >
-        </div>
-        <hr class="section-divider" />
-
-        <div class="pref-group">
-          <strong>Artists:</strong>
-          <ion-chip color="tertiary" *ngFor="let artist of artists"
-            >{{ artist }}</ion-chip
-          >
-        </div>
-
         <ion-button size="small" (click)="openEditPreferences()"
           >Modify</ion-button
         >
