@@ -3,12 +3,6 @@
   <ion-card-header>
     <ion-card-title>{{ title }}</ion-card-title>
     <div class="infos">
-      <div class="artist-div">
-        <ion-card-content class="artist">
-          {{ artist }}
-        </ion-card-content>
-      </div>
-
       <div class="location-div">
         <ion-icon name="location-outline"></ion-icon>
         <ion-card-content class="location">
@@ -25,4 +19,7 @@
       </ion-card-content>
     </div>
   </ion-card-header>
+  <ion-card-content id="checkmark-container">
+    <ion-icon name="checkmark-circle-outline" id="checkmark"></ion-icon>
+  </ion-card-content>
 </ion-card>

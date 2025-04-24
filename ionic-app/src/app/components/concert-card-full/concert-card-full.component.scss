@@ -19,6 +19,8 @@
   
 .infos{
 height: 100%;
+align-content: center;
+justify-content: center;
 }
 
   ion-card-header{
@@ -26,7 +28,7 @@ height: 100%;
     justify-content: space-evenly;
     margin: 0px;
     ion-card-title{
-      font-size: 22px;
+      font-size: 18px !important;
     }
     ion-card-subtitle{
       right: 0px;
@@ -40,17 +42,18 @@ height: 100%;
       font-size: medium;
     }
 
-ion-card-content .genre{
+.genre{
   display: flex;
   flex-wrap: wrap;
   align-content: space-evenly;
   gap: 0.2rem;
-  padding: 0.5rem 1rem;
+  padding: 0rem 1rem;
 
   ion-chip {
     border-radius: 12px;
     padding: 0.5rem;
     font-size: smaller;
+    margin-top: 1rem !important;
   }
   
 }
@@ -89,10 +92,19 @@ ion-card > div {
   }
   
 ion-card-content {
-
-    background-color: rgba(0, 0, 0, 0.558);
+    background-color: rgba(0, 0, 0, 0.358);
     color: #fff;
   }
+  ion-card #checkmark-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    #checkmark{
+      font-size: 1.2rem;
+      color: #737373;
+    }
+  }
+
 ion-card-header ion-card-content{
     background: none;
   }
@@ -118,6 +130,8 @@ ion-card > div {
       width: 60%;
       justify-content: space-evenly;
       max-height: 100%;
+      align-items: start;
+      align-content: start !important;
     }
 
     ion-card {
@@ -125,6 +139,7 @@ ion-card > div {
     }
 
     ion-card-header{
+      padding-right: 0;
       ion-card-title, ion-card-subtitle, ion-card-content{
         padding: 1px;
         font-size: smaller;
@@ -135,14 +150,23 @@ ion-card > div {
       }
 
       ion-card-title{
-        font-size: 18px;
+        font-size: 18px !important;
         margin-top: -6px;
+        width: 9rem;
+      }
 
+      .artist{
+        font-size: 12px;
       }
 
       .calendar ion-icon, .location-div ion-icon{
         font-size: 18px;
       }
+    }
+
+    ion-card #checkmark-container{
+      padding: 0;
+      padding-right: 0.5rem !important;
     }
 
     ion-chip{
