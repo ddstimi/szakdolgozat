@@ -1,6 +1,6 @@
 #container {
   text-align: center;
-  position: relative; /* ✅ Changed from absolute */
+  position: relative; 
   height: fit-content;
   overflow: hidden;
   animation: fadeIn 0.3s ease-in-out;
@@ -54,9 +54,9 @@ ion-content{
     -webkit-overflow-scrolling: touch;
     scroll-padding: 1rem;
     margin: 1rem auto;
-    width: calc(100% + 2.5rem); // leaves space for tabs on the left
+    width: calc(100% + 2.5rem); 
     margin-left: -1.5rem;
-    margin-right: -1.5rem; // shift the cards right
+    margin-right: -1.5rem;
     transform: scale(0.75) !important;
 
   
@@ -80,8 +80,8 @@ ion-content{
     }
   
     app-concert-card {
-      width: 11rem; // 🎯 make the card smaller here
-      height: 12rem; // 🎯 optional: shrink height
+      width: 11rem;
+      height: 12rem;
       border-radius: 8px;
       overflow: hidden;
 
@@ -155,11 +155,11 @@ margin-top: 2rem !important;
     scroll-padding: 1rem;
     margin: 4rem auto;
     margin-bottom: 1rem;
-    width: calc(100% - 16rem); // leaves space for tabs on the left
+    width: calc(100% - 16rem);
     margin-left: 10rem;
-    margin-right: 6rem; // shift the cards right
+    margin-right: 6rem;
   
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    -ms-overflow-style: none;
       scrollbar-width: none;
   
     &::-webkit-scrollbar {
@@ -186,8 +186,8 @@ margin-top: 2rem !important;
     }
   
     app-concert-card {
-      width: 12rem; // 🎯 make the card smaller here
-      height: 13rem; // 🎯 optional: shrink height
+      width: 12rem;
+      height: 13rem;
       flex-shrink: 0;
       border-radius: 8px;
       overflow: hidden;
@@ -213,7 +213,7 @@ margin-top: 2rem !important;
   .results {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; // or `center` if you prefer
+    justify-content: space-between;
     gap: 0.5rem;
     margin-left: 7rem;
     margin-right: 1rem;
@@ -226,7 +226,7 @@ margin-top: 2rem !important;
 
   
     app-concert-card-full {
-      width: calc(33.33% - 0.5rem); // 3 cards per row with spacing
+      width: calc(33.33% - 0.5rem);
       transform: scale(0.9);
       transition: transform 0.3s ease-in-out;
   

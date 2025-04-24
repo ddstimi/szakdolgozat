@@ -5,7 +5,7 @@ import { IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardC
 @Component({
   selector: 'app-concert-card',
   standalone: true,
-  imports: [IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonImg, IonCard, CommonModule], // Required for structural directives like *ngIf, *ngFor
+  imports: [IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonImg, IonCard, CommonModule],
   templateUrl: './concert-card.component.html',
   styleUrls: ['./concert-card.component.scss']
 })

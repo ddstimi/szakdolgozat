@@ -81,14 +81,13 @@ justify-content: center;
   }
 
 ion-card > ion-img {
-    width: 40%; /* Adjust the image width */
+    width: 40%;
     height: 100%;
     object-fit: cover;
- /* Optional: Rounded corners for the image */
   }
   
 ion-card > div {
-    width: 60%; /* Content section takes the remaining width */
+    width: 60%;
   }
   
 ion-card-content {
@@ -118,9 +117,8 @@ ion-card-header{
 
   
     ion-card > ion-img {
-        width: 40%; /* Adjust the image width */
+        width: 40%;
         height: 100%;
-     /* Optional: Rounded corners for the image */
       }
 ion-card > div {
       width: 90%;

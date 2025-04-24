@@ -5,7 +5,7 @@ import { addIcons } from 'ionicons';
 import { Platform } from '@ionic/angular';
 import { add, home, calendarOutline, person, search, logOutOutline } from 'ionicons/icons';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonButton, IonInput, IonSearchbar } from '@ionic/angular/standalone';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabs',
@@ -18,7 +18,6 @@ export class TabsPage implements OnInit {
   public isMobile: boolean = false;
   searchQuery: string = '';
 
-  // Constructor now has both Platform and Router injected
   constructor(private platform: Platform, private router: Router) {
     addIcons({ search, home, calendarOutline, person, logOutOutline });
   }
@@ -34,7 +33,6 @@ export class TabsPage implements OnInit {
     this.isMobile = this.platform.width() <= 768;
   }
 
-  // Method that redirects to the SearchPage with the search query as a parameter
   onSearch() {
     if (this.searchQuery.trim() !== '') {
       this.router.navigate(['/tabs/search'], { queryParams: { query: this.searchQuery } });
