@@ -1,34 +1,70 @@
 <ion-content class="modal-content">
-  <div class="concert-modal-container">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ concert?.title }}</ion-title>
-        <ion-button fill="clear" slot="end" (click)="closeModal()"
-          >Close</ion-button
-        >
-      </ion-toolbar>
-    </ion-header>
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="concert-modal-container">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ concert?.title }}</ion-title>
+          <ion-button fill="clear" slot="end" (click)="closeModal()"
+            >Close</ion-button
+          >
+        </ion-toolbar>
+      </ion-header>
 
-    <ion-img [src]="concert?.image" alt="Concert Image"></ion-img>
+      <div class="ion-img-wrapper">
+        <ion-img [src]="concert?.image" alt="Concert Image"></ion-img>
+      </div>
 
-    <ion-card id="card">
-      <ion-card-header>
-        <ion-card-title>{{ concert?.title }}</ion-card-title>
-        <ion-card-subtitle>
-          <ion-icon name="calendar-outline"></ion-icon>
-          {{ concert?.date }} • {{ concert?.location }}
-        </ion-card-subtitle>
-      </ion-card-header>
+      <ion-card id="card">
+        <ion-card-header>
+          <ion-card-title>{{ concert?.title }}</ion-card-title>
+          <ion-card-subtitle>
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ concert?.date }} • {{ concert?.location }}
+          </ion-card-subtitle>
+        </ion-card-header>
 
-      <ion-card-content>
-        <ion-button id="attend">
-          <ion-icon name="checkmark-circle-outline"></ion-icon>
-          Attending</ion-button
-        >
-        <p>
-          {{ concert?.description || 'Concert details will be added soon.' }}
-        </p>
-      </ion-card-content>
-    </ion-card>
+        <ion-card-content>
+          <!-- Genres -->
+          <div class="genre-chips">
+            <ion-chip *ngFor="let genre of concert?.genres">
+              <ion-label>{{ genre }}</ion-label>
+            </ion-chip>
+          </div>
+
+          <!-- Description -->
+          <p class="concert-description">
+            {{ concert?.description || 'Concert details will be added soon.' }}
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="button-group">
+            <ion-button id="attend" expand="block">
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              Attending
+            </ion-button>
+
+            <ion-button expand="block" fill="outline">
+              <ion-icon name="ticket-outline" slot="start"></ion-icon>
+              Buy Tickets
+            </ion-button>
+
+            <ion-button expand="block" fill="clear">
+              <ion-icon name="calendar" slot="start"></ion-icon>
+              Add to Calendar
+            </ion-button>
+
+            <ion-button expand="block" fill="clear">
+              <ion-icon name="location-outline" slot="start"></ion-icon>
+              View on Map
+            </ion-button>
+
+            <ion-button expand="block" fill="clear">
+              <ion-icon name="share-social-outline" slot="start"></ion-icon>
+              Share
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>

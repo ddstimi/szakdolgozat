@@ -1,160 +1,179 @@
-
 :host {
-    display: block;
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: none !important;
-    top: 5%;
-    background: none;
-    ion-toolbar{
-      --background: none;
-    }
+  display: block;
+  padding: 16px;
+  border-radius: 16px;
+  background: none;
+  top: 2%;
+
+  ion-toolbar {
+    --background: none;
+  }
+}
+
+ion-modal {
+  filter: none !important;
+}
+
+ion-card {
+  box-shadow: none !important;
+  border: none;
+}
+
+ion-toolbar ion-title {
+  left: -5rem;
+  width: fit-content;
+  font-size: 1.2rem;
+}
+
+ion-card-header {
+  height: fit-content !important;
+  box-shadow: none !important;
+}
+
+ion-card-content {
+  background: none;
+  box-shadow: none !important;
+  .genre-chips{
+    align-self: center;
+    align-items: center;
+    justify-self: center;
+  }
+}
+
+ion-card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+ion-card-subtitle {
+  font-size: 1rem;
+  color: #c17b8c;
+  text-align: center;
+
+  ion-icon {
+    margin-bottom: -2px;
+    margin-right: 4px;
+  }
+}
+
+p {
+  text-align: center;
+}
+
+
+
+.concert-modal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
+
+  ion-button {
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
   }
 
-  ion-card{
-    box-shadow: none !important;
+  #attend {
+    --background: #9178ad;
   }
-  
-  ion-toolbar ion-title{
-    left: -5rem;
-    width: fit-content;
+}
+
+
+.ion-img-wrapper {
+  width: 50%;
+  max-height: 30% ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #000;
+
+  ion-img {
+    object-fit: cover;
+    width: 100%;
+    height: 30% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  ion-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    transform: scale(0.9);
+    height: 100% !important;
+    background-color:  rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow-y:auto;
   }
 
   .concert-modal-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-  }
-  
-  ion-card-header{
-    height: fit-content !important;
-    margin-top: 3rem;
-box-shadow: none !important;
+    max-height: 100%;
+    overflow: scroll;
+    ion-card {
+      width: 100%;
+    }
   }
 
-  ion-img {
-    width: 70%;
-    max-height: 5rem;
-    object-fit: cover;
+  .concert-modal-container::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  ion-content {
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
     border-radius: 12px;
   }
-  ion-card-content{
-    border: none;
-    box-shadow: none !important;
-    background: none;
-
-  }
-    
-  ion-card-title {
-    font-size: 1.4rem;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  ion-card-subtitle {
-    font-size: 1rem;
-    color: var(--ion-color-medium);
-    text-align: center;
-  }
-
-  p{
-    text-align: center;
-  }
-
-#attend{
-    margin-top: 1rem;
-    --background: #9178ad;
-    margin-left: 25%;
-    ion-icon{
-      margin-right: 4px;  
-    }
 }
 
-  ion-modal {
-    filter: none !important;
-  }
-  @media (min-width: 769px) {
-    ion-modal {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    .modal-content {
-        transform: scale(0.9);
-      height: 100% !important;
-      margin-top: 3rem !important;
-      background-color: #0e0e10d2 !important;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
-      border-radius: 12px;
-      padding: 1rem;
-      overflow: hidden;
-    }
-  
-    .concert-modal-container {
-        
-      max-height: 100%;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+@media (max-width: 769px) {
+  .concert-modal-container {
+    margin-top: 10%;
+    align-self: center;
+    background-color: #0e0e10ae;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+    border-radius: 12px;
+    width: fit-content;
 
-      ion-card{
-        margin-top: 15%;
-        height: fit-content !important;
-        width: 70%;
-      }
-    }
-  
-    .concert-modal-container::-webkit-scrollbar {
-      display: none;
-    }
-  
-    ion-img {
-      --height: 4rem !important;
-      width: 50% !important;
-      object-fit: cover !important;
-      border-radius: 12px;
-    }
-  
-    ion-content {
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
-      border-radius: 12px;
-    }
-  }
-  
-  @media (max-width: 769px) {
-
-    
-    .concert-modal-container {
-        margin-top: 20%;
+    ion-card-content{
+      width: 20rem;
+      .genre-chips{
         align-self: center;
-        background-color: #0e0e10ae;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
-        border-radius: 12px;
+        align-items: center;
+        justify-self: center;
+        ion-chip{
+          transform: scale(0.8);
+        }
       }
-      ion-toolbar ion-title{
-        font-size: small;
-      }
-
-      ion-card-header{
-        margin-top: 5rem;
-      }
-
-      #attend{
-        margin-left: auto;
-        margin-right: auto;
-      }
-   }
-
-   ion-card-subtitle{
-    color: #c17b8c;
-    ion-icon{
-      margin-bottom: -2px;
-      margin-right: 4px;  
     }
   }
+
+  ion-toolbar ion-title {
+    font-size: small;
+  }
+
+
+  .button-group ion-button {
+    width: 80%;
+  }
+
+}
