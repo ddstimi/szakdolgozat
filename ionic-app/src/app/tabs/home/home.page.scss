@@ -105,13 +105,17 @@ ion-content{
   }
 
   #near {
-  margin-top: -2rem !important;
+  margin-top: -1rem !important;
 }
 
   .results{
-margin-top: 2rem !important;  
+margin-top: 3rem !important;  
 }
-  
+ 
+    
+    hr.section-divider {
+      margin-top: -3rem;
+    }
 
 }
 @media (min-width: 769px) { 
@@ -237,9 +241,7 @@ margin-top: 2rem !important;
 
   }
       
-  #near {
-    margin-bottom: 2rem;
-  }
+
 }
 
 #sign-in-btn{
