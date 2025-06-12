@@ -139,6 +139,11 @@ ion-card.form-card {
       }
     }
   }
+ion-checkbox::part(container) {
+  --checkbox-background: #f9f4f568 !important;
+
+}
+
 }
 
 

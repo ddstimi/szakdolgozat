@@ -5,7 +5,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonInfiniteScroll, IonInfi
 import { ConcertCardComponent } from 'src/app/components/concert-card/concert-card.component';
 import { ConcertCardFullComponent } from "../../components/concert-card-full/concert-card-full.component";
 import { ModalController } from '@ionic/angular';
-import { ConcertDetailsPage } from '../concert-details/concert-details.page'; // adjust the path if needed
+import { ConcertDetailsPage } from '../concert-details/concert-details.page';
 
 @Component({
   selector: 'home',
@@ -28,7 +28,7 @@ export class HomePage {
     {
       title: 'Arctic Monkeys Live',
       date: '2025-07-18',
-      location: 'Vienna, Austria',
+      location: 'Budapest Park',
       image: 'assets/images/asd.jpg',
     },
     {

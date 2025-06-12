@@ -68,6 +68,12 @@
             <div slot="label">Confirm Password</div>
           </ion-input>
         </ion-item>
+        <ion-checkbox
+          >I agree to the
+          <a href="#" (click)="$event.stopPropagation()"
+            >Terms of GDPR</a
+          ></ion-checkbox
+        >
         <ion-button>Sign Up</ion-button>
       </form>
       <h5>Already have an account?</h5>
