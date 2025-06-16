@@ -3,6 +3,7 @@ import { IonApp, IonRouterOutlet, IonHeader } from '@ionic/angular/standalone';
 import { register } from 'swiper/element/bundle';
 
 
+
 register();
 @Component({
   selector: 'app-root',

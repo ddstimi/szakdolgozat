@@ -31,9 +31,22 @@
 
     <ion-card class="form-card sign-up-card" *ngIf="isSignUp">
       <h1>Sign up</h1>
-      <form>
+      <form (ngSubmit)="onRegister()">
         <ion-item lines="solid">
           <ion-input
+            [(ngModel)]="registerData.name"
+            name="name"
+            label="Name"
+            labelPlacement="floating"
+            placeholder="Name"
+          >
+            <div slot="label">Username</div>
+          </ion-input>
+        </ion-item>
+        <ion-item lines="solid">
+          <ion-input
+            [(ngModel)]="registerData.username"
+            name="username"
             label="Username"
             labelPlacement="floating"
             placeholder="Username"
@@ -43,38 +56,47 @@
         </ion-item>
         <ion-item lines="solid">
           <ion-input
+            [(ngModel)]="registerData.email"
+            name="email"
             label="Email"
             labelPlacement="floating"
             placeholder="Email address"
+            type="email"
           >
             <div slot="label">Email</div>
           </ion-input>
         </ion-item>
         <ion-item lines="solid">
           <ion-input
+            [(ngModel)]="registerData.password"
+            name="password"
             label="Password"
             labelPlacement="floating"
             placeholder="Password"
+            type="password"
           >
             <div slot="label">Password</div>
           </ion-input>
         </ion-item>
         <ion-item lines="solid">
           <ion-input
+            [(ngModel)]="registerData.confirmPassword"
+            name="confirmPassword"
             label="Confirm Password"
             labelPlacement="floating"
             placeholder="Confirm Password"
+            type="password"
           >
             <div slot="label">Confirm Password</div>
           </ion-input>
         </ion-item>
-        <ion-checkbox
+        <ion-checkbox [(ngModel)]="registerData.gdpr" name="gdpr"
           >I agree to the
           <a href="#" (click)="$event.stopPropagation()"
             >Terms of GDPR</a
           ></ion-checkbox
         >
-        <ion-button>Sign Up</ion-button>
+        <ion-button type="submit">Sign Up</ion-button>
       </form>
       <h5>Already have an account?</h5>
       <ion-button id="signin" (click)="isSignUp = false">Sign In</ion-button>
