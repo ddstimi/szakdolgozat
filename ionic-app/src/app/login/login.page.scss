@@ -113,7 +113,18 @@ ion-card.form-card {
       margin-bottom: 1rem;
       width: 90%;
       font-size: 22px;
+      height: fit-content;
     }
+
+    #pwd{
+      font-variant: normal !important;
+    }
+
+    
+    .ion-valid.sc-ion-input-md-h{
+      --highlight-color:#c17b8c;
+    }
+
 
     ion-input {
       --color: #f9f4f5;
