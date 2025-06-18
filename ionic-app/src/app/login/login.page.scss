@@ -112,12 +112,14 @@ ion-card.form-card {
       border-radius: 8px;
       margin-bottom: 1rem;
       width: 90%;
-      font-size: 22px;
+      font-size: 18px;
       height: fit-content;
     }
 
-    #pwd{
-      font-variant: normal !important;
+    .has-value.input-label-placement-floating.sc-ion-input-md-h input.sc-ion-input-md > #pwd{
+      font-variant-caps: normal !important;
+      --font-variant-caps: normal !important;
+
     }
 
     

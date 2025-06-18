@@ -217,7 +217,6 @@ ion-infinite-scroll {
     box-shadow: 5px rgba(0, 0, 0, 0.718);
   }
 
-/* Define styles specific to the search page */
 body.modal-open .page-container {
   filter: blur(8px);
   transition: filter 0.3s ease-in-out;
@@ -225,17 +224,16 @@ body.modal-open .page-container {
 body.modal-open {
   position: relative;
 }
-/* This applies blur to the background content */
 body.modal-open #container {
-  filter: blur(8px);
+  filter: blur(12px);
   transition: filter 0.3s ease-in-out;
   z-index: 2;
 }
 
-/* Make sure the modal stays clear */
+
 ion-modal {
   filter: none !important;
-  z-index: 300; /* Make sure modal appears above the background */
+  z-index: 300;
 }
 
 body.modal-open::before {
@@ -245,7 +243,25 @@ body.modal-open::before {
   left: 0;
   right: 0;
   bottom: 0;
-  filter: blur(9px);
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.modal-open::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: all 0.3s ease-in-out;
+  filter: blur(30px);
+  opacity: 1;
+}
+
+
+body ion-app::after {
+  opacity: 0;
 }
 
 ion-modal::part(backdrop) {

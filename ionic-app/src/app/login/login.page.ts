@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonButton, IonInput, IonIcon, IonTextarea, IonCard, IonCheckbox } from '@ionic/angular/standalone';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { ModalController,IonicModule } from '@ionic/angular';
+import {GdprModalComponent} from './gdpr-modal/gdpr-modal/gdpr-modal.component'
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000'
@@ -14,11 +16,11 @@ export const environment = {
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [HttpClientModule ,IonCheckbox, IonCard, IonTextarea, IonIcon, IonInput, IonButton, IonLabel, IonItem, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule,HttpClientModule , CommonModule, FormsModule]
 })
 export class LoginPage implements OnInit {
 
-constructor(private http: HttpClient) {}
+constructor(private http: HttpClient,private modalController: ModalController) {}
 
 isSignUp: boolean = false;
 
@@ -54,6 +56,19 @@ async onRegister() {
     }
   }
 
+  async openGDPR() {
+      const modal = await this.modalController.create({
+        component: GdprModalComponent,
+      });
+    
+      document.body.classList.add('modal-open');
+    
+      modal.onDidDismiss().then(() => {
+        document.body.classList.remove('modal-open');
+      });
+    
+      await modal.present();
+    }
 
   ngOnInit() {
   }

@@ -126,11 +126,9 @@ export class HomePage {
       componentProps: { concert }
     });
   
-    // Add a class to blur the background content
     document.body.classList.add('modal-open');
   
     modal.onDidDismiss().then(() => {
-      // Remove the blur class when the modal is closed
       document.body.classList.remove('modal-open');
     });
   
