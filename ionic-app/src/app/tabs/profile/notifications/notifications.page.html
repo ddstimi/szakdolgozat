@@ -1,0 +1,82 @@
+<ion-content [fullscreen]="true">
+  <div id="container">
+    <ion-header translucent>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Notifications</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <div class="notif-page-container">
+      <ion-accordion-group expand="first">
+        <ion-accordion value="new">
+          <ion-item slot="header" color="dark">
+            <ion-label>New</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-list *ngIf="unreadNotifications.length > 0; else noNew">
+              <ion-item-sliding
+                #slidingItem
+                *ngFor="let notif of unreadNotifications"
+              >
+                <div class="glow-msg">
+                  <ion-item lines="none">
+                    <div class="notif-message new">
+                      <p class="notif-title">{{ notif.title }}</p>
+                      <p class="notif-msg">{{ notif.message }}</p>
+                      <p class="notif-time">{{ notif.timeAgo }}</p>
+                    </div>
+                  </ion-item>
+                </div>
+                <ion-item-options side="end">
+                  <ion-item-option
+                    color="success"
+                    (click)="markAsRead(notif, slidingItem)"
+                  >
+                    Mark as read
+                  </ion-item-option>
+                </ion-item-options>
+              </ion-item-sliding>
+            </ion-list>
+            <ng-template #noNew><p>No new notifications</p></ng-template>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="old">
+          <ion-item slot="header" color="dark">
+            <ion-label>Earlier</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-list *ngIf="readNotifications.length > 0; else noOld">
+              <ion-item-sliding
+                #slidingItem
+                *ngFor="let notif of readNotifications "
+                [@fadeOut]="notif.read ? 'fade' : 'visible'"
+                [class.read]="notif.read"
+              >
+                <ion-item lines="none">
+                  <div class="notif-message old">
+                    <p class="notif-title">{{ notif.title }}</p>
+                    <p class="notif-msg">{{ notif.message }}</p>
+                    <p class="notif-time">{{ notif.timeAgo }}</p>
+                  </div>
+                </ion-item>
+                <ion-item-options side="end">
+                  <ion-item-option
+                    color="success"
+                    (click)="markAsUnread(notif, slidingItem)"
+                  >
+                    Mark as unread
+                  </ion-item-option>
+                </ion-item-options>
+              </ion-item-sliding>
+            </ion-list>
+            <ng-template #noOld><p>No older notifications</p></ng-template>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </div>
+</ion-content>

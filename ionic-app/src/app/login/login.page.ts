@@ -6,6 +6,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ModalController,IonicModule } from '@ionic/angular';
 import {GdprModalComponent} from './gdpr-modal/gdpr-modal/gdpr-modal.component'
+import {   RouterLink } from '@angular/router';
+
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000'
@@ -16,13 +18,15 @@ export const environment = {
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule,HttpClientModule , CommonModule, FormsModule]
+  imports: [IonicModule,HttpClientModule , CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
 
 constructor(private http: HttpClient,private modalController: ModalController) {}
 
 isSignUp: boolean = false;
+
+
 
 loginData = {
     username: '',

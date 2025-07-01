@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { IonModal, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLabel, IonInput, IonList, IonChip, IonIcon } from '@ionic/angular/standalone';
+import { IonModal, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLabel, IonInput, IonList, IonChip, IonIcon, IonCheckbox } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './edit-preferences-modal-component.component.html',
   styleUrls: ['./edit-preferences-modal-component.component.scss'],
   standalone: true,
-  imports: [IonIcon, IonChip,IonContent, CommonModule, FormsModule, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLabel, IonInput, IonList]})
+  imports: [IonCheckbox, IonIcon, IonChip,IonContent, CommonModule, FormsModule, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLabel, IonInput, IonList]})
   export class EditPreferencesModalComponent {
     [key: string]: any;
     @Input() genres: string[] = [];

@@ -16,7 +16,6 @@
 
 
 
-/* Dark Mode */
 @import url(https://db.onlinewebfonts.com/c/0c1b1565e8b9ee3c19050302aedf2120?family=Garet+W05+Extra+Bold); 
 @font-face {
     font-family: "Garet W05 Extra Bold";
@@ -48,16 +47,32 @@ ion-app {
   }
 }
 
+:host{
+  --highlight-color-valid:#80FFCC !important;
+  --border-color: #80FFCC !important;
+}
+
 ion-content, ion-header, ion-footer, ion-card {
   --background: transparent !important;
   background: transparent !important;
 }
 
 .alert-wrapper.sc-ion-alert-md {
-  background: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-radius: 6px;
+
   .alert-radio-label.sc-ion-alert-md{
   color: #f9f4f5 !important;
   }
+}
+
+ion-backdrop.sc-ion-alert-md.md{
+  background: rgba(0, 0, 0, 9) !important;
+  filter: blur(10px) !important;
+}
+
+ion-alert{
+  backdrop-filter: blur(6px) !important;
 
 }
 
@@ -84,8 +99,8 @@ ion-header {
     padding: 2px;
     --ion-border-color: transparent;
     --box-shadow: none;
-    box-shadow: none !important; /* fallback override */
-    border: none !important;     /* just in case */
+    box-shadow: none !important;
+    border: none !important;
   }
   
 
@@ -101,7 +116,7 @@ ion-header {
 }
 ion-infinite-scroll {
     width: 100%;
-    padding-top: 10rem; /* Ensures content starts below the concert image */
+    padding-top: 10rem;
   }
   
   #fy-content {
@@ -113,7 +128,22 @@ ion-infinite-scroll {
     z-index: 2;
   }
 
- 
+ @mixin fadeIn {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 2s;
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 
   .genre{
 
@@ -207,7 +237,7 @@ ion-infinite-scroll {
   
 .hollow {
     font-family: 'Garet W05 Extra Bold', sans-serif;
-    font-size: 2rem; // or any size you prefer
+    font-size: 2rem;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: 1px;
   }
@@ -215,6 +245,31 @@ ion-infinite-scroll {
   ion-button {
     --border-radius: 8px; 
     box-shadow: 5px rgba(0, 0, 0, 0.718);
+  }
+
+  ion-button.glow-blue{
+    --background: #80ffcc2c !important;
+    border-radius: 8px;
+    color: #80ffcc;
+    border: solid 2px #80ffcc;
+    box-shadow: 0 0 10px #80ffccaa;
+        border-width: 2px !important;
+
+        :hover{
+    --background: #80ffcc75 !important;
+    }
+  }
+  ion-button.glow{
+    border-width: 2px !important;
+    --background: #c17b8c1a !important;
+    color:#c17b8c;
+    border-radius: 8px;
+    border: solid 2px #c17b8c;
+    box-shadow: 0 0 10px #c17b8c81;
+
+    :hover{
+    --background: #c17b8c64 !important;
+    }
   }
 
 body.modal-open .page-container {

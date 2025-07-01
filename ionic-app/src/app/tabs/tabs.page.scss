@@ -5,8 +5,11 @@ ion-toolbar{
     width: 100%;
 }
 
-@media (max-width: 768px) { 
+ion-badge{
+    font-size: 12px;
+}
 
+@media (max-width: 768px) { 
 
     ion-searchbar{
         display: block;
@@ -15,8 +18,6 @@ ion-toolbar{
         margin-right: auto;
     }
     
-
-
     }
 
 

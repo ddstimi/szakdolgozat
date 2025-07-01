@@ -102,7 +102,6 @@ export class HomePage {
       genre: 'Rock',
       artist: 'Metallica',
     },
-    // Add more dummy concert objects
   ];
   
 

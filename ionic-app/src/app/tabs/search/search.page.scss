@@ -6,7 +6,7 @@ ion-content {
     padding: 0.5rem 1rem;
     display: flex;
     justify-content: center;
-    background-color: rgba(12, 12, 12, 0.801); // translucent black background
+    background-color: rgba(12, 12, 12, 0.801);
 
     ion-searchbar {
       width: 40%;
@@ -118,9 +118,9 @@ ion-content {
     background: rgba(0, 0, 0, 0.3);
   }
   ion-card-content {
-    background-color: rgba(0, 0, 0, 0.5); /* Add a translucent black background */
-    color: #fff; /* Set text color to white for contrast */
-    padding: 1rem; /* Optional: Adjust padding */
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #f4f4f4;
+    padding: 1rem;
   }
   
   

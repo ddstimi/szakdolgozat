@@ -118,6 +118,20 @@ margin-top: 3rem !important;
     }
 
 }
+
+  .glow{
+    background-color: #ab6d7d81;
+    color: #f8cfd9;
+    border: solid 3px #d5889b !important;
+    box-shadow: 0 0 15px #c17b8caa;
+
+    :hover{
+          background-color: #ab6d7de1;
+
+    }
+  }
+  
+
 @media (min-width: 769px) { 
   #container {
     top: 4rem;
@@ -145,7 +159,7 @@ margin-top: 3rem !important;
     right: 7rem;
     left: auto;
     top: auto;
-    width: 8rem;
+    width: 9rem;
     height: 3.5rem;
   }  
 
@@ -176,7 +190,7 @@ margin-top: 3rem !important;
 
   }
   
-  
+
   .concert-scroll-container {
     margin-top: 3rem;
   

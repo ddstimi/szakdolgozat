@@ -6,6 +6,7 @@ import { EditPreferencesModalComponent } from "../../components/edit-preferences
 import { EditUserModalComponent } from "../../components/edit-user-modal-component/edit-user-modal-component.component";
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -21,7 +22,7 @@ export class ProfilePage implements OnInit {
   filteredArtists: string[] = [];
   
 
-  constructor(private modalCtrl: ModalController) { }
+  constructor(private modalCtrl: ModalController,private router: Router) { }
 
   ngOnInit() {
   }
@@ -34,9 +35,10 @@ export class ProfilePage implements OnInit {
   showPrefModal = false;
 
   user = {
+    name: 'user.name',
     email: 'user@example.com',
     password: '********',
-    username: 'user.name'
+    username: 'user.username'
   };
 
   genres = ['Rock', 'Jazz', 'Indie'];
@@ -55,6 +57,49 @@ export class ProfilePage implements OnInit {
   newLocation = '';
   newArtist = '';
 
+
+predefinedPics: string[] = [
+  'assets/images/prof_pic/hawer.jpg',
+  'assets/images/prof_pic/krubi.jpg',
+  'assets/images/prof_pic/balazs_korda.jpg',
+  'assets/images/prof_pic/colee.jpg',
+  'assets/images/prof_pic/desh.jpg',
+  'assets/images/prof_pic/hofi.jpg',
+  'assets/images/prof_pic/dzsudlo.jpg',
+  'assets/images/prof_pic/bikini.jpg',
+];
+
+selectedPicture: string = this.predefinedPics[0];
+
+selectPreset(img: string) {
+  this.selectedPicture = img;
+}
+
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  this.readImage(file);
+}
+
+onDragOver(event: DragEvent) {
+  event.preventDefault();
+}
+
+onDrop(event: DragEvent) {
+  event.preventDefault();
+  const file = event.dataTransfer?.files[0];
+  if (file) {
+    this.readImage(file);
+  }
+}
+
+readImage(file: File) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.selectedPicture = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
+
   async openEditUser() {
     const modal = await this.modalCtrl.create({
       component: EditUserModalComponent,
@@ -63,7 +108,6 @@ export class ProfilePage implements OnInit {
       }
     });
   
-    // Add a class to blur the background content
     document.body.classList.add('modal-open');
   
     modal.onDidDismiss().then(({ data }) => {
@@ -71,7 +115,6 @@ export class ProfilePage implements OnInit {
         this.saveUser(data);
       }
       
-      // Remove the blur class when the modal is closed
       document.body.classList.remove('modal-open');
     });
   
@@ -93,11 +136,9 @@ export class ProfilePage implements OnInit {
       }
     });
   
-    // Add a class to blur the background content
     document.body.classList.add('modal-open');
   
     modal.onDidDismiss().then(() => {
-      // Remove the blur class when the modal is closed
       document.body.classList.remove('modal-open');
     });
   
@@ -114,7 +155,6 @@ export class ProfilePage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  // Handle the update event from the modal
   updatePreferences(event: any) {
     console.log('Updated preferences:', event);
     this.genres = event.genres;
@@ -209,14 +249,37 @@ export class ProfilePage implements OnInit {
     this.filteredArtists = [];
   }
   
-  saveUser(updatedUser: { email: string; password: string , username: string}) {
+  saveUser(updatedUser: {name: string, email: string; password: string , username: string}) {
     this.user = updatedUser;
     this.showUserModal = false;
   }
   
 
-  
+  notifications = [
+  {
+    title: 'New Concert Nearby!',
+    message: 'A new concert matching your preferences is available in Budapest.',
+    timeAgo: '2h ago',
+    read: false,
+  },
+  {
+    title: 'Ticket Price Drop!',
+    message: 'Prices dropped for Arctic Monkeys tickets!',
+    timeAgo: '1 day ago',
+    read: false,
+  },
+  {
+    title: 'New Artist in Your Favorites',
+    message: 'Billie Eilish has a new event in your region.',
+    timeAgo: '3 days ago',
+    read: false,
+  },
+];
 
-// TODO: fixing the bug when reloading and navigate from home page the profile page is bugging
+unreadCount = this.notifications.filter(n => !n.read).length;
+
+openNotificationsPage() {
+  this.router.navigate(['/tabs/profile/notifications']);
+}
   
 }

@@ -6,6 +6,7 @@ import { SearchPage } from './search/search.page';
 import { ProfilePage } from './profile/profile.page';
 import { EventsPage } from './events/events.page';
 import { ConcertDetailsPage } from './concert-details/concert-details.page';
+import { NotificationsPage } from './profile/notifications/notifications.page';
 
 const routes: Routes = [
   {
@@ -17,6 +18,8 @@ const routes: Routes = [
       { path: 'events', component: EventsPage },
       { path: 'profile', component: ProfilePage },
       { path: 'concert-details', component: ConcertDetailsPage },
+      { path: 'profile/notifications', component: NotificationsPage },
+
       { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
     ]
   },

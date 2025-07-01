@@ -16,7 +16,12 @@
           placeholder="e.g., Rock"
         ></ion-input>
       </ion-item>
-      <ion-button expand="block" size="small" (click)="add('genre')"
+      <ion-button
+        expand="block"
+        size="small"
+        (click)="add('genre')"
+        fill="outline"
+        class="glow"
         >Add Genre</ion-button
       >
 
@@ -27,7 +32,6 @@
             {{ genre }}
             <ion-icon
               name="close-circle"
-              color="danger"
               (click)="remove('genre', i)"
             ></ion-icon>
           </ion-chip>
@@ -43,7 +47,12 @@
           placeholder="e.g., Budapest"
         ></ion-input>
       </ion-item>
-      <ion-button expand="block" size="small" (click)="add('location')"
+      <ion-button
+        expand="block"
+        size="small"
+        (click)="add('location')"
+        fill="outline"
+        class="glow"
         >Add Location</ion-button
       >
 
@@ -54,7 +63,6 @@
             {{ location }}
             <ion-icon
               name="close-circle"
-              color="danger"
               (click)="remove('location', i)"
             ></ion-icon>
           </ion-chip>
@@ -70,7 +78,12 @@
           placeholder="e.g., Imagine Dragons"
         ></ion-input>
       </ion-item>
-      <ion-button expand="block" size="small" (click)="add('artist')"
+      <ion-button
+        expand="block"
+        size="small"
+        (click)="add('artist')"
+        fill="outline"
+        class="glow"
         >Add Artist</ion-button
       >
 
@@ -81,15 +94,31 @@
             {{ artist }}
             <ion-icon
               name="close-circle"
-              color="danger"
               (click)="remove('artist', i)"
             ></ion-icon>
           </ion-chip>
         </div>
       </ion-item>
     </ion-list>
-
-    <ion-button expand="block" color="primary" (click)="savePrefs()" id="save"
+    <hr class="section-divider" />
+    <ion-item>
+      <ion-checkbox justify="start"
+        >Show cancelled concerts</ion-checkbox
+      ></ion-item
+    >
+    <hr class="section-divider" />
+    <ion-item>
+      <ion-checkbox justify="start"
+        >Show sold out concerts</ion-checkbox
+      ></ion-item
+    >
+    <ion-button
+      expand="block"
+      color="primary"
+      (click)="savePrefs()"
+      id="save"
+      fill="outline"
+      class="glow"
       >Save</ion-button
     >
   </div>

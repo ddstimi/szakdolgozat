@@ -1,5 +1,4 @@
 <ion-content [fullscreen]="true" class="search-content">
-  <!-- Search Bar -->
   <div class="search-wrapper">
     <div *ngIf="searchQuery">
       <ion-list>
@@ -12,14 +11,12 @@
       </ion-list>
     </div>
     <div *ngIf="!searchQuery">
-      <!-- Recent Searches -->
       <div class="recent-searches">
         <ion-chip *ngFor="let item of recentSearches">
           <ion-label>{{ item }}</ion-label>
         </ion-chip>
       </div>
 
-      <!-- Filters -->
       <div class="filters">
         <ion-select placeholder="Select city" [(ngModel)]="selectedCity">
           <ion-select-option *ngFor="let city of cities" [value]="city"
@@ -34,7 +31,6 @@
         </ion-select>
       </div>
 
-      <!-- Search Results -->
       <div class="results">
         <app-concert-card-full
           class="search-page"

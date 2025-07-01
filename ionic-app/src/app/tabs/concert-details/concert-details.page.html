@@ -24,44 +24,42 @@
         </ion-card-header>
 
         <ion-card-content>
-          <!-- Genres -->
           <div class="genre-chips">
             <ion-chip *ngFor="let genre of concert?.genres">
               <ion-label>{{ genre }}</ion-label>
             </ion-chip>
           </div>
 
-          <!-- Description -->
           <p class="concert-description">
             {{ concert?.description || 'Concert details will be added soon.' }}
           </p>
 
-          <!-- Action Buttons -->
           <div class="button-group">
-            <ion-button id="attend" expand="block">
+            <ion-button id="attend" expand="block" class="glow-blue">
               <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
               Attending
             </ion-button>
 
-            <ion-button expand="block" fill="outline">
+            <ion-button expand="block" fill="outline" id="ticket">
               <ion-icon name="ticket-outline" slot="start"></ion-icon>
               Buy Tickets
             </ion-button>
+            <div id="options">
+              <ion-button fill="clear">
+                <ion-icon name="calendar" slot="start"></ion-icon>
+                Add to Calendar
+              </ion-button>
 
-            <ion-button expand="block" fill="clear">
-              <ion-icon name="calendar" slot="start"></ion-icon>
-              Add to Calendar
-            </ion-button>
+              <ion-button fill="clear">
+                <ion-icon name="location-outline" slot="start"></ion-icon>
+                View on Map
+              </ion-button>
 
-            <ion-button expand="block" fill="clear">
-              <ion-icon name="location-outline" slot="start"></ion-icon>
-              View on Map
-            </ion-button>
-
-            <ion-button expand="block" fill="clear">
-              <ion-icon name="share-social-outline" slot="start"></ion-icon>
-              Share
-            </ion-button>
+              <ion-button fill="clear">
+                <ion-icon name="share-social-outline" slot="start"></ion-icon>
+                Share
+              </ion-button>
+            </div>
           </div>
         </ion-card-content>
       </ion-card>

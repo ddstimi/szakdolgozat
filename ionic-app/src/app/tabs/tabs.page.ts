@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { Platform } from '@ionic/angular';
 import { add, home, calendarOutline, person, search, logOutOutline } from 'ionicons/icons';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonButton, IonInput, IonSearchbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonButton, IonInput, IonSearchbar, IonBadge } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
   standalone: true,
-  imports: [IonSearchbar, IonInput, IonButton, IonRouterOutlet, IonLabel, IonIcon, IonTabButton, IonTabBar, IonTabs, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonBadge, IonSearchbar, IonInput, IonButton, IonRouterOutlet, IonLabel, IonIcon, IonTabButton, IonTabBar, IonTabs, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
 export class TabsPage implements OnInit {
   public isMobile: boolean = false;

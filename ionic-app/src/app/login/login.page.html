@@ -3,7 +3,7 @@
     <div class="content-wrapper" [class.signup-active]="isSignUp">
       <div class="image-container"></div>
 
-      <ion-card class="form-card sign-in-card" *ngIf="!isSignUp">
+      <ion-card class="form-card sign-in-card">
         <h1>Sign in</h1>
         <form>
           <ion-item lines="solid">
@@ -24,13 +24,17 @@
               <div slot="label">Password</div>
             </ion-input>
           </ion-item>
-          <ion-button>Sign in</ion-button>
+          <ion-button fill="outline" class="glow-blue" routerLink="/tabs/home"
+            >Sign in</ion-button
+          >
         </form>
         <h5>You don't have an account?</h5>
-        <ion-button id="signup" (click)="isSignUp = true">Sign Up</ion-button>
+        <ion-button id="signup" (click)="isSignUp = true" fill="outline"
+          >Sign Up</ion-button
+        >
       </ion-card>
 
-      <ion-card class="form-card sign-up-card" *ngIf="isSignUp">
+      <ion-card class="form-card sign-up-card">
         <h1>Sign up</h1>
         <form (ngSubmit)="onRegister()">
           <ion-item lines="solid">
@@ -97,10 +101,14 @@
             >I agree to the
             <a href="#" (click)="openGDPR()">Terms of GDPR</a></ion-checkbox
           >
-          <ion-button type="submit">Sign Up</ion-button>
+          <ion-button type="submit" fill="outline" class="glow-blue"
+            >Sign Up</ion-button
+          >
         </form>
         <h5>Already have an account?</h5>
-        <ion-button id="signin" (click)="isSignUp = false">Sign In</ion-button>
+        <ion-button id="signin" (click)="isSignUp = false" fill="outline"
+          >Sign In</ion-button
+        >
       </ion-card>
     </div>
   </div>
