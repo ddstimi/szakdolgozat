@@ -30,7 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack); // Log the error stack for debugging
+    console.error(err.stack);
     res.status(500).send('Something broke!');
 });
 

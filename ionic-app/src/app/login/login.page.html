@@ -8,11 +8,12 @@
         <form (ngSubmit)="onLogin()">
           <ion-item lines="solid">
             <ion-input
-              [(ngModel)]="registerData.username"
+              [(ngModel)]="loginData.username"
               name="username"
               label="Username"
               labelPlacement="floating"
               placeholder="Username"
+              required
             >
               <div slot="label">Username</div>
             </ion-input>
@@ -38,9 +39,20 @@
             ><span *ngIf="!isLoading">Sign in</span>
             <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
           </ion-button>
+          <h5>Or</h5>
+
+          <div
+            class="g_id_signin"
+            data-type="standard"
+            data-shape="circle"
+            data-theme="filled_black"
+            data-text="signup_with"
+            data-size="medium"
+            data-logo_alignment="left"
+          ></div>
         </form>
         <h5>You don't have an account?</h5>
-        <ion-button id="signup" (click)="isSignUp = true" fill="outline"
+        <ion-button id="signup" (click)="switchToSignUp()" fill="outline"
           >Sign Up</ion-button
         >
       </ion-card>
@@ -115,9 +127,20 @@
           <ion-button type="submit" fill="outline" class="glow-blue"
             >Sign Up</ion-button
           >
+          <h5>Or</h5>
+
+          <div
+            class="g_id_signup"
+            data-type="standard"
+            data-shape="circle"
+            data-theme="filled_black"
+            data-text="signup_with"
+            data-size="medium"
+            data-logo_alignment="left"
+          ></div>
         </form>
         <h5>Already have an account?</h5>
-        <ion-button id="signin" (click)="isSignUp = false" fill="outline"
+        <ion-button id="signin" (click)="switchToSignIn()" fill="outline"
           >Sign In</ion-button
         >
       </ion-card>

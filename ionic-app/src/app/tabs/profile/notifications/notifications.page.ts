@@ -39,6 +39,7 @@ export class NotificationsPage implements OnInit {
 
   ngOnInit() {
     this.splitNotifications();
+    
   }
 
   splitNotifications() {
@@ -49,11 +50,12 @@ export class NotificationsPage implements OnInit {
   markAsRead(notif: any, slidingItem: IonItemSliding) {
   notif.read = true;
   slidingItem.close();
-      this.splitNotifications();
+  this.splitNotifications();
 }
 
   markAsUnread(notif: any, slidingItem: IonItemSliding) {
     notif.read = false;
+    slidingItem.close();
     this.splitNotifications();
   }
 }

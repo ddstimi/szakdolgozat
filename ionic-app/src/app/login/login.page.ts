@@ -1,26 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonButton, IonInput, IonIcon, IonTextarea, IonCard, IonCheckbox, IonSpinner } from '@ionic/angular/standalone';
+import {IonSpinner } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ModalController,IonicModule } from '@ionic/angular';
 import {GdprModalComponent} from './gdpr-modal/gdpr-modal/gdpr-modal.component'
-import {   RouterLink } from '@angular/router';
 
 import { AuthService } from '../services/authService';
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000'
-};
+import {environment} from '../../environments/environment'
 import { Router } from '@angular/router';
+
+declare const google: any;
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule,IonSpinner , CommonModule, FormsModule, RouterLink]
+  imports: [IonicModule,IonSpinner , CommonModule, FormsModule]
 })
 export class LoginPage implements OnInit {
 
@@ -96,6 +94,61 @@ async onRegister() {
     }
 
   ngOnInit() {
+    
   }
 
+ngAfterViewInit() {
+   this.renderButton();
+  }
+
+  switchToSignUp() {
+  this.isSignUp = true;
+  setTimeout(() => this.renderButton(), 0);
+}
+
+switchToSignIn() {
+  this.isSignUp = false;
+  setTimeout(() => this.renderButton(), 0);
+}
+
+async  renderButton(){
+ google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleCredentialResponse.bind(this),
+    });
+
+    google.accounts.id.renderButton(
+      document.querySelector(".g_id_signin"),
+      { theme: "filled_black", size: "medium", shape: "pill", }
+    );
+    google.accounts.id.renderButton(
+      document.querySelector(".g_id_signup"),
+      { theme: "filled_black", size: "medium", shape: "pill", }
+    );
+
+    google.accounts.id.prompt();
+  }
+
+ async handleCredentialResponse(response: any) {
+    console.log("Google JWT ID token: ", response.credential);
+    this.isLoading = true;
+    console.log('Google Client ID:', environment.googleClientId);
+
+
+    this.http.post(`${environment.apiUrl}/api/users/google-auth`, { credential: response.credential })
+      .subscribe({
+        next: (res: any) => {
+          console.log("Google sign-in response", res);
+          this.authService.storeToken(res.token);
+          this.router.navigate(['/tabs/home']);
+        },
+        error: (err) => {
+          console.error("Google sign-in failed", err);
+          alert(err.error?.message || "Google sign-in failed");
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
+  }
 }

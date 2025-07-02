@@ -34,6 +34,8 @@
   border-radius: 12px;
   align-self: center;
   justify-self: center;
+  position:relative;
+  margin: auto;
 
   .main-picture-container {
     display: flex;
@@ -292,6 +294,21 @@ ion-list {
   }
 }
 
+ion-button#logout-btn{
+  --align-self: center;
+  --justify-self: center;
+  margin: auto;
+  position: relative;
+}
+
+#logout{
+  padding: 2rem;
+  background: radial-gradient(rgba(0, 0, 0, 0.436),rgba(0, 0, 0, 0.075));
+  max-width:30%;
+  align-self: center;
+  justify-self: center;
+  border-radius: 8px;
+}
 
 @media (max-width: 769px) {
 
@@ -363,6 +380,8 @@ ion-list {
   }
 
   #picture-card{
+  margin: 2rem auto;
+
   .options-row {
     gap: 0.3rem;
     flex-wrap:wrap;

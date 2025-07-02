@@ -13,6 +13,8 @@ ion-content {
   }
 }
 
+
+
 .content-wrapper {
   display: flex;
   flex-direction: row;
@@ -79,7 +81,6 @@ ion-card.form-card {
 
   h1 {
     font-size: 38px;
-    margin-bottom: 1rem;
   }
 
   h5 {
@@ -121,9 +122,9 @@ ion-card.form-card {
       --border-color: #f9f4f5;
       backdrop-filter: blur(4px);
       border-radius: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       width: 90%;
-      font-size: 18px;
+      font-size: 14px;
       height: fit-content;
     }
 

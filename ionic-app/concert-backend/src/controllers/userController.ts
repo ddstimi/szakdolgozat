@@ -54,7 +54,27 @@ const UserController = {
     return next(error);
 }
 
-    }) as RequestHandler
+    }) as RequestHandler,
+    googleAuth: (async (req: Request, res: Response, next: NextFunction) => {
+    const { credential } = req.body;
+    if (!credential) {
+        return res.status(400).json({ message: "Missing Google credential." });
+    }
+
+    try {
+        const { user, token } = await UserService.handleGoogleAuth(credential);
+        return res.status(200).json({
+            message: "Google sign-in successful!",
+            user,
+            token
+        });
+    } catch (error: any) {
+        console.error(error);
+        return next(error);
+    }
+}) as RequestHandler
+
 };
+
 
 export default UserController;

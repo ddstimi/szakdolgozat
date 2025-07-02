@@ -34,6 +34,11 @@ const UserModel = {
     );
         return (result as ResultSetHeader).insertId;
     },
+    findByEmail: async (email: string): Promise<IUser | null> =>{
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const users = rows as IUser[];
+    return users[0] || null;
+},
 
 
     updateLastLogin: async (userId: number): Promise<void> => {

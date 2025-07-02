@@ -6,6 +6,9 @@ export const environment = {
 };import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 
+declare const google: any;
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,11 +36,12 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    google.accounts.id.disableAutoSelect();
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('token') ;
   }
 
   getCurrentUser(): any {
@@ -48,4 +52,9 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+  storeToken(token: string) {
+  localStorage.setItem('token', token);
+}
+
 }
