@@ -123,11 +123,8 @@ export class HomePage {
     await modal.present();
   }
   loggedIn = false;
- ngOnInit() {
-    console.log('AuthService.isLoggedIn:', this.authService.isLoggedIn());
-    this.loggedIn = this.authService.isLoggedIn();
-    console.log('loggedIn after assignment:', this.loggedIn);
-    console.log(!this.loggedIn);
+  ngOnInit() { 
+      this.loggedIn = this.authService.isLoggedIn();
   }
 
 }
