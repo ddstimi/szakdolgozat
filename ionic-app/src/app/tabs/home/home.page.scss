@@ -15,9 +15,7 @@ ion-content{
 #concert-container {
   position: relative !important;
   width: 100% !important;
-  overflow: hidden !important;
-  z-index: 0 !important;
-
+  z-index: 10 !important;
 }
 
 

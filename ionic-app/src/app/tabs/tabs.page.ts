@@ -6,6 +6,8 @@ import { Platform } from '@ionic/angular';
 import { add, home, calendarOutline, person, search, logOutOutline } from 'ionicons/icons';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonButton, IonInput, IonSearchbar } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/authService';
+
 
 @Component({
   selector: 'app-tabs',
@@ -18,7 +20,7 @@ export class TabsPage implements OnInit {
   public isMobile: boolean = false;
   searchQuery: string = '';
 
-  constructor(private platform: Platform, private router: Router) {
+  constructor(private platform: Platform, private router: Router,public authService: AuthService) {
     addIcons({ search, home, calendarOutline, person, logOutOutline });
   }
 
@@ -37,5 +39,8 @@ export class TabsPage implements OnInit {
     if (this.searchQuery.trim() !== '') {
       this.router.navigate(['/tabs/search'], { queryParams: { query: this.searchQuery } });
     }
+  }
+  onLogout() {
+    this.authService.logout();
   }
 }

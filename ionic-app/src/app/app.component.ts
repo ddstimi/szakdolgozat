@@ -9,7 +9,7 @@ register();
   selector: 'app-root',
   templateUrl: 'app.component.html',
   imports: [ IonApp, IonRouterOutlet],
-  standalone: true // This makes it a standalone component
+  standalone: true 
 })
 export class AppComponent {
   constructor() {}

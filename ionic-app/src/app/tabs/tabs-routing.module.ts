@@ -6,6 +6,7 @@ import { SearchPage } from './search/search.page';
 import { ProfilePage } from './profile/profile.page';
 import { EventsPage } from './events/events.page';
 import { ConcertDetailsPage } from './concert-details/concert-details.page';
+import { AuthGuard } from '../guards/authGuard';
 
 const routes: Routes = [
   {
@@ -14,8 +15,8 @@ const routes: Routes = [
     children: [
       { path: 'home', component: HomePage },
       { path: 'search', component: SearchPage },
-      { path: 'events', component: EventsPage },
-      { path: 'profile', component: ProfilePage },
+      { path: 'events', component: EventsPage, canActivate: [AuthGuard]  },
+      { path: 'profile', component: ProfilePage, canActivate: [AuthGuard]  },
       { path: 'concert-details', component: ConcertDetailsPage },
       { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
     ]

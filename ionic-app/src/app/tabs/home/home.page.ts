@@ -1,11 +1,12 @@
 import { CommonModule, NgFor } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {  Router, RouterModule } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonGrid, IonRow, IonCol, IonLabel, IonButton } from '@ionic/angular/standalone';
 import { ConcertCardComponent } from 'src/app/components/concert-card/concert-card.component';
 import { ConcertCardFullComponent } from "../../components/concert-card-full/concert-card-full.component";
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';
+import { AuthService } from 'src/app/services/authService';
 
 @Component({
   selector: 'home',
@@ -16,7 +17,8 @@ import { ConcertDetailsPage } from '../concert-details/concert-details.page';
 })
 export class HomePage {
 
-  constructor(private router: Router,private modalController: ModalController) {}
+  constructor(private router: Router,private modalController: ModalController, private authService: AuthService) {}
+
   concerts = [
     {
       title: 'Coldplay - Music of the Spheres Tour',
@@ -102,23 +104,9 @@ export class HomePage {
       genre: 'Rock',
       artist: 'Metallica',
     },
-    // Add more dummy concert objects
   ];
   
 
-  toggleTheme() {
-    const isDark = document.body.classList.contains('dark');
-  
-    if (isDark) {
-      document.body.classList.remove('dark');
-      document.body.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.body.classList.remove('light');
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    }
-  }
  
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
@@ -126,14 +114,20 @@ export class HomePage {
       componentProps: { concert }
     });
   
-    // Add a class to blur the background content
     document.body.classList.add('modal-open');
   
     modal.onDidDismiss().then(() => {
-      // Remove the blur class when the modal is closed
       document.body.classList.remove('modal-open');
     });
   
     await modal.present();
   }
+  loggedIn = false;
+ ngOnInit() {
+    console.log('AuthService.isLoggedIn:', this.authService.isLoggedIn());
+    this.loggedIn = this.authService.isLoggedIn();
+    console.log('loggedIn after assignment:', this.loggedIn);
+    console.log(!this.loggedIn);
+  }
+
 }

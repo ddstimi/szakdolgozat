@@ -4,26 +4,36 @@
 
     <ion-card class="form-card sign-in-card" *ngIf="!isSignUp">
       <h1>Sign in</h1>
-      <form>
+      <form (ngSubmit)="onLogin()">
         <ion-item lines="solid">
           <ion-input
-            label="Email"
+            [(ngModel)]="loginData.username"
+            name="username"
+            label="Username"
             labelPlacement="floating"
-            placeholder="Email address"
+            placeholder="Username"
+            required
           >
-            <div slot="label">Email</div>
+            <div slot="label">Username</div>
           </ion-input>
         </ion-item>
         <ion-item lines="solid">
           <ion-input
+            [(ngModel)]="loginData.password"
+            name="password"
             label="Password"
             labelPlacement="floating"
             placeholder="Password"
+            type="password"
+            required
           >
             <div slot="label">Password</div>
           </ion-input>
         </ion-item>
-        <ion-button>Sign in</ion-button>
+        <ion-button type="submit" [disabled]="isLoading"
+          ><span *ngIf="!isLoading">Sign in</span>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
       </form>
       <h5>You don't have an account?</h5>
       <ion-button id="signup" (click)="isSignUp = true">Sign Up</ion-button>
@@ -96,7 +106,10 @@
             >Terms of GDPR</a
           ></ion-checkbox
         >
-        <ion-button type="submit">Sign Up</ion-button>
+        <ion-button type="submit" [disabled]="isLoading"
+          ><span *ngIf="!isLoading">Sign up</span>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
       </form>
       <h5>Already have an account?</h5>
       <ion-button id="signin" (click)="isSignUp = false">Sign In</ion-button>
