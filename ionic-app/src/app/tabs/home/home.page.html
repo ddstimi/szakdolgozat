@@ -2,7 +2,11 @@
   <div id="container">
     <img id="concert" src="../../../assets/images/aa.jpg" alt="concert" />
     <div id="concert-container">
-      <ion-button *ngIf="(!loggedIn)" id="sign-in-btn" [routerLink]="['/login']"
+      <ion-button
+        *ngIf="(!loggedIn)"
+        id="sign-in-btn"
+        [routerLink]="['/login']"
+        class="glow"
         >Sign in</ion-button
       >
     </div>

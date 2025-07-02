@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonButton, IonInput, IonIcon, IonTextarea, IonCard, IonCheckbox, IonSpinner } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { ModalController,IonicModule } from '@ionic/angular';
+import {GdprModalComponent} from './gdpr-modal/gdpr-modal/gdpr-modal.component'
+import {   RouterLink } from '@angular/router';
+
 import { AuthService } from '../services/authService';
 export const environment = {
   production: false,
@@ -16,13 +20,15 @@ import { Router } from '@angular/router';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonSpinner ,IonCheckbox, IonCard, IonTextarea, IonIcon, IonInput, IonButton, IonLabel, IonItem, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule,IonSpinner , CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
 
-constructor(private http: HttpClient,private authService: AuthService, private router: Router) {}
+constructor(private http: HttpClient,private authService: AuthService, private router: Router,private modalController: ModalController) {}
 
 isSignUp: boolean = false;
+
+
 isLoading = false;
 
 loginData = {
@@ -75,6 +81,19 @@ async onRegister() {
       this.isLoading = false;
     }
   }
+  async openGDPR() {
+      const modal = await this.modalController.create({
+        component: GdprModalComponent,
+      });
+    
+      document.body.classList.add('modal-open');
+    
+      modal.onDidDismiss().then(() => {
+        document.body.classList.remove('modal-open');
+      });
+    
+      await modal.present();
+    }
 
   ngOnInit() {
   }

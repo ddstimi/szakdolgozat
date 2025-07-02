@@ -94,7 +94,18 @@ ion-card.form-card {
     font-size: 1rem;
     margin-top: 1rem;
   }
-
+    
+    .button-outline.glow-blue{
+    border: solid 1px #80ffcc !important;
+    }
+    .glow-blue.md.button.button-outline.ion-activatable.ion-focusable{
+    --border: solid 1px #80ffcc !important;
+    border: solid 1px #80ffcc !important;
+    --border-color: #80ffcc;
+    }
+    #sign-in{
+      font-size: x-large;
+    }
   form {
     width: 100%;
     display: flex;
@@ -112,8 +123,21 @@ ion-card.form-card {
       border-radius: 8px;
       margin-bottom: 1rem;
       width: 90%;
-      font-size: 22px;
+      font-size: 18px;
+      height: fit-content;
     }
+
+    .has-value.input-label-placement-floating.sc-ion-input-md-h input.sc-ion-input-md > #pwd{
+      font-variant-caps: normal !important;
+      --font-variant-caps: normal !important;
+
+    }
+
+    
+    .ion-valid.sc-ion-input-md-h{
+      --highlight-color:#c17b8c;
+    }
+
 
     ion-input {
       --color: #f9f4f5;
@@ -149,13 +173,14 @@ ion-checkbox::part(container) {
 
 .sign-in-card,
 .sign-up-card {
-  display: none;
+  display: none !important;
 }
 
 .content-wrapper:not(.signup-active) .sign-in-card {
-  display: flex;
+  display: flex !important;
 }
 
 .content-wrapper.signup-active .sign-up-card {
-  display: flex;
+  display: flex !important;
+  
 }

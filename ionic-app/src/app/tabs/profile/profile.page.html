@@ -1,55 +1,146 @@
 <ion-content [fullscreen]="true">
-  <div id="container">
+  <div id="col">
     <h1>Profile</h1>
+    <div id="container">
+      <div class="notif-card">
+        <ion-card-header>
+          <ion-card-title>
+            Notifications
+            <ion-badge
+              color="primary"
+              *ngIf="unreadCount > 0"
+              class="notif-badge"
+              >{{ unreadCount }}</ion-badge
+            >
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div *ngIf="notifications.length > 0; else noNotifs">
+            <div class="notif">
+              <ion-item
+                *ngFor="let notif of notifications | slice:0:3"
+                lines="none"
+                detail="false"
+              >
+                <div id="message">
+                  <div>
+                    <p class="notif-title">{{ notif.title }}</p>
+                    <p class="notif-msg">{{ notif.message }}</p>
+                    <p class="notif-time">{{ notif.timeAgo }}</p>
+                  </div>
+                </div>
+              </ion-item>
+            </div>
+            <ion-button
+              fill="clear"
+              size="small"
+              class="glow-blue"
+              (click)="openNotificationsPage()"
+              >See All</ion-button
+            >
+          </div>
+          <ng-template #noNotifs>
+            <p>No notifications at the moment.</p>
+          </ng-template>
+        </ion-card-content>
+      </div>
 
-    <ion-card class="profile-card">
-      <ion-card-header>
-        <ion-card-title>User Info</ion-card-title>
-      </ion-card-header>
-      <ion-card-content class="card-flex">
-        <div class="info-group">
-          <p><strong>Username:</strong> {{ user.username }}</p>
-          <hr class="section-divider" />
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <hr class="section-divider" />
-          <p><strong>Password:</strong> ********</p>
-        </div>
-        <ion-button size="small" (click)="openEditUser()">Modify</ion-button>
-      </ion-card-content>
-    </ion-card>
+      <ion-card id="picture-card">
+        <ion-card-title>Profile picture</ion-card-title>
+        <ion-card-subtitle>
+          <div class="main-picture-container">
+            <div class="round large">
+              <ion-img [src]="selectedPicture" class="preview-img" />
+            </div>
+          </div>
 
-    <ion-card class="profile-card">
-      <ion-card-header>
-        <ion-card-title>Preferences</ion-card-title>
-      </ion-card-header>
-      <ion-card-content class="card-flex">
-        <div class="pref-section">
-          <div class="pref-group">
-            <strong>Genres:</strong>
-            <ion-chip color="primary" *ngFor="let genre of genres"
-              >{{ genre }}</ion-chip
+          <div class="options-row">
+            <div
+              class="round small selectable"
+              *ngFor="let img of predefinedPics"
+              [class.selected]="img === selectedPicture"
+              (click)="selectPreset(img)"
             >
-          </div>
-          <hr class="section-divider" />
-          <div class="pref-group">
-            <strong>Locations:</strong>
-            <ion-chip color="secondary" *ngFor="let location of locations"
-              >{{ location }}</ion-chip
+              <ion-img [src]="img" class="preset-img" />
+            </div>
+
+            <div
+              class="round small upload-box"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event)"
+              (click)="fileInput.click()"
             >
+              <p>+</p>
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                hidden
+                (change)="onFileSelected($event)"
+              />
+            </div>
           </div>
-          <hr class="section-divider" />
-          <div class="pref-group">
-            <strong>Artists:</strong>
-            <ion-chip color="tertiary" *ngFor="let artist of artists"
-              >{{ artist }}</ion-chip
+        </ion-card-subtitle>
+      </ion-card>
+
+      <div id="row">
+        <ion-card class="profile-card">
+          <ion-card-header>
+            <ion-card-title>User Info</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="card-flex">
+            <div class="info-group">
+              <p><strong>Name:</strong> {{ user.name }}</p>
+              <hr class="section-divider" />
+              <p><strong>Username:</strong> {{ user.username }}</p>
+              <hr class="section-divider" />
+              <p><strong>Email:</strong> {{ user.email }}</p>
+              <hr class="section-divider" />
+              <p><strong>Password:</strong> ********</p>
+            </div>
+            <ion-button (click)="openEditUser()" fill="outline" class="glow"
+              >Modify</ion-button
             >
-          </div>
-        </div>
-        <ion-button size="small" (click)="openEditPreferences()"
-          >Modify</ion-button
-        >
-      </ion-card-content>
-    </ion-card>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="profile-card">
+          <ion-card-header>
+            <ion-card-title>Preferences</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="card-flex">
+            <div class="pref-section">
+              <div class="pref-group">
+                <strong>Genres:</strong>
+                <ion-chip color="primary" *ngFor="let genre of genres"
+                  >{{ genre }}</ion-chip
+                >
+              </div>
+              <hr class="section-divider" />
+              <div class="pref-group">
+                <strong>Locations:</strong>
+                <ion-chip color="secondary" *ngFor="let location of locations"
+                  >{{ location }}</ion-chip
+                >
+              </div>
+              <hr class="section-divider" />
+              <div class="pref-group">
+                <strong>Artists:</strong>
+                <ion-chip color="tertiary" *ngFor="let artist of artists"
+                  >{{ artist }}</ion-chip
+                >
+              </div>
+            </div>
+            <ion-button
+              (click)="openEditPreferences()"
+              fill="outline"
+              class="glow"
+              >Modify</ion-button
+            >
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
   </div>
 
   <ion-button (click)="onLogout()">Log Out</ion-button>

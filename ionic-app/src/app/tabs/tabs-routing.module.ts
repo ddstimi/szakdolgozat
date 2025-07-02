@@ -7,6 +7,7 @@ import { ProfilePage } from './profile/profile.page';
 import { EventsPage } from './events/events.page';
 import { ConcertDetailsPage } from './concert-details/concert-details.page';
 import { AuthGuard } from '../guards/authGuard';
+import { NotificationsPage } from './profile/notifications/notifications.page';
 
 const routes: Routes = [
   {
@@ -18,6 +19,8 @@ const routes: Routes = [
       { path: 'events', component: EventsPage, canActivate: [AuthGuard]  },
       { path: 'profile', component: ProfilePage, canActivate: [AuthGuard]  },
       { path: 'concert-details', component: ConcertDetailsPage },
+      { path: 'profile/notifications', component: NotificationsPage },
+
       { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
     ]
   },

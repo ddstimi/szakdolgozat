@@ -85,9 +85,20 @@ p {
     margin-right: auto;
     width: 60%;
   }
+  #ticket{
+    border-radius: 8px;
+    box-shadow: 0 0 8px var(--ion-color-primary);
+  }
 
-  #attend {
-    --background: #9178ad;
+
+  #options{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    ion-button{
+      font-size: smaller;
+      color: #f4f4f490;
+    }
   }
 }
 
@@ -119,7 +130,7 @@ p {
   .modal-content {
     transform: scale(0.9);
     height: 100% !important;
-    background-color:  rgba(0, 0, 0, 0.6) !important;
+    background-color:  rgba(0, 0, 0, 0.703) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
     border-radius: 12px;
     padding: 1rem;
@@ -149,7 +160,7 @@ p {
   .concert-modal-container {
     margin-top: 10%;
     align-self: center;
-    background-color: #0e0e10ae;
+    background-color: rgba(14, 14, 16, 0.78);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
     border-radius: 12px;
     width: fit-content;

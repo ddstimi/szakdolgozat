@@ -1,118 +1,126 @@
 <ion-content [fullscreen]="true">
-  <div class="content-wrapper" [class.signup-active]="isSignUp">
-    <div class="image-container"></div>
+  <div id="container">
+    <div class="content-wrapper" [class.signup-active]="isSignUp">
+      <div class="image-container"></div>
 
-    <ion-card class="form-card sign-in-card" *ngIf="!isSignUp">
-      <h1>Sign in</h1>
-      <form (ngSubmit)="onLogin()">
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="loginData.username"
-            name="username"
-            label="Username"
-            labelPlacement="floating"
-            placeholder="Username"
-            required
-          >
-            <div slot="label">Username</div>
-          </ion-input>
-        </ion-item>
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="loginData.password"
-            name="password"
-            label="Password"
-            labelPlacement="floating"
-            placeholder="Password"
-            type="password"
-            required
-          >
-            <div slot="label">Password</div>
-          </ion-input>
-        </ion-item>
-        <ion-button type="submit" [disabled]="isLoading"
-          ><span *ngIf="!isLoading">Sign in</span>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        </ion-button>
-      </form>
-      <h5>You don't have an account?</h5>
-      <ion-button id="signup" (click)="isSignUp = true">Sign Up</ion-button>
-    </ion-card>
-
-    <ion-card class="form-card sign-up-card" *ngIf="isSignUp">
-      <h1>Sign up</h1>
-      <form (ngSubmit)="onRegister()">
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="registerData.name"
-            name="name"
-            label="Name"
-            labelPlacement="floating"
-            placeholder="Name"
-          >
-            <div slot="label">Username</div>
-          </ion-input>
-        </ion-item>
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="registerData.username"
-            name="username"
-            label="Username"
-            labelPlacement="floating"
-            placeholder="Username"
-          >
-            <div slot="label">Username</div>
-          </ion-input>
-        </ion-item>
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="registerData.email"
-            name="email"
-            label="Email"
-            labelPlacement="floating"
-            placeholder="Email address"
-            type="email"
-          >
-            <div slot="label">Email</div>
-          </ion-input>
-        </ion-item>
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="registerData.password"
-            name="password"
-            label="Password"
-            labelPlacement="floating"
-            placeholder="Password"
-            type="password"
-          >
-            <div slot="label">Password</div>
-          </ion-input>
-        </ion-item>
-        <ion-item lines="solid">
-          <ion-input
-            [(ngModel)]="registerData.confirmPassword"
-            name="confirmPassword"
-            label="Confirm Password"
-            labelPlacement="floating"
-            placeholder="Confirm Password"
-            type="password"
-          >
-            <div slot="label">Confirm Password</div>
-          </ion-input>
-        </ion-item>
-        <ion-checkbox [(ngModel)]="registerData.gdpr" name="gdpr"
-          >I agree to the
-          <a href="#" (click)="$event.stopPropagation()"
-            >Terms of GDPR</a
-          ></ion-checkbox
+      <ion-card class="form-card sign-in-card">
+        <h1>Sign in</h1>
+        <form (ngSubmit)="onLogin()">
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.username"
+              name="username"
+              label="Username"
+              labelPlacement="floating"
+              placeholder="Username"
+            >
+              <div slot="label">Username</div>
+            </ion-input>
+          </ion-item>
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="loginData.password"
+              name="password"
+              label="Password"
+              labelPlacement="floating"
+              placeholder="Password"
+              type="password"
+              required
+            >
+              <div slot="label">Password</div>
+            </ion-input>
+          </ion-item>
+          <ion-button
+            fill="outline"
+            class="glow-blue"
+            type="submit"
+            [disabled]="isLoading"
+            ><span *ngIf="!isLoading">Sign in</span>
+            <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          </ion-button>
+        </form>
+        <h5>You don't have an account?</h5>
+        <ion-button id="signup" (click)="isSignUp = true" fill="outline"
+          >Sign Up</ion-button
         >
-        <ion-button type="submit" [disabled]="isLoading"
-          ><span *ngIf="!isLoading">Sign up</span>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        </ion-button>
-      </form>
-      <h5>Already have an account?</h5>
-      <ion-button id="signin" (click)="isSignUp = false">Sign In</ion-button>
-    </ion-card>
+      </ion-card>
+
+      <ion-card class="form-card sign-up-card">
+        <h1>Sign up</h1>
+        <form (ngSubmit)="onRegister()">
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.name"
+              name="name"
+              label="Name"
+              labelPlacement="floating"
+              placeholder="Name"
+            >
+              <div slot="label">Username</div>
+            </ion-input>
+          </ion-item>
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.username"
+              name="username"
+              label="Username"
+              labelPlacement="floating"
+              placeholder="Username"
+            >
+              <div slot="label">Username</div>
+            </ion-input>
+          </ion-item>
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.email"
+              name="email"
+              label="Email"
+              labelPlacement="floating"
+              placeholder="Email address"
+              type="email"
+            >
+              <div slot="label">Email</div>
+            </ion-input>
+          </ion-item>
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.password"
+              name="password"
+              label="Password"
+              labelPlacement="floating"
+              placeholder="Password"
+              type="password"
+              id="pwd"
+            >
+              <div slot="label">Password</div>
+            </ion-input>
+          </ion-item>
+          <ion-item lines="solid">
+            <ion-input
+              [(ngModel)]="registerData.confirmPassword"
+              name="confirmPassword"
+              label="Confirm Password"
+              labelPlacement="floating"
+              placeholder="Confirm Password"
+              type="password"
+              id="pwd"
+            >
+              <div slot="label">Confirm Password</div>
+            </ion-input>
+          </ion-item>
+          <ion-checkbox [(ngModel)]="registerData.gdpr" name="gdpr"
+            >I agree to the
+            <a href="#" (click)="openGDPR()">Terms of GDPR</a></ion-checkbox
+          >
+          <ion-button type="submit" fill="outline" class="glow-blue"
+            >Sign Up</ion-button
+          >
+        </form>
+        <h5>Already have an account?</h5>
+        <ion-button id="signin" (click)="isSignUp = false" fill="outline"
+          >Sign In</ion-button
+        >
+      </ion-card>
+    </div>
   </div>
 </ion-content>

@@ -13,7 +13,13 @@ export const routes: Routes = [
   {
     path: 'tabs/event-details',
     loadComponent: () => import('./tabs/concert-details/concert-details.page').then( m => m.ConcertDetailsPage)
-  }
+  },
+  {
+    path: 'tabs/profile/notifications',
+    loadComponent: () => import('./tabs/profile/notifications/notifications.page').then( m => m.NotificationsPage)
+  },
+
+
 
 
 ];

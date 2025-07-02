@@ -6,7 +6,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+
 import { IonicSlides } from '@ionic/angular';
+import { Swiper } from 'swiper/types';
 
 Chart.register(RadarController, PointElement, LineElement, ArcElement, RadialLinearScale, CategoryScale, Title, Tooltip, Legend);
 
@@ -87,6 +89,8 @@ export class EventsPage implements OnInit, AfterViewInit {
 
     this.updateRadarData();
     this.createRadarCharts();
+    this.chartDescriptions[0].personalizedText = `You're in the top ${"8"}% for Pop lovers.`;
+
   }
 
   getIntervalStartDate() {
@@ -123,9 +127,9 @@ export class EventsPage implements OnInit, AfterViewInit {
     this.locationChart?.destroy();
     this.artistChart?.destroy();
 
-    this.genreChart = this.createChart(this.genreRadarChartCanvas.nativeElement, 'Genres Attended', this.genreData, 'rgba(255, 99, 132, 0.6)', 'rgba(255, 99, 132, 1)');
-    this.locationChart = this.createChart(this.locationRadarChartCanvas.nativeElement, 'Locations Attended', this.locationData, 'rgba(74, 195, 144, 0.5)', 'rgb(74, 195, 144)');
-    this.artistChart = this.createChart(this.artistRadarChartCanvas.nativeElement, 'Artists Attended', this.artistData, 'rgb(180, 89, 255, 0.5)', 'rgb(180, 89, 255)');
+    this.genreChart = this.createChart(this.genreRadarChartCanvas.nativeElement, 'Genres ', this.genreData, 'rgba(255, 99, 132, 0.6)', 'rgba(255, 99, 132, 1)');
+    this.locationChart = this.createChart(this.locationRadarChartCanvas.nativeElement, 'Locations ', this.locationData, 'rgba(74, 195, 144, 0.5)', 'rgb(74, 195, 144)');
+    this.artistChart = this.createChart(this.artistRadarChartCanvas.nativeElement, 'Artists ', this.artistData, 'rgb(180, 89, 255, 0.5)', 'rgb(180, 89, 255)');
   }
 
   private createChart(canvas: any, label: string, dataObj: { [key: string]: number }, bgColor: string, borderColor: string): Chart {
@@ -145,7 +149,8 @@ export class EventsPage implements OnInit, AfterViewInit {
           pointBackgroundColor: borderColor,
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: borderColor
+          pointHoverBorderColor: borderColor,
+          
         }]
       },
       options: {
@@ -160,10 +165,39 @@ export class EventsPage implements OnInit, AfterViewInit {
             grid: { color: '#afafaf' },
             angleLines: { color: '#ddd' },
             pointLabels: { color: '#fff', font: { size: 13 } },
-            ticks: { color: '#fff' }
+            ticks: { color: '#fff',backdropColor: 'rgba(255, 255, 255, 0.03)' }
           }
         }
       }
     });
   }
+
+  activeSlideIndex = 0;
+  swiperInstance!: Swiper;
+
+  chartDescriptions = [
+    {
+      staticText: 'Your preferred genre was Pop based on your listening history.You clearly enjoy lyrical flow and urban vibes.',
+      personalizedText: 'You’re in the top 8% for Pop lovers.',
+    },
+        {
+      staticText: 'Your favorite artist is Korda György és Balázs Klári. They started in 999BC and typically play Rap, House and Techno.',
+      personalizedText: 'You’re in the top 1% of fans.',
+    },
+    {
+      staticText: 'Concert location you’ve visited the most was Berlin.',
+      personalizedText: 'You attend shows in Berlin more than 90% of users.',
+    },
+
+  ];
+
+  
+@ViewChild('swiper')
+  swiperRef: ElementRef | undefined;
+
+  onSlideChange() {
+    this.activeSlideIndex = this.swiperRef?.nativeElement.swiper.activeIndex;
+    
+  }
+
 }
