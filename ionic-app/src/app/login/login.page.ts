@@ -8,10 +8,15 @@ import { ModalController,IonicModule } from '@ionic/angular';
 import {GdprModalComponent} from './gdpr-modal/gdpr-modal/gdpr-modal.component'
 
 import { AuthService } from '../services/authService';
-import {environment} from '../../environments/environment'
 import { Router } from '@angular/router';
 
 declare const google: any;
+export const environment = {
+  production: false,
+    googleClientId: '413636504400-i4ft6hbngklp9juman43te2vkmouatdg.apps.googleusercontent.com',
+    apiUrl: 'http://localhost:3000'
+
+};
 
 @Component({
   selector: 'app-login',
