@@ -6,12 +6,12 @@
 .tmp
 *.tmp
 *.tmp.*
+.env
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
 
 *.log
 log.txt
-.env
 
 /.sourcemaps
 /.versions
