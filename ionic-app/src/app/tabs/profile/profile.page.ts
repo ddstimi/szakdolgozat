@@ -95,24 +95,51 @@ export class ProfilePage implements OnInit {
     img_url: '',
   };
 
-  genres = ['Rock', 'Jazz', 'Indie'];
-  locations = ['Budapest - Akvárium', 'Pécs - Nappali'];
-  artists = ['Arctic Monkeys', 'Billie Eilish'];
+  // In your ProfilePage class:
 
-  availableGenres: string[] = [
-    'Rock',
-    'Jazz',
-    'Pop',
-    'Indie',
-    'Hip-hop',
-    'Heavy metal',
+  // Change these to use IDs instead of names
+  artists: number[] = [];
+  locations: number[] = [];
+  genres: number[] = [];
+  venues: number[] = [];
+
+  // Update available options to include both ID and name
+  availableArtists: { id: number; name: string }[] = [
+    { id: 1, name: 'Arctic Monkeys' },
+    { id: 2, name: 'Billie Eilish' },
+    { id: 3, name: 'Krúbi' },
   ];
-  availableLocations: string[] = ['Budapest - Akvárium', 'Pécs - Nappali'];
-  availableArtists: string[] = ['Arctic Monkeys', 'Billie Eilish', 'Krúbi'];
 
-  selectedGenre = '';
-  selectedLocation = '';
-  selectedArtist = '';
+  availableLocations: { id: number; name: string }[] = [
+    { id: 1, name: 'Budapest - Akvárium' },
+    { id: 2, name: 'Pécs - Nappali' },
+  ];
+
+  availableGenres: { id: number; name: string }[] = [
+    { id: 1, name: 'Rock' },
+    { id: 2, name: 'Jazz' },
+    { id: 3, name: 'Indie' },
+  ];
+  availableVenues: { id: number; name: string }[] = [
+    { id: 1, name: 'Jate' },
+    { id: 2, name: 'Hungi' },
+    { id: 3, name: 'Ápoló' },
+  ];
+  async savePreferences() {
+    try {
+      await this.authService.updatePreferences({
+        genres: this.genres,
+        locations: this.locations,
+        artists: this.artists,
+        venues: this.venues,
+        see_cancelled: false,
+        see_not_available: false,
+        notify_push: false,
+      });
+    } catch (error) {
+      console.error('Failed to save preferences', error);
+    }
+  }
 
   newGenre = '';
   newLocation = '';
@@ -210,19 +237,24 @@ export class ProfilePage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: EditPreferencesModalComponent,
       componentProps: {
-        genres: this.genres,
-        locations: this.locations,
-        artists: this.artists,
+        genres: [...this.genres],
+        locations: [...this.locations],
+        artists: [...this.artists],
         availableGenres: this.availableGenres,
         availableLocations: this.availableLocations,
         availableArtists: this.availableArtists,
       },
     });
-
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(() => {
-      document.body.classList.remove('modal-open');
+    modal.onDidDismiss().then(({ data }) => {
+      if (data) {
+        this.genres = data.genres || this.genres;
+        this.locations = data.locations || this.locations;
+        this.artists = data.artists || this.artists;
+        document.body.classList.remove('modal-open');
+        this.savePreferences();
+      }
     });
 
     await modal.present();

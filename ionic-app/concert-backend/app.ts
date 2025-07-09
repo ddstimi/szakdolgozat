@@ -5,6 +5,7 @@ import db from './src/config/db';
 import userRoutes from './src/routes/userRoutes';
 const multer = require('multer');
 const path = require('path');
+import preferencesRoutes from './src/routes/preferencesRoutes';
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ db.getConnection()
     console.error('Error connecting to MySQL database:', err.message);
     process.exit(1);
   });
-
+app.use('/api/preferences', preferencesRoutes);
 app.use('/api/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {

@@ -146,6 +146,32 @@ export class AuthService {
     }
   }
 
+  async getPreferences(): Promise<any> {
+    const token = await localStorage.getItem('token');
+    return this.http
+      .get(`${environment.apiUrl}/api/preferences`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .toPromise();
+  }
+
+  async updatePreferences(prefs: {
+    see_cancelled: boolean;
+    see_not_available: boolean;
+    notify_push: boolean;
+    artists: number[];
+    locations: number[];
+    genres: number[];
+    venues: number[];
+  }): Promise<any> {
+    const token = await localStorage.getItem('token');
+    return this.http
+      .patch(`${environment.apiUrl}/api/preferences/update`, prefs, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .toPromise();
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

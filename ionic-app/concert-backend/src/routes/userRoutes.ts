@@ -15,11 +15,12 @@ router.patch(
   authenticateJWT,
   UserController.updateStaticPic
 );
-
 router.patch(
   '/update-picture',
   authenticateJWT,
-  uploadProfilePicture, // Multer middleware for file upload
+  uploadProfilePicture,
   UserController.updateUserPic
 );
+router.put('/preferences', authenticateJWT, UserController.updateUser);
+
 export default router;

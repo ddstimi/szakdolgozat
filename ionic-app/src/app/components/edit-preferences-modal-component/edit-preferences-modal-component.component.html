@@ -2,124 +2,135 @@
   <div class="modal-container">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Edit Preferences</ion-title>
-        <ion-button fill="clear" slot="end" (click)="closeModal()"
-          >Close</ion-button
-        >
+        <ion-title>Edit User Info</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            fill="outline"
+            color="primary"
+            shape="round"
+            (click)="closeModal()"
+            >Close</ion-button
+          >
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
+
     <ion-list>
+      <!-- Genres Section -->
       <ion-item>
-        <ion-label position="stacked">Add Genre</ion-label>
+        <ion-label position="stacked">Add Prefered Artists</ion-label>
+        <ion-input
+          [(ngModel)]="selectedArtist"
+          placeholder="e.g., 30y"
+        ></ion-input>
+      </ion-item>
+      <ion-button class="glow" expand="block" (click)="add('artists')"
+        >Add Artist</ion-button
+      >
+
+      <ion-item>
+        <ion-label>Selected Genres</ion-label>
+        <div class="chip-container">
+          <ion-chip *ngFor="let artist of artists; let i = index">
+            {{ artist }}
+            <ion-icon
+              name="close-circle"
+              (click)="remove('artists', i)"
+            ></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-item>
+      <hr class="section-divider" />
+      <ion-item>
+        <ion-label position="stacked">Add Prefered Genres</ion-label>
         <ion-input
           [(ngModel)]="selectedGenre"
           placeholder="e.g., Rock"
         ></ion-input>
       </ion-item>
-      <ion-button
-        expand="block"
-        size="small"
-        (click)="add('genre')"
-        fill="outline"
-        class="glow"
+      <ion-button class="glow" expand="block" (click)="add('genres')"
         >Add Genre</ion-button
       >
 
       <ion-item>
         <ion-label>Selected Genres</ion-label>
-        <div class="chip-group">
+        <div class="chip-container">
           <ion-chip *ngFor="let genre of genres; let i = index">
             {{ genre }}
             <ion-icon
               name="close-circle"
-              (click)="remove('genre', i)"
+              (click)="remove('genres', i)"
             ></ion-icon>
           </ion-chip>
         </div>
       </ion-item>
-
       <hr class="section-divider" />
 
       <ion-item>
-        <ion-label position="stacked">Add Location</ion-label>
+        <ion-label position="stacked">Add Prefered Venues</ion-label>
         <ion-input
-          [(ngModel)]="selectedLocation"
-          placeholder="e.g., Budapest"
+          [(ngModel)]="selectedVenue"
+          placeholder="e.g., Jate Club"
         ></ion-input>
       </ion-item>
-      <ion-button
-        expand="block"
-        size="small"
-        (click)="add('location')"
-        fill="outline"
-        class="glow"
-        >Add Location</ion-button
+      <ion-button class="glow" expand="block" (click)="add('venues')"
+        >Add Venue</ion-button
       >
 
       <ion-item>
-        <ion-label>Selected Locations</ion-label>
-        <div class="chip-group">
+        <ion-label>Selected Venues</ion-label>
+        <div class="chip-container">
+          <ion-chip *ngFor="let venue of venues; let i = index">
+            {{ venue }}
+            <ion-icon
+              name="close-circle"
+              (click)="remove('venues', i)"
+            ></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-item>
+      <hr class="section-divider" />
+      <ion-item>
+        <ion-label position="stacked">Add Prefered Cities</ion-label>
+        <ion-input
+          [(ngModel)]="selectedLocation"
+          placeholder="e.g., Szeged"
+        ></ion-input>
+      </ion-item>
+      <ion-button class="glow" expand="block" (click)="add('locations')"
+        >Add City</ion-button
+      >
+
+      <ion-item>
+        <ion-label>Selected Cities</ion-label>
+        <div class="chip-container">
           <ion-chip *ngFor="let location of locations; let i = index">
             {{ location }}
             <ion-icon
               name="close-circle"
-              (click)="remove('location', i)"
+              (click)="remove('locations', i)"
             ></ion-icon>
           </ion-chip>
         </div>
       </ion-item>
-
       <hr class="section-divider" />
 
-      <ion-item>
-        <ion-label position="stacked">Add Artist</ion-label>
-        <ion-input
-          [(ngModel)]="selectedArtist"
-          placeholder="e.g., Imagine Dragons"
-        ></ion-input>
-      </ion-item>
-      <ion-button
-        expand="block"
-        size="small"
-        (click)="add('artist')"
-        fill="outline"
-        class="glow"
-        >Add Artist</ion-button
-      >
+      <!-- Repeat similar sections for Locations and Artists -->
 
       <ion-item>
-        <ion-label>Selected Artists</ion-label>
-        <div class="chip-group">
-          <ion-chip *ngFor="let artist of artists; let i = index">
-            {{ artist }}
-            <ion-icon
-              name="close-circle"
-              (click)="remove('artist', i)"
-            ></ion-icon>
-          </ion-chip>
-        </div>
+        <ion-checkbox [(ngModel)]="showCancelled"
+          >Show cancelled concerts</ion-checkbox
+        >
+      </ion-item>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="showSoldOut"
+          >Show sold out concerts</ion-checkbox
+        >
       </ion-item>
     </ion-list>
-    <hr class="section-divider" />
-    <ion-item>
-      <ion-checkbox justify="start"
-        >Show cancelled concerts</ion-checkbox
-      ></ion-item
-    >
-    <hr class="section-divider" />
-    <ion-item>
-      <ion-checkbox justify="start"
-        >Show sold out concerts</ion-checkbox
-      ></ion-item
-    >
-    <ion-button
-      expand="block"
-      color="primary"
-      (click)="savePrefs()"
-      id="save"
-      fill="outline"
-      class="glow"
-      >Save</ion-button
+
+    <ion-button expand="block" class="glow" (click)="savePrefs()"
+      >Save Preferences</ion-button
     >
   </div>
 </ion-content>
