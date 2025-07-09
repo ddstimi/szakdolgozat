@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import UserService from '../services/userService';
 import UserModel from '../models/User';
+import SessionService from '../services/sessionService';
+const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
+import jwt from 'jsonwebtoken';
 
 class CustomError extends Error {
   statusCode: number;
@@ -40,6 +43,18 @@ const UserController = {
       return next(error);
     }
   }) as RequestHandler,
+  refreshToken: async (userId: number): Promise<string> => {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new CustomError('User not found', 404);
+    }
+
+    return jwt.sign(
+      { id: user.id, username: user.username, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+  },
 
   login: (async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;

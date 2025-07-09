@@ -1,6 +1,7 @@
 import { error } from 'console';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import SessionService from '../services/sessionService';
 
 const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
 
@@ -10,27 +11,46 @@ interface JwtPayload {
   email: string;
 }
 
-// middleware/authenticateJWT.ts
-
-export const authenticateJWT = (
+export const authenticateJWT = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
-
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
-
-    jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
+  try {
+    // 1. Check for access token first
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded = SessionService.verifyToken(token);
+        (req as any).user = decoded;
+        return next();
+      } catch (err) {
+        throw err;
       }
-      (req as any).user = user;
-      console.log('JWT middleware passed');
-      next();
-    });
-  } else {
-    res.sendStatus(401);
+    }
+
+    // 2. If access token expired, check refresh token
+    const refreshToken = req.headers['x-refresh-token'] as string;
+    if (refreshToken) {
+      try {
+        const decoded = SessionService.verifyToken(refreshToken, true);
+        const { token, refreshToken: newRefreshToken } =
+          SessionService.createTokens(decoded);
+
+        (req as any).user = decoded;
+        res.set({
+          Authorization: `Bearer ${token}`,
+          'X-New-Refresh-Token': newRefreshToken,
+        });
+        return next();
+      } catch (err) {
+        throw new Error('Session expired');
+      }
+    }
+
+    throw new Error('Authentication required');
+  } catch (error) {
+    next(error);
   }
 };

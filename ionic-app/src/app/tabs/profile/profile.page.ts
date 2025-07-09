@@ -65,13 +65,14 @@ export class ProfilePage implements OnInit {
       this.user.username = userData.username;
       this.user.email = userData.email;
       this.user.gdpr = userData.gdpr;
-      let img: string = userData.img_url.toString();
-      this.user.img_url = img.includes('http://localhost:3000')
-        ? userData.img_url
-        : 'http://localhost:3000' + userData.img_url;
-      this.selectedPicture =
-        this.user.img_url ||
-        'http://localhost:3000/profile-pictures/bikini.jpg';
+      let imgUrl = userData.img_url;
+      if (imgUrl) {
+        this.user.img_url = imgUrl.includes('http://localhost:3000')
+          ? imgUrl
+          : 'http://localhost:3000' + imgUrl;
+      } else {
+        this.user.img_url = 'http://localhost:3000/profile-pictures/bikini.jpg';
+      }
       console.log(this.user.img_url);
     } catch (error) {
       console.error('Could not load user data', error);

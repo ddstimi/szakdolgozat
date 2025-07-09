@@ -60,16 +60,25 @@ const UserService = {
     username: string,
     password: string
   ): Promise<LoginResponse> => {
-    const user = await UserModel.findByUsername(username);
+    console.log('Attempting to login user:', username); // Debug log
 
-    if (!user) {
-      throw new CustomError('Invalid credentials.', 401);
+    const user = await UserModel.findByUsername(username);
+    console.log('User found:', user); // Debug log
+
+    if (!user || !user.password) {
+      console.log('User not found or password missing'); // Debug log
+      throw new CustomError('Invalid credentials', 401);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password as string);
+    console.log('Stored password hash:', user.password); // Debug log
+    console.log('Input password:', password); // Debug log
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Hashed password:', hashedPassword); // Add this debug log
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Password match result:', isMatch); // Debug log
 
     if (!isMatch) {
-      throw new CustomError('Invalid credentials.', 401);
+      throw new CustomError('Invalid credentials', 401);
     }
 
     await UserModel.updateLastLogin(user.id as number);
