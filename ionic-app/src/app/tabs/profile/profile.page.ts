@@ -48,16 +48,15 @@ export class ProfilePage implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {}
-
   predefinedPics: string[] = [
-    'assets/images/prof_pic/hawer.jpg',
-    'assets/images/prof_pic/krubi.jpg',
-    'assets/images/prof_pic/balazs_korda.jpg',
-    'assets/images/prof_pic/colee.jpg',
-    'assets/images/prof_pic/desh.jpg',
-    'assets/images/prof_pic/hofi.jpg',
-    'assets/images/prof_pic/dzsudlo.jpg',
-    'assets/images/prof_pic/bikini.jpg',
+    'http://localhost:3000/profile-pictures/hawer.jpg',
+    'http://localhost:3000/profile-pictures/krubi.jpg',
+    'http://localhost:3000/profile-pictures/balazs_korda.jpg',
+    'http://localhost:3000/profile-pictures/colee.jpg',
+    'http://localhost:3000/profile-pictures/desh.jpg',
+    'http://localhost:3000/profile-pictures/hofi.jpg',
+    'http://localhost:3000/profile-pictures/dzsudlo.jpg',
+    'http://localhost:3000/profile-pictures/bikini.jpg',
   ];
   async ngOnInit() {
     try {
@@ -66,9 +65,13 @@ export class ProfilePage implements OnInit {
       this.user.username = userData.username;
       this.user.email = userData.email;
       this.user.gdpr = userData.gdpr;
-      this.user.img_url = userData.img_url;
+      let img: string = userData.img_url.toString();
+      this.user.img_url = img.includes('http://localhost:3000')
+        ? userData.img_url
+        : 'http://localhost:3000' + userData.img_url;
       this.selectedPicture =
-        this.user.img_url || 'assets/images/prof_pic/bikini.jpg';
+        this.user.img_url ||
+        'http://localhost:3000/profile-pictures/bikini.jpg';
       console.log(this.user.img_url);
     } catch (error) {
       console.error('Could not load user data', error);

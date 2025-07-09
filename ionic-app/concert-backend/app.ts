@@ -10,6 +10,10 @@ dotenv.config();
 
 const app = express();
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use(
+  '/profile-pictures',
+  express.static(path.join(__dirname, 'assets/profile-pictures'))
+);
 const port = process.env['PORT'] || 3000;
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());

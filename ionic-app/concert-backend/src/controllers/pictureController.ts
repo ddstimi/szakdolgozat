@@ -19,7 +19,8 @@ const storage = multer.diskStorage({
   filename: (req: any, file: Express.Multer.File, cb: FileNameCallback) => {
     const userId = req.user?.id;
     const extension = path.extname(file.originalname);
-    const filename = `${userId}`;
+    console.log(extension);
+    const filename = `${userId}` + `${extension}`;
     cb(null, filename);
   },
 });
