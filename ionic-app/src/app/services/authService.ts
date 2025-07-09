@@ -90,7 +90,7 @@ export class AuthService {
     try {
       const res: any = await firstValueFrom(
         this.http.patch(
-          `${environment.apiUrl}/api/users/update-picture`,
+          `${environment.apiUrl}/api/users/update-static-picture`,
           { img_url: imageUrl },
           { headers }
         )
@@ -108,6 +108,42 @@ export class AuthService {
   private setSession(authResult: any) {
     localStorage.setItem('token', authResult.token);
     localStorage.setItem('user', JSON.stringify(authResult.user));
+  }
+  async uploadImage(file: File) {
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Only JPEG/PNG allowed.');
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('File too large (max 5MB)');
+    }
+
+    const formData = new FormData();
+    formData.append('profilePicture', file); // Must match Multer field name
+
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.getToken()}`
+    );
+    // Don't set Content-Type - let browser handle it for FormData
+
+    try {
+      const response = await firstValueFrom(
+        this.http.patch<{ user: any; token: string }>(
+          `${environment.apiUrl}/api/users/update-picture`,
+          formData,
+          { headers }
+        )
+      );
+
+      this.setSession(response); // Update local storage
+      return response;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      throw error; // Re-throw for component to handle
+    }
   }
 
   logout() {

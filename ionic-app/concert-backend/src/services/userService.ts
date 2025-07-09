@@ -177,25 +177,31 @@ const UserService = {
   },
   updateUserPic: async (
     userId: string,
-    img_url: string
+    imgUrl: string
   ): Promise<LoginResponse> => {
-    const user = await UserModel.updateUserPic(parseInt(userId), img_url);
-    if (!user) {
-      throw new Error('User not found');
+    try {
+      const user = await UserModel.updateUserPic(parseInt(userId), imgUrl);
+      if (!user) {
+        throw new CustomError('User not found', 404);
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      return { user, token };
+    } catch (error) {
+      console.error('Update profile picture error:', error);
+      throw error instanceof CustomError
+        ? error
+        : new CustomError('Failed to update profile picture', 500);
     }
-
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    // 4. Return user data + token
-    return { user, token };
   },
 };
 

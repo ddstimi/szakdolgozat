@@ -129,6 +129,33 @@ const UserController = {
     }
   }) as RequestHandler,
   updateUserPic: (async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log('Request files:', req.file); // Debug log
+
+      if (!req.file) {
+        console.log('Request body:', req.body); // Check what's actually being received
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const userId = (req as any).user.id;
+      const imagePath = `/assets/profile-pictures/${req.file.filename}`;
+
+      const { user, token } = await UserService.updateUserPic(
+        userId.toString(),
+        imagePath
+      );
+
+      return res.status(200).json({
+        message: 'Profile picture updated successfully!',
+        user,
+        token,
+      });
+    } catch (error) {
+      console.error('Controller error:', error);
+      return next(error);
+    }
+  }) as RequestHandler,
+  updateStaticPic: (async (req: Request, res: Response, next: NextFunction) => {
     const userId = (req as any).user.id; // Assuming middleware set this from token
     const { img_url } = req.body;
 

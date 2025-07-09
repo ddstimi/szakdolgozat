@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {
   IonContent,
@@ -26,7 +25,6 @@ import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/authService';
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -48,8 +46,7 @@ export class ProfilePage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private authService: AuthService,
-    private router: Router,
-    private http: HttpClient
+    private router: Router
   ) {}
 
   predefinedPics: string[] = [
@@ -130,71 +127,30 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  async onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const file = event.target.files[0];
-    await this.uploadImage(file);
+    this.readImage(file);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 
   async onDrop(event: DragEvent) {
     event.preventDefault();
     const file = event.dataTransfer?.files[0];
     if (file) {
-      await this.uploadImage(file);
-    }
-  }
-
-  async uploadImage(file: File) {
-    // Check file type
-    if (!file.type.match(/image\/(jpeg|png|jpg)/)) {
-      console.error('Invalid file type');
-      return;
-    }
-
-    // Check file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      console.error('File too large (max 5MB)');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('profilePicture', file);
-
-    try {
-      const headers = new HttpHeaders().set(
-        'Authorization',
-        `Bearer ${this.authService.getToken()}`
-      );
-
-      // Define response interface
-      interface UploadResponse {
-        user: {
-          img_url: string;
-          // add other user properties as needed
-        };
-        token: string;
-      }
-
-      const response = await firstValueFrom(
-        this.http.patch<UploadResponse>( // Add type parameter here
-          `http://localhost:3000/api/users/update-picture`,
-          formData,
-          { headers }
-        )
-      );
-
-      if (response.user) {
+      this.readImage(file);
+      try {
+        const response = await this.authService.uploadImage(file);
         this.user.img_url = response.user.img_url;
         this.selectedPicture = response.user.img_url;
-        this.authService.storeToken(response.token);
+        // Show success message to user
+      } catch (error) {
+        console.error('Upload error:', error);
+        // Show error message to user
       }
-    } catch (error) {
-      console.error('Failed to upload profile picture', error);
     }
-  }
-
-  // Remove the readImage function as we don't need it anymore
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
   }
 
   readImage(file: File) {
@@ -202,7 +158,7 @@ export class ProfilePage implements OnInit {
     reader.onload = async () => {
       this.selectedPicture = reader.result as string;
       try {
-        await this.updateProfilePicture();
+        await this.authService.uploadImage(file);
         console.log('Profile picture updated successfully.');
       } catch (error) {
         console.error('Failed to update profile picture', error);
