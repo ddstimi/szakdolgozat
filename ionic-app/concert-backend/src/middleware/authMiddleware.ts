@@ -10,21 +10,27 @@ interface JwtPayload {
   email: string;
 }
 
-export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
+// middleware/authenticateJWT.ts
+
+export const authenticateJWT = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Authorization header missing or malformed' });
-  }
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
 
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    (req as any).user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
+    jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      (req as any).user = user;
+      console.log('JWT middleware passed');
+      next();
+    });
+  } else {
+    res.sendStatus(401);
   }
-    return next(error);
 };

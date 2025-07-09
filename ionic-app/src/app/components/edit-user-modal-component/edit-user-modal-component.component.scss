@@ -47,6 +47,11 @@
       margin-top: 1rem;
     }
   }
+
+  ion-toggle{
+    transform: scale(1.2);
+    margin-right: 1rem;
+  }
   
   .modal-container {
     width: 100%;
@@ -59,7 +64,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
     animation: fadeIn 0.4s ease-in-out;
-    margin-top: 15%;
+    margin-top: 6%;
 
   }
   ion-modal {

@@ -3,29 +3,154 @@
     <ion-header>
       <ion-toolbar>
         <ion-title>Edit User Info</ion-title>
-        <ion-button fill="clear" slot="end" (click)="closeModal()"
-          >Close</ion-button
-        >
+        <ion-buttons slot="end">
+          <ion-button
+            fill="outline"
+            color="primary"
+            shape="round"
+            (click)="closeModal()"
+            >Close</ion-button
+          >
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-list>
       <ion-item>
-        <ion-label position="stacked">Username</ion-label>
-        <ion-input></ion-input>
+        <ion-label position="stacked">Name</ion-label>
+        <ng-container *ngIf="!isEditing.name; else editName">
+          {{ user.name }}
+          <ion-button fill="outline" slot="end" (click)="isEditing.name = true">
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editName>
+          <ion-input [(ngModel)]="editedUser.name"></ion-input>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="saveUserField('name')"
+          >
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
       </ion-item>
+      <hr class="section-divider" />
+
+      <ion-item>
+        <ion-label position="stacked">Username</ion-label>
+        <ng-container *ngIf="!isEditing.username; else editUsername">
+          {{ user.username }}
+          <ion-button
+            fill="outline"
+            slot="end"
+            (click)="isEditing.username = true"
+          >
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editUsername>
+          <ion-input [(ngModel)]="editedUser.username"></ion-input>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="saveUserField('username')"
+          >
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
+      </ion-item>
+      <hr class="section-divider" />
+
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input></ion-input>
+        <ng-container *ngIf="!isEditing.email; else editEmail">
+          {{ user.email }}
+          <ion-button
+            fill="outline"
+            slot="end"
+            (click)="isEditing.email = true"
+          >
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editEmail>
+          <ion-input [(ngModel)]="editedUser.email"></ion-input>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="saveUserField('email')"
+          >
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
       </ion-item>
+      <hr class="section-divider" />
 
       <ion-item>
         <ion-label position="stacked">Password</ion-label>
-        <ion-input type="password"></ion-input>
+        <ng-container *ngIf="!isEditing.password; else editPassword">
+          ••••••••
+          <ion-button
+            fill="outline"
+            slot="end"
+            (click)="isEditing.password = true"
+          >
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editPassword>
+          <ion-input
+            [(ngModel)]="editedUser.password"
+            type="password"
+            [counter]="true"
+            maxlength="20"
+            minlength="8"
+          ></ion-input>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="saveUserField('password')"
+          >
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
+      </ion-item>
+      <hr class="section-divider" />
+
+      <ion-item>
+        <ion-label>GDPR Consent</ion-label>
+
+        <ng-container *ngIf="!isEditing.gdpr; else editGDPR">
+          <ion-toggle
+            [checked]="editedUser.gdpr"
+            disabled
+            slot="end"
+          ></ion-toggle>
+          <ion-button fill="outline" slot="end" (click)="isEditing.gdpr = true">
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+
+        <ng-template #editGDPR>
+          <ion-toggle [(ngModel)]="editedUser.gdpr" slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="saveUserField('gdpr')"
+          >
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
       </ion-item>
     </ion-list>
 
-    <ion-button expand="block" class="glow" (click)="closeModal()"
+    <ion-button expand="block" class="glow" (click)="saveChanges()"
       >Save</ion-button
     >
   </div>

@@ -1,31 +1,81 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonItem, IonButton, IonModal, IonButtons, IonChip, IonCardContent, IonCardHeader, IonCardTitle, IonCard, IonList } from '@ionic/angular/standalone';
-import { EditPreferencesModalComponent } from "../../components/edit-preferences-modal-component/edit-preferences-modal-component.component";
-import { EditUserModalComponent } from "../../components/edit-user-modal-component/edit-user-modal-component.component";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonLabel,
+  IonItem,
+  IonButton,
+  IonModal,
+  IonButtons,
+  IonChip,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCard,
+  IonList,
+} from '@ionic/angular/standalone';
+import { EditPreferencesModalComponent } from '../../components/edit-preferences-modal-component/edit-preferences-modal-component.component';
+import { EditUserModalComponent } from '../../components/edit-user-modal-component/edit-user-modal-component.component';
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/authService';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [EditUserModalComponent,EditPreferencesModalComponent,IonicModule, CommonModule, FormsModule],
-
+  imports: [
+    EditUserModalComponent,
+    EditPreferencesModalComponent,
+    IonicModule,
+    CommonModule,
+    FormsModule,
+  ],
 })
 export class ProfilePage implements OnInit {
-
   filteredGenres: string[] = [];
   filteredLocations: string[] = [];
   filteredArtists: string[] = [];
-  
 
-  constructor(private modalCtrl: ModalController, private authService: AuthService,private router: Router) { }
+  constructor(
+    private modalCtrl: ModalController,
+    private authService: AuthService,
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
-  ngOnInit() {
+  predefinedPics: string[] = [
+    'assets/images/prof_pic/hawer.jpg',
+    'assets/images/prof_pic/krubi.jpg',
+    'assets/images/prof_pic/balazs_korda.jpg',
+    'assets/images/prof_pic/colee.jpg',
+    'assets/images/prof_pic/desh.jpg',
+    'assets/images/prof_pic/hofi.jpg',
+    'assets/images/prof_pic/dzsudlo.jpg',
+    'assets/images/prof_pic/bikini.jpg',
+  ];
+  async ngOnInit() {
+    try {
+      const userData = await this.authService.getUserData();
+      this.user.name = userData.name;
+      this.user.username = userData.username;
+      this.user.email = userData.email;
+      this.user.gdpr = userData.gdpr;
+      this.user.img_url = userData.img_url;
+      this.selectedPicture =
+        this.user.img_url || 'assets/images/prof_pic/bikini.jpg';
+      console.log(this.user.img_url);
+    } catch (error) {
+      console.error('Could not load user data', error);
+    }
   }
 
   get isModalOpen(): boolean {
@@ -36,17 +86,26 @@ export class ProfilePage implements OnInit {
   showPrefModal = false;
 
   user = {
-    name: 'user.name',
-    email: 'user@example.com',
+    name: '',
+    email: '',
     password: '********',
-    username: 'user.username'
+    username: '',
+    gdpr: false,
+    img_url: '',
   };
 
   genres = ['Rock', 'Jazz', 'Indie'];
   locations = ['Budapest - Akvárium', 'Pécs - Nappali'];
   artists = ['Arctic Monkeys', 'Billie Eilish'];
 
-  availableGenres: string[] = ['Rock', 'Jazz', 'Pop', 'Indie', 'Hip-hop', 'Heavy metal'];
+  availableGenres: string[] = [
+    'Rock',
+    'Jazz',
+    'Pop',
+    'Indie',
+    'Hip-hop',
+    'Heavy metal',
+  ];
   availableLocations: string[] = ['Budapest - Akvárium', 'Pécs - Nappali'];
   availableArtists: string[] = ['Arctic Monkeys', 'Billie Eilish', 'Krúbi'];
 
@@ -58,71 +117,134 @@ export class ProfilePage implements OnInit {
   newLocation = '';
   newArtist = '';
 
+  selectedPicture = '';
 
-predefinedPics: string[] = [
-  'assets/images/prof_pic/hawer.jpg',
-  'assets/images/prof_pic/krubi.jpg',
-  'assets/images/prof_pic/balazs_korda.jpg',
-  'assets/images/prof_pic/colee.jpg',
-  'assets/images/prof_pic/desh.jpg',
-  'assets/images/prof_pic/hofi.jpg',
-  'assets/images/prof_pic/dzsudlo.jpg',
-  'assets/images/prof_pic/bikini.jpg',
-];
-
-selectedPicture: string = this.predefinedPics[0];
-
-selectPreset(img: string) {
-  this.selectedPicture = img;
-}
-
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  this.readImage(file);
-}
-
-onDragOver(event: DragEvent) {
-  event.preventDefault();
-}
-
-onDrop(event: DragEvent) {
-  event.preventDefault();
-  const file = event.dataTransfer?.files[0];
-  if (file) {
-    this.readImage(file);
+  async selectPreset(img: string) {
+    this.selectedPicture = img;
+    console.log('Preset selected:', img);
+    try {
+      await this.updateProfilePicture();
+      console.log('Profile picture updated from preset.');
+    } catch (error) {
+      console.error('Failed to update profile picture from preset', error);
+    }
   }
-}
 
-readImage(file: File) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.selectedPicture = reader.result as string;
-  };
-  reader.readAsDataURL(file);
-}
+  async onFileSelected(event: any) {
+    const file = event.target.files[0];
+    await this.uploadImage(file);
+  }
+
+  async onDrop(event: DragEvent) {
+    event.preventDefault();
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      await this.uploadImage(file);
+    }
+  }
+
+  async uploadImage(file: File) {
+    // Check file type
+    if (!file.type.match(/image\/(jpeg|png|jpg)/)) {
+      console.error('Invalid file type');
+      return;
+    }
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      console.error('File too large (max 5MB)');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    try {
+      const headers = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.authService.getToken()}`
+      );
+
+      // Define response interface
+      interface UploadResponse {
+        user: {
+          img_url: string;
+          // add other user properties as needed
+        };
+        token: string;
+      }
+
+      const response = await firstValueFrom(
+        this.http.patch<UploadResponse>( // Add type parameter here
+          `http://localhost:3000/api/users/update-picture`,
+          formData,
+          { headers }
+        )
+      );
+
+      if (response.user) {
+        this.user.img_url = response.user.img_url;
+        this.selectedPicture = response.user.img_url;
+        this.authService.storeToken(response.token);
+      }
+    } catch (error) {
+      console.error('Failed to upload profile picture', error);
+    }
+  }
+
+  // Remove the readImage function as we don't need it anymore
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  readImage(file: File) {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      this.selectedPicture = reader.result as string;
+      try {
+        await this.updateProfilePicture();
+        console.log('Profile picture updated successfully.');
+      } catch (error) {
+        console.error('Failed to update profile picture', error);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async updateProfilePicture() {
+    try {
+      const response = await this.authService.updateUserProfilePicture(
+        this.selectedPicture
+      );
+
+      if (response.user) {
+        this.user.img_url = response.user.img_url;
+
+        this.authService.storeToken(response.token);
+      }
+    } catch (error) {
+      console.error('Failed to update profile picture', error);
+    }
+  }
 
   async openEditUser() {
     const modal = await this.modalCtrl.create({
       component: EditUserModalComponent,
-      componentProps: {
-        user: this.user
-      }
+      componentProps: { user: this.user },
     });
-  
     document.body.classList.add('modal-open');
-  
-    modal.onDidDismiss().then(({ data }) => {
-      if (data) {
-        this.saveUser(data);
-      }
-      
+    modal.onDidDismiss().then(() => {
       document.body.classList.remove('modal-open');
     });
-  
+
     await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if (data) {
+      this.saveUser(data);
+    }
   }
-  
-  
 
   async openEditPreferences() {
     const modal = await this.modalCtrl.create({
@@ -133,22 +255,18 @@ readImage(file: File) {
         artists: this.artists,
         availableGenres: this.availableGenres,
         availableLocations: this.availableLocations,
-        availableArtists: this.availableArtists
-      }
+        availableArtists: this.availableArtists,
+      },
     });
-  
+
     document.body.classList.add('modal-open');
-  
+
     modal.onDidDismiss().then(() => {
       document.body.classList.remove('modal-open');
     });
-  
+
     await modal.present();
   }
-  
-
-
-  
 
   closePrefModal() {
     document.body.classList.remove('modal-open');
@@ -163,31 +281,45 @@ readImage(file: File) {
     this.artists = event.artists;
   }
 
-
-
   filterOptions(query: string, options: string[]): string[] {
     const q = query.toLowerCase();
     return options.filter(
-      (opt) => opt.toLowerCase().includes(q) && !this.genres.includes(opt) && !this.locations.includes(opt) && !this.artists.includes(opt)
+      (opt) =>
+        opt.toLowerCase().includes(q) &&
+        !this.genres.includes(opt) &&
+        !this.locations.includes(opt) &&
+        !this.artists.includes(opt)
     );
   }
 
   addGenre() {
-    if (this.selectedGenre && this.availableGenres.includes(this.selectedGenre) && !this.genres.includes(this.selectedGenre)) {
+    if (
+      this.selectedGenre &&
+      this.availableGenres.includes(this.selectedGenre) &&
+      !this.genres.includes(this.selectedGenre)
+    ) {
       this.genres.push(this.selectedGenre);
     }
     this.selectedGenre = '';
   }
 
   addLocation() {
-    if (this.selectedLocation && this.availableLocations.includes(this.selectedLocation) && !this.locations.includes(this.selectedLocation)) {
+    if (
+      this.selectedLocation &&
+      this.availableLocations.includes(this.selectedLocation) &&
+      !this.locations.includes(this.selectedLocation)
+    ) {
       this.locations.push(this.selectedLocation);
     }
     this.selectedLocation = '';
   }
 
   addArtist() {
-    if (this.selectedArtist && this.availableArtists.includes(this.selectedArtist) && !this.artists.includes(this.selectedArtist)) {
+    if (
+      this.selectedArtist &&
+      this.availableArtists.includes(this.selectedArtist) &&
+      !this.artists.includes(this.selectedArtist)
+    ) {
       this.artists.push(this.selectedArtist);
     }
     this.selectedArtist = '';
@@ -208,84 +340,101 @@ readImage(file: File) {
   onGenreInput(event: any) {
     const query = event.target.value;
     this.filteredGenres = query
-      ? this.availableGenres.filter(opt =>
-          opt.toLowerCase().includes(query.toLowerCase()) &&
-          !this.genres.includes(opt)
+      ? this.availableGenres.filter(
+          (opt) =>
+            opt.toLowerCase().includes(query.toLowerCase()) &&
+            !this.genres.includes(opt)
         )
       : [];
   }
-  
+
   selectGenre(option: string) {
     this.selectedGenre = option;
     this.filteredGenres = [];
   }
-  
+
   onLocationInput(event: any) {
     const query = event.target.value;
     this.filteredLocations = query
-      ? this.availableLocations.filter(opt =>
-          opt.toLowerCase().includes(query.toLowerCase()) &&
-          !this.locations.includes(opt)
+      ? this.availableLocations.filter(
+          (opt) =>
+            opt.toLowerCase().includes(query.toLowerCase()) &&
+            !this.locations.includes(opt)
         )
       : [];
   }
-  
+
   selectLocation(option: string) {
     this.selectedLocation = option;
     this.filteredLocations = [];
   }
-  
+
   onArtistInput(event: any) {
     const query = event.target.value;
     this.filteredArtists = query
-      ? this.availableArtists.filter(opt =>
-          opt.toLowerCase().includes(query.toLowerCase()) &&
-          !this.artists.includes(opt)
+      ? this.availableArtists.filter(
+          (opt) =>
+            opt.toLowerCase().includes(query.toLowerCase()) &&
+            !this.artists.includes(opt)
         )
       : [];
   }
-  
+
   selectArtist(option: string) {
     this.selectedArtist = option;
     this.filteredArtists = [];
   }
-  
-  saveUser(updatedUser: {name: string, email: string; password: string , username: string}) {
-    this.user = updatedUser;
+
+  async saveUser(updatedUser: {
+    name: string;
+    email: string;
+    password: string;
+    username: string;
+    gdpr: boolean;
+    img_url: string;
+  }) {
+    this.user = { ...updatedUser };
+
+    try {
+      await this.authService.updateUserData(this.user);
+      // Optional: show success toast
+    } catch (err) {
+      console.error('Error updating user', err);
+      // Optional: show error toast
+    }
+
     this.showUserModal = false;
   }
-  
 
   notifications = [
-  {
-    title: 'New Concert Nearby!',
-    message: 'A new concert matching your preferences is available in Budapest.',
-    timeAgo: '2h ago',
-    read: false,
-  },
-  {
-    title: 'Ticket Price Drop!',
-    message: 'Prices dropped for Arctic Monkeys tickets!',
-    timeAgo: '1 day ago',
-    read: false,
-  },
-  {
-    title: 'New Artist in Your Favorites',
-    message: 'Billie Eilish has a new event in your region.',
-    timeAgo: '3 days ago',
-    read: false,
-  },
-];
+    {
+      title: 'New Concert Nearby!',
+      message:
+        'A new concert matching your preferences is available in Budapest.',
+      timeAgo: '2h ago',
+      read: false,
+    },
+    {
+      title: 'Ticket Price Drop!',
+      message: 'Prices dropped for Arctic Monkeys tickets!',
+      timeAgo: '1 day ago',
+      read: false,
+    },
+    {
+      title: 'New Artist in Your Favorites',
+      message: 'Billie Eilish has a new event in your region.',
+      timeAgo: '3 days ago',
+      read: false,
+    },
+  ];
 
-unreadCount = this.notifications.filter(n => !n.read).length;
+  unreadCount = this.notifications.filter((n) => !n.read).length;
 
-openNotificationsPage() {
-  this.router.navigate(['/tabs/profile/notifications']);
-}
-  
-  
+  openNotificationsPage() {
+    this.router.navigate(['/tabs/profile/notifications']);
+  }
 
   onLogout() {
-      this.authService.logout();
-  }  
+    this.authService.logout();
+  }
 }

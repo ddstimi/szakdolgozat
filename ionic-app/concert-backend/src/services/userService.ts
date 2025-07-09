@@ -1,4 +1,3 @@
-
 import bcrypt from 'bcryptjs';
 import UserModel from '../models/User';
 import { IUser } from '../interfaces/IUser';
@@ -8,14 +7,12 @@ const client = new OAuth2Client(process.env['GOOGLE_CLIENT_ID']);
 
 const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
 
-
-
 interface RegisterUserData {
-    name: string;
-    username: string;
-    email: string;
-    password: string;
-    gdpr?: boolean;
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  gdpr?: boolean;
 }
 
 interface LoginResponse {
@@ -23,61 +20,62 @@ interface LoginResponse {
   token: string;
 }
 
-
 class CustomError extends Error {
-    statusCode: number;
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-        Object.setPrototypeOf(this, CustomError.prototype);
-    }
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+    Object.setPrototypeOf(this, CustomError.prototype);
+  }
 }
 
 const UserService = {
+  registerUser: async (userData: RegisterUserData): Promise<number> => {
+    const { name, username, email, password, gdpr } = userData;
 
-    registerUser: async (userData: RegisterUserData): Promise<number> => {
-        const { name, username, email, password, gdpr } = userData;
+    const usernameExists = await UserModel.usernameExists(username);
+    if (usernameExists) {
+      throw new CustomError('Username already exists.', 409);
+    }
 
-        const usernameExists = await UserModel.usernameExists(username);
-        if (usernameExists) {
-            throw new CustomError('Username already exists.', 409);
-        }
+    const emailExists = await UserModel.emailExists(email);
+    if (emailExists) {
+      throw new CustomError('Email already exists.', 409);
+    }
 
-        const emailExists = await UserModel.emailExists(email);
-        if (emailExists) {
-            throw new CustomError('Email already exists.', 409);
-        }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+    const userId = await UserModel.createUser({
+      name,
+      username,
+      email,
+      hashedPassword,
+      gdpr: gdpr || false,
+    });
 
-        const userId = await UserModel.createUser({
-            name,
-            username,
-            email,
-            hashedPassword,
-            gdpr: gdpr || false
-        });
+    return userId;
+  },
 
-        return userId;
-    },
+  loginUser: async (
+    username: string,
+    password: string
+  ): Promise<LoginResponse> => {
+    const user = await UserModel.findByUsername(username);
 
-   loginUser: async (username: string, password: string): Promise<LoginResponse> => {
-        const user = await UserModel.findByUsername(username);
+    if (!user) {
+      throw new CustomError('Invalid credentials.', 401);
+    }
 
-        if (!user) {
-            throw new CustomError('Invalid credentials.', 401);
-        }
+    const isMatch = await bcrypt.compare(password, user.password as string);
 
-        const isMatch = await bcrypt.compare(password, user.password as string);
+    if (!isMatch) {
+      throw new CustomError('Invalid credentials.', 401);
+    }
 
-        if (!isMatch) {
-            throw new CustomError('Invalid credentials.', 401);
-        }
+    await UserModel.updateLastLogin(user.id as number);
 
-        await UserModel.updateLastLogin(user.id as number);
-
-        const { password: _, ...userDataWithoutPassword } = user;
-       const token = jwt.sign(
+    const { password: _, ...userDataWithoutPassword } = user;
+    const token = jwt.sign(
       { id: user.id, username: user.username, email: user.email },
       JWT_SECRET,
       { expiresIn: '1h' }
@@ -88,55 +86,117 @@ const UserService = {
 
   handleGoogleAuth: async (credential: string): Promise<LoginResponse> => {
     const ticket = await client.verifyIdToken({
-        idToken: credential,
-        audience: process.env['GOOGLE_CLIENT_ID'],
+      idToken: credential,
+      audience: process.env['GOOGLE_CLIENT_ID'],
     });
     const payload = ticket.getPayload();
 
     if (!payload || !payload.email) {
-        throw new CustomError('Invalid Google token.', 401);
+      throw new CustomError('Invalid Google token.', 401);
     }
 
     const email = payload.email;
     const name = payload.name || 'No Name';
     const username = email.split('@')[0];
 
-   let user = await UserModel.findByEmail(email);
+    let user = await UserModel.findByEmail(email);
 
-if (!user) {
-    const userId = await UserModel.createUser({
+    if (!user) {
+      const userId = await UserModel.createUser({
         name,
         username,
         email,
-        hashedPassword: "",
+        hashedPassword: '',
         gdpr: true,
-    });
-    user = await UserModel.findById(userId);
+      });
+      user = await UserModel.findById(userId);
 
-    if (!user) {
-        throw new CustomError("Failed to create user after Google authentication.", 500);
+      if (!user) {
+        throw new CustomError(
+          'Failed to create user after Google authentication.',
+          500
+        );
+      }
     }
-}
 
-if (user.id === undefined) {
-    throw new CustomError("User ID is missing.", 500);
-}
-await UserModel.updateLastLogin(user.id);
+    if (user.id === undefined) {
+      throw new CustomError('User ID is missing.', 500);
+    }
+    await UserModel.updateLastLogin(user.id);
 
-
-const { password: _, ...userDataWithoutPassword } = user;
-
+    const { password: _, ...userDataWithoutPassword } = user;
 
     const token = jwt.sign(
-        { id: user.id, username: user.username, email: user.email },
-        JWT_SECRET,
-        { expiresIn: '1h' }
+      { id: user.id, username: user.username, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '1h' }
     );
 
     return { user: userDataWithoutPassword, token };
-}
-    
-};
+  },
 
+  updateUser: async (
+    userId: number,
+    updateData: {
+      name?: string;
+      email?: string;
+      password?: string;
+      username?: string;
+      gdpr?: boolean;
+    }
+  ): Promise<LoginResponse> => {
+    const { name, email, password, username, gdpr } = updateData;
+
+    const updatedFields: any = {};
+
+    if (name !== undefined) updatedFields.name = name;
+    if (email !== undefined) updatedFields.email = email;
+    if (username !== undefined) updatedFields.username = username;
+    if (gdpr !== undefined) updatedFields.gdpr = gdpr;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updatedFields.password = hashedPassword;
+    }
+
+    const updatedUser = await UserModel.updateUserInfo(userId, updatedFields);
+
+    const { password: _, ...userDataWithoutPassword } = updatedUser;
+
+    const token = jwt.sign(
+      {
+        id: updatedUser.id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    return { user: userDataWithoutPassword, token };
+  },
+  updateUserPic: async (
+    userId: string,
+    img_url: string
+  ): Promise<LoginResponse> => {
+    const user = await UserModel.updateUserPic(parseInt(userId), img_url);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // 4. Return user data + token
+    return { user, token };
+  },
+};
 
 export default UserService;

@@ -308,6 +308,8 @@ ion-button#logout-btn{
   align-self: center;
   justify-self: center;
   border-radius: 8px;
+  flex-direction: column;
+  margin: auto;
 }
 
 @media (max-width: 769px) {

@@ -97,6 +97,12 @@
               <p><strong>Email:</strong> {{ user.email }}</p>
               <hr class="section-divider" />
               <p><strong>Password:</strong> ********</p>
+              <hr class="section-divider" />
+
+              <p>
+                <strong>GDPR:</strong> {{ user.gdpr? "Accepted" : "Not accepted"
+                }}
+              </p>
             </div>
             <ion-button (click)="openEditUser()" fill="outline" class="glow"
               >Modify</ion-button
@@ -140,12 +146,12 @@
           </ion-card-content>
         </ion-card>
       </div>
-    </div>
-    <div id="logout">
-      <h3>Want to log out?</h3>
-      <ion-button (click)="onLogout()" id="logout-btn" class="glow"
-        >Log Out</ion-button
-      >
+      <div id="logout">
+        <h3>Want to log out?</h3>
+        <ion-button (click)="onLogout()" id="logout-btn" class="glow"
+          >Log Out</ion-button
+        >
+      </div>
     </div>
   </div>
 </ion-content>
