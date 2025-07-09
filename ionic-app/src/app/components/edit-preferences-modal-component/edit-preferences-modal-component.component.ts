@@ -76,6 +76,7 @@ export class EditPreferencesModalComponent {
   }
 
   closeModal() {
+    document.body.classList.remove('modal-open');
     this.modalCtrl.dismiss();
   }
 

@@ -30,19 +30,9 @@ import { Router } from '@angular/router';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [
-    EditUserModalComponent,
-    EditPreferencesModalComponent,
-    IonicModule,
-    CommonModule,
-    FormsModule,
-  ],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class ProfilePage implements OnInit {
-  filteredGenres: string[] = [];
-  filteredLocations: string[] = [];
-  filteredArtists: string[] = [];
-
   constructor(
     private modalCtrl: ModalController,
     private authService: AuthService,
@@ -73,12 +63,29 @@ export class ProfilePage implements OnInit {
       } else {
         this.user.img_url = 'http://localhost:3000/profile-pictures/bikini.jpg';
       }
+      await this.loadPreferences();
       console.log(this.user.img_url);
     } catch (error) {
       console.error('Could not load user data', error);
     }
   }
+  async loadPreferences() {
+    try {
+      const preferences = await this.authService.getPreferences();
 
+      // Update your component state with the loaded preferences
+      this.genres = preferences.genres || [];
+      this.locations = preferences.locations || [];
+      this.artists = preferences.artists || [];
+      this.venues = preferences.venues || [];
+
+      this.seeCancelled = preferences.see_cancelled;
+      this.seeNotAvailable = preferences.see_not_available;
+      this.notifyPush = preferences.notify_push;
+    } catch (error) {
+      console.error('Failed to load preferences', error);
+    }
+  }
   get isModalOpen(): boolean {
     return this.showUserModal || this.showPrefModal;
   }
@@ -95,15 +102,28 @@ export class ProfilePage implements OnInit {
     img_url: '',
   };
 
-  // In your ProfilePage class:
-
-  // Change these to use IDs instead of names
+  // Selection arrays (store IDs only)
   artists: number[] = [];
   locations: number[] = [];
   genres: number[] = [];
   venues: number[] = [];
+  seeCancelled: boolean = false;
+  seeNotAvailable: boolean = false;
+  notifyPush: boolean = false;
 
-  // Update available options to include both ID and name
+  // Selected items (store IDs only)
+  selectedGenre: number | null = null;
+  selectedLocation: number | null = null;
+  selectedArtist: number | null = null;
+  selectedVenue: number | null = null;
+
+  // Filtered options (full objects for display)
+  filteredGenres: { id: number; name: string }[] = [];
+  filteredLocations: { id: number; name: string }[] = [];
+  filteredArtists: { id: number; name: string }[] = [];
+  filteredVenues: { id: number; name: string }[] = [];
+
+  // Available options (full objects)
   availableArtists: { id: number; name: string }[] = [
     { id: 1, name: 'Arctic Monkeys' },
     { id: 2, name: 'Billie Eilish' },
@@ -120,24 +140,34 @@ export class ProfilePage implements OnInit {
     { id: 2, name: 'Jazz' },
     { id: 3, name: 'Indie' },
   ];
+
   availableVenues: { id: number; name: string }[] = [
     { id: 1, name: 'Jate' },
     { id: 2, name: 'Hungi' },
     { id: 3, name: 'Ápoló' },
   ];
+
   async savePreferences() {
     try {
-      await this.authService.updatePreferences({
-        genres: this.genres,
-        locations: this.locations,
-        artists: this.artists,
-        venues: this.venues,
-        see_cancelled: false,
+      const prefs = {
+        see_cancelled: false, // Set these based on your UI toggles
         see_not_available: false,
         notify_push: false,
-      });
+        artists: this.artists,
+        locations: this.locations,
+        genres: this.genres,
+        venues: this.venues,
+      };
+
+      const response = await this.authService.updatePreferences(prefs);
+      console.log('Preferences updated successfully', response);
+
+      // Optional: Show success message to user
+      // this.showToast('Preferences saved!');
     } catch (error) {
       console.error('Failed to save preferences', error);
+      // Optional: Show error message to user
+      // this.showToast('Failed to save preferences', 'danger');
     }
   }
 
@@ -214,6 +244,102 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  onGenreInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.filteredGenres = query
+      ? this.availableGenres.filter((opt) =>
+          opt.name.toLowerCase().includes(query)
+        )
+      : [];
+  }
+
+  selectGenre(genre: { id: number; name: string }) {
+    this.selectedGenre = genre.id;
+    this.filteredGenres = [];
+  }
+
+  addGenre() {
+    if (
+      this.selectedGenre !== null &&
+      !this.genres.includes(this.selectedGenre)
+    ) {
+      this.genres.push(this.selectedGenre);
+      this.selectedGenre = null;
+    }
+  }
+
+  onLocationInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.filteredLocations = query
+      ? this.availableLocations.filter((opt) =>
+          opt.name.toLowerCase().includes(query)
+        )
+      : [];
+  }
+
+  selectLocation(location: { id: number; name: string }) {
+    this.selectedLocation = location.id;
+    this.filteredLocations = [];
+  }
+
+  addLocation() {
+    if (
+      this.selectedLocation !== null &&
+      !this.locations.includes(this.selectedLocation)
+    ) {
+      this.locations.push(this.selectedLocation);
+      this.selectedLocation = null;
+    }
+  }
+
+  onArtistInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.filteredArtists = query
+      ? this.availableArtists.filter((opt) =>
+          opt.name.toLowerCase().includes(query)
+        )
+      : [];
+  }
+
+  selectArtist(artist: { id: number; name: string }) {
+    this.selectedArtist = artist.id;
+    this.filteredArtists = [];
+  }
+
+  addArtist() {
+    if (
+      this.selectedArtist !== null &&
+      !this.artists.includes(this.selectedArtist)
+    ) {
+      this.artists.push(this.selectedArtist);
+      this.selectedArtist = null;
+    }
+  }
+
+  onVenueInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.filteredVenues = query
+      ? this.availableVenues.filter((opt) =>
+          opt.name.toLowerCase().includes(query)
+        )
+      : [];
+  }
+
+  selectVenue(venue: { id: number; name: string }) {
+    this.selectedVenue = venue.id;
+    this.filteredVenues = [];
+  }
+
+  addVenue() {
+    if (
+      this.selectedVenue !== null &&
+      !this.venues.includes(this.selectedVenue)
+    ) {
+      this.venues.push(this.selectedVenue);
+      this.selectedVenue = null;
+    }
+  }
+
   async openEditUser() {
     const modal = await this.modalCtrl.create({
       component: EditUserModalComponent,
@@ -273,108 +399,46 @@ export class ProfilePage implements OnInit {
     this.artists = event.artists;
   }
 
-  filterOptions(query: string, options: string[]): string[] {
-    const q = query.toLowerCase();
-    return options.filter(
-      (opt) =>
-        opt.toLowerCase().includes(q) &&
-        !this.genres.includes(opt) &&
-        !this.locations.includes(opt) &&
-        !this.artists.includes(opt)
-    );
+  // Helper methods to get names from IDs
+  getGenreName(id: number): string {
+    const genre = this.availableGenres.find((g) => g.id === id);
+    return genre ? genre.name : 'Unknown Genre';
   }
 
-  addGenre() {
-    if (
-      this.selectedGenre &&
-      this.availableGenres.includes(this.selectedGenre) &&
-      !this.genres.includes(this.selectedGenre)
-    ) {
-      this.genres.push(this.selectedGenre);
-    }
-    this.selectedGenre = '';
+  getArtistName(id: number): string {
+    const artist = this.availableArtists.find((a) => a.id === id);
+    return artist ? artist.name : 'Unknown Artist';
   }
 
-  addLocation() {
-    if (
-      this.selectedLocation &&
-      this.availableLocations.includes(this.selectedLocation) &&
-      !this.locations.includes(this.selectedLocation)
-    ) {
-      this.locations.push(this.selectedLocation);
-    }
-    this.selectedLocation = '';
+  getLocationName(id: number): string {
+    const location = this.availableLocations.find((l) => l.id === id);
+    return location ? location.name : 'Unknown Location';
   }
 
-  addArtist() {
-    if (
-      this.selectedArtist &&
-      this.availableArtists.includes(this.selectedArtist) &&
-      !this.artists.includes(this.selectedArtist)
-    ) {
-      this.artists.push(this.selectedArtist);
-    }
-    this.selectedArtist = '';
+  getVenueName(id: number): string {
+    const venue = this.availableVenues.find((v) => v.id === id);
+    return venue ? venue.name : 'Unknown Venue';
   }
 
-  removeGenre(index: number) {
-    this.genres.splice(index, 1);
+  // Removal methods
+  removeGenre(id: number) {
+    this.genres = this.genres.filter((g) => g !== id);
+    this.savePreferences(); // Auto-save changes
   }
 
-  removeLocation(index: number) {
-    this.locations.splice(index, 1);
+  removeArtist(id: number) {
+    this.artists = this.artists.filter((a) => a !== id);
+    this.savePreferences();
   }
 
-  removeArtist(index: number) {
-    this.artists.splice(index, 1);
+  removeLocation(id: number) {
+    this.locations = this.locations.filter((l) => l !== id);
+    this.savePreferences();
   }
 
-  onGenreInput(event: any) {
-    const query = event.target.value;
-    this.filteredGenres = query
-      ? this.availableGenres.filter(
-          (opt) =>
-            opt.toLowerCase().includes(query.toLowerCase()) &&
-            !this.genres.includes(opt)
-        )
-      : [];
-  }
-
-  selectGenre(option: string) {
-    this.selectedGenre = option;
-    this.filteredGenres = [];
-  }
-
-  onLocationInput(event: any) {
-    const query = event.target.value;
-    this.filteredLocations = query
-      ? this.availableLocations.filter(
-          (opt) =>
-            opt.toLowerCase().includes(query.toLowerCase()) &&
-            !this.locations.includes(opt)
-        )
-      : [];
-  }
-
-  selectLocation(option: string) {
-    this.selectedLocation = option;
-    this.filteredLocations = [];
-  }
-
-  onArtistInput(event: any) {
-    const query = event.target.value;
-    this.filteredArtists = query
-      ? this.availableArtists.filter(
-          (opt) =>
-            opt.toLowerCase().includes(query.toLowerCase()) &&
-            !this.artists.includes(opt)
-        )
-      : [];
-  }
-
-  selectArtist(option: string) {
-    this.selectedArtist = option;
-    this.filteredArtists = [];
+  removeVenue(id: number) {
+    this.venues = this.venues.filter((v) => v !== id);
+    this.savePreferences();
   }
 
   async saveUser(updatedUser: {

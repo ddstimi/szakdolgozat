@@ -116,25 +116,70 @@
           </ion-card-header>
           <ion-card-content class="card-flex">
             <div class="pref-section">
+              <!-- Genres -->
               <div class="pref-group">
                 <strong>Genres:</strong>
-                <ion-chip color="primary" *ngFor="let genre of genres"
-                  >{{ genre }}</ion-chip
-                >
+                <div class="chips-container">
+                  <ion-chip
+                    color="primary"
+                    *ngFor="let genreId of genres"
+                    (click)="removeGenre(genreId)"
+                  >
+                    {{ getGenreName(genreId) }}
+                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                  </ion-chip>
+                </div>
               </div>
+
               <hr class="section-divider" />
+
+              <!-- Locations -->
               <div class="pref-group">
                 <strong>Locations:</strong>
-                <ion-chip color="secondary" *ngFor="let location of locations"
-                  >{{ location }}</ion-chip
-                >
+                <div class="chips-container">
+                  <ion-chip
+                    color="secondary"
+                    *ngFor="let locationId of locations"
+                    (click)="removeLocation(locationId)"
+                  >
+                    {{ getLocationName(locationId) }}
+                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                  </ion-chip>
+                </div>
               </div>
+
               <hr class="section-divider" />
+
+              <!-- Artists -->
               <div class="pref-group">
                 <strong>Artists:</strong>
-                <ion-chip color="tertiary" *ngFor="let artist of artists"
-                  >{{ artist }}</ion-chip
-                >
+                <div class="chips-container">
+                  <ion-chip
+                    color="tertiary"
+                    *ngFor="let artistId of artists"
+                    (click)="removeArtist(artistId)"
+                  >
+                    {{ getArtistName(artistId) }}
+                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                  </ion-chip>
+                </div>
+              </div>
+
+              <hr class="section-divider" />
+
+              <!-- Venues -->
+              <div class="pref-group">
+                <strong>Venues:</strong>
+                <div class="chips-container">
+                  <ion-chip
+                    color="warning"
+                    *ngFor="let venueId of venues"
+                    (click)="removeVenue(venueId)"
+                  >
+                    {{ getVenueName(venueId) }}
+                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                  </ion-chip>
+                </div>
               </div>
             </div>
             <ion-button
