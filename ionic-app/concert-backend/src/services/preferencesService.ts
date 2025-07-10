@@ -26,6 +26,35 @@ const PreferencesService = {
       throw new Error('Failed to get user preferences');
     }
   },
+  getAvailableOptions: async () => {
+    try {
+      console.log('Fetching available options from database...');
+
+      const [artists, cities, genres, venues] = await Promise.all([
+        PreferencesModel.getAvailableArtists(),
+        PreferencesModel.getAvailableCities(),
+        PreferencesModel.getAvailableGenres(),
+        PreferencesModel.getAvailableVenues(),
+      ]);
+
+      console.log('Successfully fetched options:', {
+        artists: artists.length,
+        cities: cities.length,
+        genres: genres.length,
+        venues: venues.length,
+      });
+
+      return {
+        artists,
+        cities,
+        genres,
+        venues,
+      };
+    } catch (error: any) {
+      console.error('Detailed error in getAvailableOptions:', error);
+      throw new Error(`Failed to get available options: ${error.message}`);
+    }
+  },
 
   updateUserPreferences: async (
     userId: number,

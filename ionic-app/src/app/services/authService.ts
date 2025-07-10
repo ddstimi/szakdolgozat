@@ -1,10 +1,10 @@
+import { firstValueFrom } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
 };
-import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 
 declare const google: any;
@@ -37,7 +37,6 @@ export class AuthService {
     );
 
     try {
-      // Await the first emitted value (the HTTP response)
       const res: any = await firstValueFrom(
         this.http.get(`${environment.apiUrl}/api/users/profile-info`, {
           headers,
@@ -45,8 +44,15 @@ export class AuthService {
       );
 
       console.log('User data', res);
-      return res.user; // just the user object
-    } catch (error) {
+      return res.user;
+    } catch (error: any) {
+      if (
+        error.response?.status === 401 ||
+        error.name === 'TokenExpiredError'
+      ) {
+        this.router.navigate(['/login']);
+      }
+      alert('Session expired. Please log in again.');
       console.error('Failed to fetch user data', error);
       throw error;
     }
@@ -75,7 +81,13 @@ export class AuthService {
       console.log('User data updated', res);
       this.setSession(res); // update local storage with new data
       return res.user;
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response?.status === 401 ||
+        error.name === 'TokenExpiredError'
+      ) {
+        this.router.navigate(['/login']);
+      }
       console.error('Failed to update user data', error);
       throw error;
     }
@@ -99,7 +111,13 @@ export class AuthService {
       console.log('User picture updated', res);
       this.setSession(res);
       return res.user;
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response?.status === 401 ||
+        error.name === 'TokenExpiredError'
+      ) {
+        this.router.navigate(['/login']);
+      }
       console.error('Failed to update user picture', error);
       throw error;
     }
@@ -115,7 +133,6 @@ export class AuthService {
       throw new Error('Invalid file type. Only JPEG/PNG allowed.');
     }
 
-    // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       throw new Error('File too large (max 5MB)');
     }
@@ -127,7 +144,6 @@ export class AuthService {
       'Authorization',
       `Bearer ${this.getToken()}`
     );
-    // Don't set Content-Type - let browser handle it for FormData
 
     try {
       const response = await firstValueFrom(
@@ -140,19 +156,29 @@ export class AuthService {
 
       this.setSession(response); // Update local storage
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response?.status === 401 ||
+        error.name === 'TokenExpiredError'
+      ) {
+        this.router.navigate(['/login']);
+      }
       console.error('Upload failed:', error);
-      throw error; // Re-throw for component to handle
+      throw error;
     }
   }
 
   async getPreferences(): Promise<any> {
     const token = await localStorage.getItem('token');
-    return this.http
-      .get(`${environment.apiUrl}/api/preferences`, {
+    if (!token) {
+      this.router.navigate(['/login']);
+      throw new Error('No authentication token found');
+    }
+    return firstValueFrom(
+      this.http.get(`${environment.apiUrl}/api/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .toPromise();
+    );
   }
 
   async updatePreferences(prefs: {
@@ -165,11 +191,51 @@ export class AuthService {
     venues: number[];
   }): Promise<any> {
     const token = await localStorage.getItem('token');
-    return this.http
-      .patch(`${environment.apiUrl}/api/preferences/update`, prefs, {
+    if (!token) {
+      this.router.navigate(['/login']);
+      throw new Error('No authentication token found');
+    }
+    return firstValueFrom(
+      this.http.patch(`${environment.apiUrl}/api/preferences/update`, prefs, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .toPromise();
+    );
+  }
+
+  async getPreferenceOptions(): Promise<{
+    artists: { id: number; name: string }[];
+    cities: { id: number; name: string }[];
+    genres: { id: number; name: string }[];
+    venues: { id: number; name: string }[];
+  }> {
+    const token = this.getToken();
+    if (!token) {
+      this.router.navigate(['/login']);
+      throw new Error('No authentication token found');
+    }
+
+    const response = await firstValueFrom(
+      this.http.get<{
+        success: boolean;
+        data: {
+          artists: { id: number; name: string }[];
+          cities: { id: number; name: string }[];
+          genres: { id: number; name: string }[];
+          venues: { id: number; name: string }[];
+        };
+      }>(`${environment.apiUrl}/api/preferences/options`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+
+    return (
+      response?.data || {
+        artists: [],
+        cities: [],
+        genres: [],
+        venues: [],
+      }
+    );
   }
 
   logout() {

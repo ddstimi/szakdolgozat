@@ -10,5 +10,10 @@ router.patch(
   authenticateJWT,
   PreferencesController.updatePreferences
 );
+router.get(
+  '/options',
+  authenticateJWT,
+  PreferencesController.getAvailableOptions
+);
 
 export default router;

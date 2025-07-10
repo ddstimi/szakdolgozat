@@ -1,30 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonLabel,
-  IonItem,
-  IonButton,
-  IonModal,
-  IonButtons,
-  IonChip,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCard,
-  IonList,
-} from '@ionic/angular/standalone';
 import { EditPreferencesModalComponent } from '../../components/edit-preferences-modal-component/edit-preferences-modal-component.component';
 import { EditUserModalComponent } from '../../components/edit-user-modal-component/edit-user-modal-component.component';
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/authService';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -36,7 +19,8 @@ export class ProfilePage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
   predefinedPics: string[] = [
     'http://localhost:3000/profile-pictures/hawer.jpg',
@@ -48,44 +32,87 @@ export class ProfilePage implements OnInit {
     'http://localhost:3000/profile-pictures/dzsudlo.jpg',
     'http://localhost:3000/profile-pictures/bikini.jpg',
   ];
+
+  artists: number[] = [];
+  locations: number[] = [];
+  genres: number[] = [];
+  venues: number[] = [];
+  seeCancelled: boolean = false;
+  seeNotAvailable: boolean = false;
+  notifyPush: boolean = false;
+
+  selectedGenre: number | null = null;
+  selectedLocation: number | null = null;
+  selectedArtist: number | null = null;
+  selectedVenue: number | null = null;
+
+  filteredGenres: { id: number; name: string }[] = [];
+  filteredLocations: { id: number; name: string }[] = [];
+  filteredArtists: { id: number; name: string }[] = [];
+  filteredVenues: { id: number; name: string }[] = [];
+
+  availableArtists: { id: number; name: string }[] = [];
+  availableLocations: { id: number; name: string }[] = [];
+  availableGenres: { id: number; name: string }[] = [];
+  availableVenues: { id: number; name: string }[] = [];
+
   async ngOnInit() {
     try {
       const userData = await this.authService.getUserData();
-      this.user.name = userData.name;
-      this.user.username = userData.username;
-      this.user.email = userData.email;
-      this.user.gdpr = userData.gdpr;
-      let imgUrl = userData.img_url;
-      if (imgUrl) {
-        this.user.img_url = imgUrl.includes('http://localhost:3000')
-          ? imgUrl
-          : 'http://localhost:3000' + imgUrl;
-      } else {
-        this.user.img_url = 'http://localhost:3000/profile-pictures/bikini.jpg';
-      }
+      this.user = {
+        name: userData.name,
+        username: userData.username,
+        email: userData.email,
+        gdpr: userData.gdpr,
+        password: userData.password,
+        img_url: userData.img_url?.includes('http://localhost:3000')
+          ? userData.img_url
+          : 'http://localhost:3000' +
+            (userData.img_url || '/profile-pictures/bikini.jpg'),
+      };
+      this.selectedPicture = this.user.img_url;
+
+      const optionsResponse = await this.authService.getPreferenceOptions();
+      console.log('Options API Response:', optionsResponse);
+      this.availableGenres = optionsResponse.genres;
+      this.availableArtists = optionsResponse.artists;
+      this.availableVenues = optionsResponse.venues;
+      this.availableLocations = optionsResponse.cities;
+
+      console.log('Available options loaded:', {
+        genres: this.availableGenres,
+        artists: this.availableArtists,
+        venues: this.availableVenues,
+        locations: this.availableLocations,
+      });
+
       await this.loadPreferences();
-      console.log(this.user.img_url);
     } catch (error) {
-      console.error('Could not load user data', error);
+      console.error('Initialization error:', error);
     }
   }
+
   async loadPreferences() {
     try {
-      const preferences = await this.authService.getPreferences();
+      const response = await this.authService.getPreferences();
+      console.log('Full preferences response:', response);
 
-      // Update your component state with the loaded preferences
-      this.genres = preferences.genres || [];
-      this.locations = preferences.locations || [];
-      this.artists = preferences.artists || [];
-      this.venues = preferences.venues || [];
+      this.genres = response.genres || [];
+      this.artists = response.artists || [];
+      this.venues = response.venues || [];
+      this.locations = response.cities || [];
 
-      this.seeCancelled = preferences.see_cancelled;
-      this.seeNotAvailable = preferences.see_not_available;
-      this.notifyPush = preferences.notify_push;
+      console.log('Preferences loaded with available data:', {
+        genreIds: this.genres,
+        availableGenres: this.availableGenres,
+      });
+
+      this.cdr.detectChanges();
     } catch (error) {
-      console.error('Failed to load preferences', error);
+      console.error('Error loading preferences:', error);
     }
   }
+
   get isModalOpen(): boolean {
     return this.showUserModal || this.showPrefModal;
   }
@@ -102,55 +129,10 @@ export class ProfilePage implements OnInit {
     img_url: '',
   };
 
-  // Selection arrays (store IDs only)
-  artists: number[] = [];
-  locations: number[] = [];
-  genres: number[] = [];
-  venues: number[] = [];
-  seeCancelled: boolean = false;
-  seeNotAvailable: boolean = false;
-  notifyPush: boolean = false;
-
-  // Selected items (store IDs only)
-  selectedGenre: number | null = null;
-  selectedLocation: number | null = null;
-  selectedArtist: number | null = null;
-  selectedVenue: number | null = null;
-
-  // Filtered options (full objects for display)
-  filteredGenres: { id: number; name: string }[] = [];
-  filteredLocations: { id: number; name: string }[] = [];
-  filteredArtists: { id: number; name: string }[] = [];
-  filteredVenues: { id: number; name: string }[] = [];
-
-  // Available options (full objects)
-  availableArtists: { id: number; name: string }[] = [
-    { id: 1, name: 'Arctic Monkeys' },
-    { id: 2, name: 'Billie Eilish' },
-    { id: 3, name: 'Krúbi' },
-  ];
-
-  availableLocations: { id: number; name: string }[] = [
-    { id: 1, name: 'Budapest - Akvárium' },
-    { id: 2, name: 'Pécs - Nappali' },
-  ];
-
-  availableGenres: { id: number; name: string }[] = [
-    { id: 1, name: 'Rock' },
-    { id: 2, name: 'Jazz' },
-    { id: 3, name: 'Indie' },
-  ];
-
-  availableVenues: { id: number; name: string }[] = [
-    { id: 1, name: 'Jate' },
-    { id: 2, name: 'Hungi' },
-    { id: 3, name: 'Ápoló' },
-  ];
-
   async savePreferences() {
     try {
       const prefs = {
-        see_cancelled: false, // Set these based on your UI toggles
+        see_cancelled: false,
         see_not_available: false,
         notify_push: false,
         artists: this.artists,
@@ -161,13 +143,8 @@ export class ProfilePage implements OnInit {
 
       const response = await this.authService.updatePreferences(prefs);
       console.log('Preferences updated successfully', response);
-
-      // Optional: Show success message to user
-      // this.showToast('Preferences saved!');
     } catch (error) {
       console.error('Failed to save preferences', error);
-      // Optional: Show error message to user
-      // this.showToast('Failed to save preferences', 'danger');
     }
   }
 
@@ -206,10 +183,8 @@ export class ProfilePage implements OnInit {
         const response = await this.authService.uploadImage(file);
         this.user.img_url = response.user.img_url;
         this.selectedPicture = response.user.img_url;
-        // Show success message to user
       } catch (error) {
         console.error('Upload error:', error);
-        // Show error message to user
       }
     }
   }
@@ -399,31 +374,33 @@ export class ProfilePage implements OnInit {
     this.artists = event.artists;
   }
 
-  // Helper methods to get names from IDs
   getGenreName(id: number): string {
+    if (!this.availableGenres) return 'Loading...';
+
     const genre = this.availableGenres.find((g) => g.id === id);
-    return genre ? genre.name : 'Unknown Genre';
+    return genre?.name || `Genre ${id}`;
   }
 
   getArtistName(id: number): string {
+    if (!this.availableArtists) return 'Loading...';
     const artist = this.availableArtists.find((a) => a.id === id);
-    return artist ? artist.name : 'Unknown Artist';
-  }
-
-  getLocationName(id: number): string {
-    const location = this.availableLocations.find((l) => l.id === id);
-    return location ? location.name : 'Unknown Location';
+    return artist?.name || `Artist ${id}`;
   }
 
   getVenueName(id: number): string {
+    if (!this.availableVenues) return 'Loading...';
     const venue = this.availableVenues.find((v) => v.id === id);
-    return venue ? venue.name : 'Unknown Venue';
+    return venue?.name || `Venue ${id}`;
   }
 
-  // Removal methods
+  getLocationName(id: number): string {
+    if (!this.availableLocations) return 'Loading...';
+    const location = this.availableLocations.find((l) => l.id === id);
+    return location?.name || `Location ${id}`;
+  }
   removeGenre(id: number) {
     this.genres = this.genres.filter((g) => g !== id);
-    this.savePreferences(); // Auto-save changes
+    this.savePreferences();
   }
 
   removeArtist(id: number) {
@@ -453,10 +430,8 @@ export class ProfilePage implements OnInit {
 
     try {
       await this.authService.updateUserData(this.user);
-      // Optional: show success toast
     } catch (err) {
       console.error('Error updating user', err);
-      // Optional: show error toast
     }
 
     this.showUserModal = false;

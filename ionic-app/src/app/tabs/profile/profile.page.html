@@ -116,41 +116,6 @@
           </ion-card-header>
           <ion-card-content class="card-flex">
             <div class="pref-section">
-              <!-- Genres -->
-              <div class="pref-group">
-                <strong>Genres:</strong>
-                <div class="chips-container">
-                  <ion-chip
-                    color="primary"
-                    *ngFor="let genreId of genres"
-                    (click)="removeGenre(genreId)"
-                  >
-                    {{ getGenreName(genreId) }}
-                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
-                  </ion-chip>
-                </div>
-              </div>
-
-              <hr class="section-divider" />
-
-              <!-- Locations -->
-              <div class="pref-group">
-                <strong>Locations:</strong>
-                <div class="chips-container">
-                  <ion-chip
-                    color="secondary"
-                    *ngFor="let locationId of locations"
-                    (click)="removeLocation(locationId)"
-                  >
-                    {{ getLocationName(locationId) }}
-                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
-                  </ion-chip>
-                </div>
-              </div>
-
-              <hr class="section-divider" />
-
-              <!-- Artists -->
               <div class="pref-group">
                 <strong>Artists:</strong>
                 <div class="chips-container">
@@ -158,29 +123,77 @@
                     color="tertiary"
                     *ngFor="let artistId of artists"
                     (click)="removeArtist(artistId)"
+                    [class.loading]="!availableArtists.length"
                   >
-                    {{ getArtistName(artistId) }}
+                    {{ availableArtists.length ? getArtistName(artistId) :
+                    'Loading...' }}
                     <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                  </ion-chip>
+                </div>
+              </div>
+              <hr class="section-divider" />
+
+              <div class="pref-group">
+                <strong>Genres:</strong>
+                <div class="chips-container">
+                  <ion-chip
+                    color="primary"
+                    *ngFor="let genreId of genres"
+                    [class.loading]="!availableGenres.length"
+                  >
+                    {{ availableGenres.length ? getGenreName(genreId) :
+                    'Loading...' }}
+                    <ion-icon
+                      name="close-circle"
+                      class="chip-close"
+                      (click)="removeGenre(genreId)"
+                    ></ion-icon>
                   </ion-chip>
                 </div>
               </div>
 
               <hr class="section-divider" />
 
-              <!-- Venues -->
               <div class="pref-group">
                 <strong>Venues:</strong>
                 <div class="chips-container">
                   <ion-chip
                     color="warning"
                     *ngFor="let venueId of venues"
-                    (click)="removeVenue(venueId)"
+                    [class.loading]="!availableVenues.length"
                   >
-                    {{ getVenueName(venueId) }}
-                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
+                    {{ availableVenues.length ? getVenueName(venueId) :
+                    'Loading...' }}
+                    <ion-icon
+                      name="close-circle"
+                      class="chip-close"
+                      (click)="removeVenue(venueId)"
+                    ></ion-icon>
                   </ion-chip>
                 </div>
               </div>
+              <hr class="section-divider" />
+
+              <div class="pref-group">
+                <strong>Cities:</strong>
+                <div class="chips-container">
+                  <ion-chip
+                    color="secondary"
+                    *ngFor="let locationId of locations"
+                    [class.loading]="!availableLocations.length"
+                  >
+                    {{ availableLocations.length ? getLocationName(locationId) :
+                    'Loading...' }}
+                    <ion-icon
+                      name="close-circle"
+                      class="chip-close"
+                      (click)="removeLocation(locationId)"
+                    ></ion-icon>
+                  </ion-chip>
+                </div>
+              </div>
+
+              <hr class="section-divider" />
             </div>
             <ion-button
               (click)="openEditPreferences()"

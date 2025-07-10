@@ -25,6 +25,25 @@ interface UserGenre extends RowDataPacket {
 interface UserVenue extends RowDataPacket {
   venue_id: number;
 }
+interface Artist extends RowDataPacket {
+  id: number;
+  name: string;
+}
+
+interface City extends RowDataPacket {
+  id: number;
+  name: string;
+}
+
+interface Genre extends RowDataPacket {
+  id: number;
+  name: string;
+}
+
+interface Venue extends RowDataPacket {
+  id: number;
+  name: string;
+}
 
 const PreferencesModel = {
   // Get main preferences
@@ -172,6 +191,90 @@ const PreferencesModel = {
       await pool.query('ROLLBACK');
       throw error;
     }
+  },
+  getAvailableArtists: async (): Promise<Artist[]> => {
+    const [rows] = await pool.query<Artist[]>('SELECT id, name FROM artists');
+    return rows;
+  },
+
+  getAvailableCities: async (): Promise<City[]> => {
+    const [rows] = await pool.query<City[]>('SELECT id, name FROM cities');
+    return rows;
+  },
+
+  getAvailableGenres: async (): Promise<Genre[]> => {
+    const [rows] = await pool.query<Genre[]>('SELECT id, name FROM genres');
+    return rows;
+  },
+
+  getAvailableVenues: async (): Promise<Venue[]> => {
+    const [rows] = await pool.query<Venue[]>('SELECT id, name FROM venues');
+    return rows;
+  },
+
+  getPreferencesWithNames: async (userId: number): Promise<any> => {
+    const [prefs, artists, cities, genres, venues] = await Promise.all([
+      PreferencesModel.getPreferences(userId),
+      PreferencesModel.getUserArtistsWithNames(userId),
+      PreferencesModel.getUserCitiesWithNames(userId),
+      PreferencesModel.getUserGenresWithNames(userId),
+      PreferencesModel.getUserVenuesWithNames(userId),
+    ]);
+
+    return {
+      ...prefs,
+      artists,
+      cities,
+      genres,
+      venues,
+    };
+  },
+
+  getUserArtistsWithNames: async (userId: number): Promise<Artist[]> => {
+    const [rows] = await pool.query<Artist[]>(
+      `SELECT a.id, a.name 
+       FROM artists a
+       JOIN user_artists ua ON a.id = ua.artist_id
+       WHERE ua.user_id = ?`,
+      [userId]
+    );
+    return rows;
+  },
+
+  // Get user cities with names
+  getUserCitiesWithNames: async (userId: number): Promise<City[]> => {
+    const [rows] = await pool.query<City[]>(
+      `SELECT c.id, c.name 
+       FROM cities c
+       JOIN user_cities uc ON c.id = uc.city_id
+       WHERE uc.user_id = ?`,
+      [userId]
+    );
+    return rows;
+  },
+
+  // Get user genres with names
+  getUserGenresWithNames: async (userId: number): Promise<Genre[]> => {
+    const [rows] = await pool.query<Genre[]>(
+      `SELECT g.id, g.name 
+       FROM genres g
+       JOIN user_genres ug ON g.id = ug.genre_id
+       WHERE ug.user_id = ?`,
+      [userId]
+    );
+    return rows;
+  },
+
+  // Get user venues with names
+  getUserVenuesWithNames: async (userId: number): Promise<Venue[]> => {
+    const [rows] = await pool.query<Venue[]>(
+      `SELECT v.id, v.name 
+       FROM venues v
+       JOIN user_venues uv ON v.id = uv.venue_id
+       WHERE uv.user_id = ?`,
+      [userId]
+    );
+    return rows;
   },
 };
 
