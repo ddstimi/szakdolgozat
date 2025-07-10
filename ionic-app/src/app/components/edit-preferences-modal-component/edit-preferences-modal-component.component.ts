@@ -16,10 +16,11 @@ import {
   IonChip,
   IonIcon,
   IonCheckbox,
+  IonToggle,
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { closeCircle } from 'ionicons/icons';
+import { closeCircle, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 type PreferenceType = 'genres' | 'locations' | 'artists' | 'venues';
 
 @Component({
@@ -28,6 +29,7 @@ type PreferenceType = 'genres' | 'locations' | 'artists' | 'venues';
   styleUrls: ['./edit-preferences-modal-component.component.scss'],
   standalone: true,
   imports: [
+    IonToggle,
     IonCheckbox,
     IonIcon,
     IonChip,
@@ -51,16 +53,27 @@ export class EditPreferencesModalComponent {
   @Input() locations: string[] = [];
   @Input() artists: string[] = [];
   @Input() venues: string[] = [];
-  @Input() availableGenres: string[] = [];
-  @Input() availableLocations: string[] = [];
-  @Input() availableArtists: string[] = [];
-  @Input() availableVenues: string[] = [];
+  @Input() seeCancelled: boolean = false;
+  @Input() seeNotAvailable: boolean = false;
+  @Input() notifyPush: boolean = false;
+
+  @Input() availableArtists: { id: number; name: string }[] = [];
+  @Input() availableLocations: { id: number; name: string }[] = [];
+  @Input() availableGenres: { id: number; name: string }[] = [];
+  @Input() availableVenues: { id: number; name: string }[] = [];
 
   @Output() preferencesUpdated = new EventEmitter<{
     genres: string[];
     locations: string[];
     artists: string[];
     venues: string[];
+    availableArtists: { id: number; name: string }[];
+    availableLocations: { id: number; name: string }[];
+    availableGenres: { id: number; name: string }[];
+    availableVenues: { id: number; name: string }[];
+    seeCancelled: boolean;
+    seeNotAvailable: boolean;
+    notifyPush: boolean;
   }>();
 
   selectedGenre = '';
@@ -71,8 +84,14 @@ export class EditPreferencesModalComponent {
   showCancelled = false;
   showSoldOut = false;
 
+  isEditing = {
+    seeCancelled: false,
+    seeNotAvailable: false,
+    notifyPush: false,
+  };
+
   constructor(private modalCtrl: ModalController) {
-    addIcons({ closeCircle });
+    addIcons({ closeCircle, pencilOutline, checkmarkOutline });
   }
 
   closeModal() {
@@ -86,14 +105,26 @@ export class EditPreferencesModalComponent {
       locations: this.locations,
       artists: this.artists,
       venues: this.venues,
+      availableArtists: this.availableArtists,
+      availableGenres: this.availableGenres,
+      availableLocations: this.availableLocations,
+      availableVenues: this.availableVenues,
+      seeCancelled: this.seeCancelled,
+      seeNotAvailable: this.seeNotAvailable,
+      notifyPush: this.notifyPush,
     });
     this.modalCtrl.dismiss({
       genres: this.genres,
       locations: this.locations,
       artists: this.artists,
       venues: this.venues,
-      showCancelled: this.showCancelled,
-      showSoldOut: this.showSoldOut,
+      availableArtists: this.availableArtists,
+      availableGenres: this.availableGenres,
+      availableLocations: this.availableLocations,
+      availableVenues: this.availableVenues,
+      seeCancelled: this.seeCancelled,
+      seeNotAvailable: this.seeNotAvailable,
+      notifyPush: this.notifyPush,
     });
   }
 
@@ -145,5 +176,30 @@ export class EditPreferencesModalComponent {
         this.selectedVenue = value;
         break;
     }
+  }
+
+  getGenreName(id: number): string {
+    if (!this.availableGenres) return 'Loading...';
+
+    const genre = this.availableGenres.find((g) => g.id === id);
+    return genre?.name || `Genre ${id}`;
+  }
+
+  getArtistName(id: number): string {
+    if (!this.availableArtists) return 'Loading...';
+    const artist = this.availableArtists.find((a) => a.id === id);
+    return artist?.name || `Artist ${id}`;
+  }
+
+  getVenueName(id: number): string {
+    if (!this.availableVenues) return 'Loading...';
+    const venue = this.availableVenues.find((v) => v.id === id);
+    return venue?.name || `Venue ${id}`;
+  }
+
+  getLocationName(id: number): string {
+    if (!this.availableLocations) return 'Loading...';
+    const location = this.availableLocations.find((l) => l.id === id);
+    return location?.name || `Location ${id}`;
   }
 }

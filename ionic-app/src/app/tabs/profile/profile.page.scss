@@ -154,7 +154,11 @@ ion-modal ion-toolbar {
   border-radius: 12px;
   background-color: #0e0e1074 !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
-  align-items: flex-start;
+  align-items: center;
+  p{
+    justify-self: flex-start;
+    align-self: flex-start;
+  }
   color: #f9f4f5;
 
 .card-flex{
@@ -197,7 +201,7 @@ ion-card-title {
   font-size: 1.5rem;
   font-weight: bold;
   background: none !important;
-  text-align: left;
+  text-align: center;
 }
 
 :host {

@@ -32,7 +32,7 @@
         <ion-label>Selected Genres</ion-label>
         <div class="chip-container">
           <ion-chip *ngFor="let artist of artists; let i = index">
-            {{ artist }}
+            {{ getArtistName(+artist) }}
             <ion-icon
               name="close-circle"
               (click)="remove('artists', i)"
@@ -56,7 +56,7 @@
         <ion-label>Selected Genres</ion-label>
         <div class="chip-container">
           <ion-chip *ngFor="let genre of genres; let i = index">
-            {{ genre }}
+            {{ getGenreName(+genre) }}
             <ion-icon
               name="close-circle"
               (click)="remove('genres', i)"
@@ -81,7 +81,7 @@
         <ion-label>Selected Venues</ion-label>
         <div class="chip-container">
           <ion-chip *ngFor="let venue of venues; let i = index">
-            {{ venue }}
+            {{ getVenueName(+venue) }}
             <ion-icon
               name="close-circle"
               (click)="remove('venues', i)"
@@ -91,7 +91,7 @@
       </ion-item>
       <hr class="section-divider" />
       <ion-item>
-        <ion-label position="stacked">Add Prefered Cities</ion-label>
+        <ion-label position="stacked">Add Preferred Cities</ion-label>
         <ion-input
           [(ngModel)]="selectedLocation"
           placeholder="e.g., Szeged"
@@ -105,7 +105,7 @@
         <ion-label>Selected Cities</ion-label>
         <div class="chip-container">
           <ion-chip *ngFor="let location of locations; let i = index">
-            {{ location }}
+            {{ getLocationName(+location) }}
             <ion-icon
               name="close-circle"
               (click)="remove('locations', i)"
@@ -115,17 +115,94 @@
       </ion-item>
       <hr class="section-divider" />
 
-      <!-- Repeat similar sections for Locations and Artists -->
+      <hr class="section-divider" />
 
       <ion-item>
-        <ion-checkbox [(ngModel)]="showCancelled"
-          >Show cancelled concerts</ion-checkbox
-        >
+        <ion-label>Show Cancelled Concerts</ion-label>
+        <ng-container *ngIf="!isEditing.seeCancelled; else editSeeCancelled">
+          <ion-toggle [checked]="seeCancelled" disabled slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="primary"
+            (click)="isEditing.seeCancelled = true"
+          >
+            <ion-icon color="primary" name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editSeeCancelled>
+          <ion-toggle [(ngModel)]="seeCancelled" slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="isEditing.seeCancelled = false"
+          >
+            <ion-icon color="success" name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
       </ion-item>
+
+      <hr class="section-divider" />
+
       <ion-item>
-        <ion-checkbox [(ngModel)]="showSoldOut"
-          >Show sold out concerts</ion-checkbox
+        <ion-label>Show Sold Out Concerts</ion-label>
+        <ng-container
+          *ngIf="!isEditing.seeNotAvailable; else editSeeNotAvailable"
         >
+          <ion-toggle
+            [checked]="seeNotAvailable"
+            disabled
+            slot="end"
+          ></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="primary"
+            (click)="isEditing.seeNotAvailable = true"
+          >
+            <ion-icon color="primary" name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editSeeNotAvailable>
+          <ion-toggle [(ngModel)]="seeNotAvailable" slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="isEditing.seeNotAvailable = false"
+          >
+            <ion-icon color="success" name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
+      </ion-item>
+
+      <hr class="section-divider" />
+
+      <ion-item>
+        <ion-label>Enable Push Notifications</ion-label>
+        <ng-container *ngIf="!isEditing.notifyPush; else editNotifyPush">
+          <ion-toggle [checked]="notifyPush" disabled slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="primary"
+            (click)="isEditing.notifyPush = true"
+          >
+            <ion-icon color="primary" name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <ng-template #editNotifyPush>
+          <ion-toggle [(ngModel)]="notifyPush" slot="end"></ion-toggle>
+          <ion-button
+            fill="outline"
+            slot="end"
+            color="success"
+            (click)="isEditing.notifyPush = false"
+          >
+            <ion-icon color="success" name="checkmark-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
       </ion-item>
     </ion-list>
 

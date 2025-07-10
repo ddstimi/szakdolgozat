@@ -127,7 +127,6 @@
                   >
                     {{ availableArtists.length ? getArtistName(artistId) :
                     'Loading...' }}
-                    <ion-icon name="close-circle" class="chip-close"></ion-icon>
                   </ion-chip>
                 </div>
               </div>
@@ -143,11 +142,6 @@
                   >
                     {{ availableGenres.length ? getGenreName(genreId) :
                     'Loading...' }}
-                    <ion-icon
-                      name="close-circle"
-                      class="chip-close"
-                      (click)="removeGenre(genreId)"
-                    ></ion-icon>
                   </ion-chip>
                 </div>
               </div>
@@ -164,11 +158,6 @@
                   >
                     {{ availableVenues.length ? getVenueName(venueId) :
                     'Loading...' }}
-                    <ion-icon
-                      name="close-circle"
-                      class="chip-close"
-                      (click)="removeVenue(venueId)"
-                    ></ion-icon>
                   </ion-chip>
                 </div>
               </div>
@@ -184,15 +173,25 @@
                   >
                     {{ availableLocations.length ? getLocationName(locationId) :
                     'Loading...' }}
-                    <ion-icon
-                      name="close-circle"
-                      class="chip-close"
-                      (click)="removeLocation(locationId)"
-                    ></ion-icon>
                   </ion-chip>
                 </div>
               </div>
 
+              <hr class="section-divider" />
+              <p>
+                <strong>See cancelled events:</strong> {{ seeCancelled? "Yes" :
+                "no" }}
+              </p>
+              <hr class="section-divider" />
+              <p>
+                <strong>See sold-out events:</strong> {{ seeNotAvailable? "Yes"
+                : "no" }}
+              </p>
+              <hr class="section-divider" />
+              <p>
+                <strong>Receive push notifications:</strong> {{ notifyPush?
+                "Yes" : "no" }}
+              </p>
               <hr class="section-divider" />
             </div>
             <ion-button

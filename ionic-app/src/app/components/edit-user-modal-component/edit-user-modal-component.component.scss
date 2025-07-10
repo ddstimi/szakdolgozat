@@ -48,9 +48,11 @@
     }
   }
 
-  ion-toggle{
+    ion-toggle{
     transform: scale(1.2);
     margin-right: 1rem;
+    --track-background: #bbb;
+    --track-background-checked: #bbbbbb53;
   }
   
   .modal-container {

@@ -101,6 +101,9 @@ export class ProfilePage implements OnInit {
       this.artists = response.artists || [];
       this.venues = response.venues || [];
       this.locations = response.cities || [];
+      this.seeCancelled = response.preferences?.see_cancelled;
+      this.seeNotAvailable = response.preferences?.see_not_available;
+      this.notifyPush = response.preferences?.notify_push;
 
       console.log('Preferences loaded with available data:', {
         genreIds: this.genres,
@@ -341,20 +344,33 @@ export class ProfilePage implements OnInit {
         genres: [...this.genres],
         locations: [...this.locations],
         artists: [...this.artists],
+        venues: [...this.venues],
         availableGenres: this.availableGenres,
         availableLocations: this.availableLocations,
         availableArtists: this.availableArtists,
+        availableVenues: this.availableVenues,
+        seeCancelled: this.seeCancelled,
+        seeNotAvailable: this.seeNotAvailable,
+        notifyPush: this.notifyPush,
       },
     });
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(({ data }) => {
+    modal.onDidDismiss().then(async ({ data }) => {
       if (data) {
-        this.genres = data.genres || this.genres;
-        this.locations = data.locations || this.locations;
-        this.artists = data.artists || this.artists;
-        document.body.classList.remove('modal-open');
-        this.savePreferences();
+        this.genres = data.genres ?? this.genres;
+        this.locations = data.locations ?? this.locations;
+        this.artists = data.artists ?? this.artists;
+        this.venues = data.venues ?? this.venues;
+        this.seeCancelled = data.seeCancelled ?? this.seeCancelled;
+        this.seeNotAvailable = data.seeNotAvailable ?? this.seeNotAvailable;
+        this.notifyPush = data.notifyPush ?? this.notifyPush;
+
+        try {
+          await this.savePreferences();
+        } catch (error) {
+          console.error('Error saving preferences after modal close', error);
+        }
       }
     });
 
