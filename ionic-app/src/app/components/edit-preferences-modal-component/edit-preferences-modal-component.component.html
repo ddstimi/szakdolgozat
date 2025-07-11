@@ -16,9 +16,8 @@
     </ion-header>
 
     <ion-list>
-      <!-- Genres Section -->
       <ion-item>
-        <ion-label position="stacked">Add Prefered Artists</ion-label>
+        <ion-label position="stacked">Add Preferred Artists</ion-label>
         <ion-input
           [(ngModel)]="selectedArtist"
           placeholder="e.g., 30y"
@@ -29,7 +28,7 @@
       >
 
       <ion-item>
-        <ion-label>Selected Genres</ion-label>
+        <ion-label>Selected Artists</ion-label>
         <div class="chip-container">
           <ion-chip *ngFor="let artist of artists; let i = index">
             {{ getArtistName(+artist) }}
@@ -42,7 +41,7 @@
       </ion-item>
       <hr class="section-divider" />
       <ion-item>
-        <ion-label position="stacked">Add Prefered Genres</ion-label>
+        <ion-label position="stacked">Add Preferred Genres</ion-label>
         <ion-input
           [(ngModel)]="selectedGenre"
           placeholder="e.g., Rock"
@@ -131,7 +130,11 @@
           </ion-button>
         </ng-container>
         <ng-template #editSeeCancelled>
-          <ion-toggle [(ngModel)]="seeCancelled" slot="end"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="seeCancelled"
+            (ionChange)="onToggleChange('seeCancelled')"
+            slot="end"
+          ></ion-toggle>
           <ion-button
             fill="outline"
             slot="end"
@@ -165,7 +168,11 @@
           </ion-button>
         </ng-container>
         <ng-template #editSeeNotAvailable>
-          <ion-toggle [(ngModel)]="seeNotAvailable" slot="end"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="seeNotAvailable"
+            (ionChange)="onToggleChange('seeNotAvailable')"
+            slot="end"
+          ></ion-toggle>
           <ion-button
             fill="outline"
             slot="end"
@@ -193,7 +200,11 @@
           </ion-button>
         </ng-container>
         <ng-template #editNotifyPush>
-          <ion-toggle [(ngModel)]="notifyPush" slot="end"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="notifyPush"
+            (ionChange)="onToggleChange('notifyPush')"
+            slot="end"
+          ></ion-toggle>
           <ion-button
             fill="outline"
             slot="end"

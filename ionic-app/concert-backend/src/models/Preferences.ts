@@ -46,7 +46,6 @@ interface Venue extends RowDataPacket {
 }
 
 const PreferencesModel = {
-  // Get main preferences
   getPreferences: async (userId: number): Promise<UserPreference | null> => {
     const [rows] = await pool.query<UserPreference[]>(
       'SELECT * FROM preferences WHERE user_id = ?',
@@ -56,7 +55,6 @@ const PreferencesModel = {
     return rows[0] || null;
   },
 
-  // Update main preferences
   updatePreferences: async (
     userId: number,
     prefs: {
@@ -65,20 +63,34 @@ const PreferencesModel = {
       notify_push?: boolean;
     }
   ): Promise<void> => {
-    await pool.query(
-      `INSERT INTO preferences 
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      const seeCancelledNum = prefs.see_cancelled ? 1 : 0;
+      const seeNotAvailableNum = prefs.see_not_available ? 1 : 0;
+      const notifyPushNum = prefs.notify_push ? 1 : 0;
+
+      await connection.query(
+        `INSERT INTO preferences 
        (user_id, see_cancelled, see_not_available, notify_push, creation_date, modify_date)
        VALUES (?, ?, ?, ?, NOW(), NOW())
        ON DUPLICATE KEY UPDATE
-       see_cancelled = COALESCE(VALUES(see_cancelled), see_cancelled),
-       see_not_available = COALESCE(VALUES(see_not_available), see_not_available),
-       notify_push = COALESCE(VALUES(notify_push), notify_push),
+       see_cancelled = VALUES(see_cancelled),
+       see_not_available = VALUES(see_not_available),
+       notify_push = VALUES(notify_push),
        modify_date = NOW()`,
-      [userId, prefs.see_cancelled, prefs.see_not_available, prefs.notify_push]
-    );
-  },
+        [userId, seeCancelledNum, seeNotAvailableNum, notifyPushNum]
+      );
 
-  // Artist preferences
+      await connection.commit();
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  },
   getUserArtists: async (userId: number): Promise<number[]> => {
     const [rows] = await pool.query<UserArtist[]>(
       'SELECT artist_id FROM user_artists WHERE user_id = ?',
@@ -107,7 +119,6 @@ const PreferencesModel = {
     }
   },
 
-  // City preferences
   getUserCities: async (userId: number): Promise<number[]> => {
     const [rows] = await pool.query<UserCity[]>(
       'SELECT city_id FROM user_cities WHERE user_id = ?',
@@ -164,7 +175,6 @@ const PreferencesModel = {
     }
   },
 
-  // Venue preferences
   getUserVenues: async (userId: number): Promise<number[]> => {
     const [rows] = await pool.query<UserVenue[]>(
       'SELECT venue_id FROM user_venues WHERE user_id = ?',
@@ -241,7 +251,6 @@ const PreferencesModel = {
     return rows;
   },
 
-  // Get user cities with names
   getUserCitiesWithNames: async (userId: number): Promise<City[]> => {
     const [rows] = await pool.query<City[]>(
       `SELECT c.id, c.name 
@@ -253,7 +262,6 @@ const PreferencesModel = {
     return rows;
   },
 
-  // Get user genres with names
   getUserGenresWithNames: async (userId: number): Promise<Genre[]> => {
     const [rows] = await pool.query<Genre[]>(
       `SELECT g.id, g.name 
@@ -265,7 +273,6 @@ const PreferencesModel = {
     return rows;
   },
 
-  // Get user venues with names
   getUserVenuesWithNames: async (userId: number): Promise<Venue[]> => {
     const [rows] = await pool.query<Venue[]>(
       `SELECT v.id, v.name 

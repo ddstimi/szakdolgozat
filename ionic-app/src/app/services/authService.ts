@@ -47,12 +47,13 @@ export class AuthService {
       return res.user;
     } catch (error: any) {
       if (
-        error.response?.status === 401 ||
-        error.name === 'TokenExpiredError'
+        error.status === 401 ||
+        error.error?.name === 'TokenExpiredError' ||
+        error.error?.message === 'TokenExpiredError'
       ) {
+        alert('Session expired. Please log in again.');
         this.router.navigate(['/login']);
       }
-      alert('Session expired. Please log in again.');
       console.error('Failed to fetch user data', error);
       throw error;
     }
@@ -60,7 +61,7 @@ export class AuthService {
   async updateUserData(updatedUser: {
     name: string;
     email: string;
-    password?: string; // optional
+    password?: string;
     username: string;
     gdpr: boolean;
   }) {
@@ -79,12 +80,13 @@ export class AuthService {
       );
 
       console.log('User data updated', res);
-      this.setSession(res); // update local storage with new data
+      this.setSession(res);
       return res.user;
     } catch (error: any) {
       if (
-        error.response?.status === 401 ||
-        error.name === 'TokenExpiredError'
+        error.status === 401 ||
+        error.error?.name === 'TokenExpiredError' ||
+        error.error?.message === 'TokenExpiredError'
       ) {
         this.router.navigate(['/login']);
       }
@@ -113,8 +115,9 @@ export class AuthService {
       return res.user;
     } catch (error: any) {
       if (
-        error.response?.status === 401 ||
-        error.name === 'TokenExpiredError'
+        error.status === 401 ||
+        error.error?.name === 'TokenExpiredError' ||
+        error.error?.message === 'TokenExpiredError'
       ) {
         this.router.navigate(['/login']);
       }
@@ -154,12 +157,13 @@ export class AuthService {
         )
       );
 
-      this.setSession(response); // Update local storage
+      this.setSession(response);
       return response;
     } catch (error: any) {
       if (
-        error.response?.status === 401 ||
-        error.name === 'TokenExpiredError'
+        error.status === 401 ||
+        error.error?.name === 'TokenExpiredError' ||
+        error.error?.message === 'TokenExpiredError'
       ) {
         this.router.navigate(['/login']);
       }
@@ -190,15 +194,25 @@ export class AuthService {
     genres: number[];
     venues: number[];
   }): Promise<any> {
+    const apiPrefs = {
+      ...prefs,
+      see_cancelled: prefs.see_cancelled ? 1 : 0,
+      see_not_available: prefs.see_not_available ? 1 : 0,
+      notify_push: prefs.notify_push ? 1 : 0,
+    };
     const token = await localStorage.getItem('token');
     if (!token) {
       this.router.navigate(['/login']);
       throw new Error('No authentication token found');
     }
     return firstValueFrom(
-      this.http.patch(`${environment.apiUrl}/api/preferences/update`, prefs, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      this.http.patch(
+        `${environment.apiUrl}/api/preferences/update`,
+        apiPrefs,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
     );
   }
 
@@ -237,12 +251,33 @@ export class AuthService {
       }
     );
   }
+  forceRemoveStrayPages() {
+    setTimeout(() => {
+      const pages = document.querySelectorAll(
+        'ion-router-outlet > .ion-page:not(.ion-page-active)'
+      );
+      pages.forEach((page) => page.remove());
+
+      const profilePage = document.querySelector('app-profile');
+      if (profilePage) profilePage.remove();
+
+      const homePage = document.querySelector('app-home');
+      if (homePage) homePage.remove();
+    }, 300);
+  }
 
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     google.accounts.id.disableAutoSelect();
-    this.router.navigate(['/login']);
+    this.router
+      .navigate(['/login'], {
+        replaceUrl: true,
+        state: { clearHistory: true },
+      })
+      .then(() => {
+        this.forceRemoveStrayPages();
+      });
   }
 
   isLoggedIn(): boolean {

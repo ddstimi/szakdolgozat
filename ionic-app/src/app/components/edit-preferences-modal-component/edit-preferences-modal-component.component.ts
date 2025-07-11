@@ -49,10 +49,10 @@ type PreferenceType = 'genres' | 'locations' | 'artists' | 'venues';
   ],
 })
 export class EditPreferencesModalComponent {
-  @Input() genres: string[] = [];
-  @Input() locations: string[] = [];
-  @Input() artists: string[] = [];
-  @Input() venues: string[] = [];
+  @Input() genres: number[] = [];
+  @Input() locations: number[] = [];
+  @Input() artists: number[] = [];
+  @Input() venues: number[] = [];
   @Input() seeCancelled: boolean = false;
   @Input() seeNotAvailable: boolean = false;
   @Input() notifyPush: boolean = false;
@@ -63,14 +63,10 @@ export class EditPreferencesModalComponent {
   @Input() availableVenues: { id: number; name: string }[] = [];
 
   @Output() preferencesUpdated = new EventEmitter<{
-    genres: string[];
-    locations: string[];
-    artists: string[];
-    venues: string[];
-    availableArtists: { id: number; name: string }[];
-    availableLocations: { id: number; name: string }[];
-    availableGenres: { id: number; name: string }[];
-    availableVenues: { id: number; name: string }[];
+    genres: number[];
+    locations: number[];
+    artists: number[];
+    venues: number[];
     seeCancelled: boolean;
     seeNotAvailable: boolean;
     notifyPush: boolean;
@@ -100,28 +96,37 @@ export class EditPreferencesModalComponent {
   }
 
   savePrefs() {
+    const updatedData = {
+      genres: this.genres,
+      locations: this.locations,
+      artists: this.artists,
+      venues: this.venues,
+      seeCancelled: this.seeCancelled,
+      seeNotAvailable: this.seeNotAvailable,
+      notifyPush: this.notifyPush,
+    };
+
+    this.preferencesUpdated.emit(updatedData);
+
+    this.modalCtrl.dismiss(updatedData);
+    this.isEditing.seeCancelled = false;
+    this.isEditing.seeNotAvailable = false;
+    this.isEditing.notifyPush = false;
+
+    document.body.classList.remove('modal-open');
+  }
+  private clearSelection(type: PreferenceType): void {
+    this.setSelectedValue(type, '');
+  }
+
+  onToggleChange(field: 'seeCancelled' | 'seeNotAvailable' | 'notifyPush') {
+    this.isEditing[field] = true;
+
     this.preferencesUpdated.emit({
       genres: this.genres,
       locations: this.locations,
       artists: this.artists,
       venues: this.venues,
-      availableArtists: this.availableArtists,
-      availableGenres: this.availableGenres,
-      availableLocations: this.availableLocations,
-      availableVenues: this.availableVenues,
-      seeCancelled: this.seeCancelled,
-      seeNotAvailable: this.seeNotAvailable,
-      notifyPush: this.notifyPush,
-    });
-    this.modalCtrl.dismiss({
-      genres: this.genres,
-      locations: this.locations,
-      artists: this.artists,
-      venues: this.venues,
-      availableArtists: this.availableArtists,
-      availableGenres: this.availableGenres,
-      availableLocations: this.availableLocations,
-      availableVenues: this.availableVenues,
       seeCancelled: this.seeCancelled,
       seeNotAvailable: this.seeNotAvailable,
       notifyPush: this.notifyPush,
@@ -129,17 +134,49 @@ export class EditPreferencesModalComponent {
   }
 
   add(type: PreferenceType) {
-    const selected = this.getSelectedValue(type);
+    const selectedId = this.getSelectedId(type); // New method to get ID
     const list = this[type];
 
-    if (selected && !list.includes(selected)) {
-      list.push(selected);
-      this.setSelectedValue(type, '');
+    if (selectedId && !list.includes(selectedId)) {
+      list.push(selectedId);
+      this.clearSelection(type);
     }
+  }
+  private getSelectedId(type: PreferenceType): number | null {
+    const selectedName = this.getSelectedValue(type);
+    let availableArray: { id: number; name: string }[] = [];
+
+    switch (type) {
+      case 'genres':
+        availableArray = this.availableGenres;
+        break;
+      case 'locations':
+        availableArray = this.availableLocations;
+        break;
+      case 'artists':
+        availableArray = this.availableArtists;
+        break;
+      case 'venues':
+        availableArray = this.availableVenues;
+        break;
+    }
+
+    const item = availableArray.find((item) => item.name === selectedName);
+    return item ? item.id : null;
   }
 
   remove(type: PreferenceType, index: number) {
     this[type].splice(index, 1);
+
+    this.preferencesUpdated.emit({
+      genres: this.genres,
+      locations: this.locations,
+      artists: this.artists,
+      venues: this.venues,
+      seeCancelled: this.seeCancelled,
+      seeNotAvailable: this.seeNotAvailable,
+      notifyPush: this.notifyPush,
+    });
   }
 
   private capitalize(str: string): string {

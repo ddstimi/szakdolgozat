@@ -101,9 +101,9 @@ export class ProfilePage implements OnInit {
       this.artists = response.artists || [];
       this.venues = response.venues || [];
       this.locations = response.cities || [];
-      this.seeCancelled = response.preferences?.see_cancelled;
-      this.seeNotAvailable = response.preferences?.see_not_available;
-      this.notifyPush = response.preferences?.notify_push;
+      this.seeCancelled = Boolean(response.preferences?.see_cancelled);
+      this.seeNotAvailable = Boolean(response.preferences?.see_not_available);
+      this.notifyPush = Boolean(response.preferences?.notify_push);
 
       console.log('Preferences loaded with available data:', {
         genreIds: this.genres,
@@ -135,22 +135,31 @@ export class ProfilePage implements OnInit {
   async savePreferences() {
     try {
       const prefs = {
-        see_cancelled: false,
-        see_not_available: false,
-        notify_push: false,
+        see_cancelled: this.seeCancelled,
+        see_not_available: this.seeNotAvailable,
+        notify_push: this.notifyPush,
         artists: this.artists,
         locations: this.locations,
         genres: this.genres,
         venues: this.venues,
       };
 
+      console.log('Saving preferences:', prefs);
+
       const response = await this.authService.updatePreferences(prefs);
-      console.log('Preferences updated successfully', response);
+      console.log('Save response:', response);
+
+      if (response?.data) {
+        this.seeCancelled = Boolean(response.data.see_cancelled);
+        this.seeNotAvailable = Boolean(response.data.see_not_available);
+        this.notifyPush = Boolean(response.data.notify_push);
+      }
+
+      this.showPrefModal = false;
     } catch (error) {
-      console.error('Failed to save preferences', error);
+      console.error('Save failed:', error);
     }
   }
-
   newGenre = '';
   newLocation = '';
   newArtist = '';
@@ -356,27 +365,20 @@ export class ProfilePage implements OnInit {
     });
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(async ({ data }) => {
+    modal.onDidDismiss().then(({ data }) => {
       if (data) {
-        this.genres = data.genres ?? this.genres;
-        this.locations = data.locations ?? this.locations;
-        this.artists = data.artists ?? this.artists;
-        this.venues = data.venues ?? this.venues;
-        this.seeCancelled = data.seeCancelled ?? this.seeCancelled;
-        this.seeNotAvailable = data.seeNotAvailable ?? this.seeNotAvailable;
-        this.notifyPush = data.notifyPush ?? this.notifyPush;
+        // Update local state with returned data
+        this.seeCancelled = Boolean(data.seeCancelled);
+        this.seeNotAvailable = Boolean(data.seeNotAvailable);
+        this.notifyPush = Boolean(data.notifyPush);
 
-        try {
-          await this.savePreferences();
-        } catch (error) {
-          console.error('Error saving preferences after modal close', error);
-        }
+        // Save to backend
+        this.savePreferences();
       }
     });
 
     await modal.present();
   }
-
   closePrefModal() {
     document.body.classList.remove('modal-open');
     this.showPrefModal = false;
