@@ -10,14 +10,12 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean {
     if (!this.authService.isLoggedIn()) {
-      // Force complete navigation cleanup
       this.router
         .navigate(['/login'], {
-          replaceUrl: true, // Replace current route in history
-          state: { clearHistory: true }, // Clear navigation history
+          replaceUrl: true,
+          state: { clearHistory: true },
         })
         .then(() => {
-          // Manual DOM cleanup for Ionic's web components
           this.forceRemoveStrayPages();
         });
       return false;
@@ -27,11 +25,6 @@ export class AuthGuard implements CanActivate {
 
   private forceRemoveStrayPages() {
     setTimeout(() => {
-      const pages = document.querySelectorAll(
-        'ion-router-outlet > .ion-page:not(.ion-page-active)'
-      );
-      pages.forEach((page) => page.remove());
-
       const profilePage = document.querySelector('app-profile');
       if (profilePage) profilePage.remove();
 

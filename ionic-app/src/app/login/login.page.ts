@@ -84,8 +84,8 @@ export class LoginPage implements OnInit {
       );
 
       await this.router.navigate(['/tabs/home'], {
-        replaceUrl: true, // Prevent going back to login
-        skipLocationChange: false, // Ensure full route transition
+        replaceUrl: true,
+        skipLocationChange: false,
       });
 
       setTimeout(() => {

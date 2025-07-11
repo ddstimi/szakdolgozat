@@ -71,22 +71,24 @@ export class ProfilePage implements OnInit {
             (userData.img_url || '/profile-pictures/bikini.jpg'),
       };
       this.selectedPicture = this.user.img_url;
+      await this.loadPreferences();
+      const [optionsResponse, preferencesResponse] = await Promise.all([
+        this.authService.getPreferenceOptions(),
+        this.authService.getPreferences(),
+      ]);
 
-      const optionsResponse = await this.authService.getPreferenceOptions();
       console.log('Options API Response:', optionsResponse);
       this.availableGenres = optionsResponse.genres;
       this.availableArtists = optionsResponse.artists;
       this.availableVenues = optionsResponse.venues;
       this.availableLocations = optionsResponse.cities;
 
-      console.log('Available options loaded:', {
-        genres: this.availableGenres,
-        artists: this.availableArtists,
-        venues: this.availableVenues,
-        locations: this.availableLocations,
-      });
+      this.genres = preferencesResponse.genres || [];
+      this.artists = preferencesResponse.artists || [];
+      this.venues = preferencesResponse.venues || [];
+      this.locations = preferencesResponse.cities || [];
 
-      await this.loadPreferences();
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Initialization error:', error);
     }
@@ -483,7 +485,10 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/tabs/profile/notifications']);
   }
 
-  onLogout() {
-    this.authService.logout();
+  async onLogout() {
+    await this.authService.logout();
+    this.router.navigate(['/login'], {
+      state: { fromLogout: true },
+    });
   }
 }

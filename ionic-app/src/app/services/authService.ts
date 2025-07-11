@@ -17,6 +17,7 @@ export class AuthService {
 
   async login(username: string, password: string) {
     try {
+      this.forceRemoveStrayPages();
       const response: any = await firstValueFrom(
         this.http.post(`${environment.apiUrl}/api/users/login`, {
           username,
@@ -253,11 +254,6 @@ export class AuthService {
   }
   forceRemoveStrayPages() {
     setTimeout(() => {
-      const pages = document.querySelectorAll(
-        'ion-router-outlet > .ion-page:not(.ion-page-active)'
-      );
-      pages.forEach((page) => page.remove());
-
       const profilePage = document.querySelector('app-profile');
       if (profilePage) profilePage.remove();
 
@@ -270,14 +266,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     google.accounts.id.disableAutoSelect();
-    this.router
-      .navigate(['/login'], {
-        replaceUrl: true,
-        state: { clearHistory: true },
-      })
-      .then(() => {
-        this.forceRemoveStrayPages();
-      });
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
