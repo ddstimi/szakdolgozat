@@ -6,6 +6,7 @@ import userRoutes from './src/routes/userRoutes';
 const multer = require('multer');
 const path = require('path');
 import preferencesRoutes from './src/routes/preferencesRoutes';
+import eventStatisticRoutes from './src/routes/eventStatisticsRoutes';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ db.getConnection()
   });
 app.use('/api/preferences', preferencesRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/event-statistics', eventStatisticRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the User Management API!');

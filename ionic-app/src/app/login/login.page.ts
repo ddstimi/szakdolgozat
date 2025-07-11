@@ -8,6 +8,7 @@ import { GdprModalComponent } from './gdpr-modal/gdpr-modal/gdpr-modal.component
 
 import { AuthService } from '../services/authService';
 import { Router } from '@angular/router';
+import { AuthGuard } from '../guards/authGuard';
 
 declare const google: any;
 export const environment = {
@@ -29,7 +30,8 @@ export class LoginPage implements OnInit {
     private http: HttpClient,
     private authService: AuthService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private authGuard: AuthGuard
   ) {}
 
   isSignUp: boolean = false;
@@ -157,24 +159,44 @@ export class LoginPage implements OnInit {
     this.isLoading = true;
     console.log('Google Client ID:', environment.googleClientId);
 
-    this.http
-      .post(`${environment.apiUrl}/api/users/google-auth`, {
-        credential: response.credential,
-      })
-      .subscribe({
-        next: (res: any) => {
-          console.log('Google sign-in response', res);
-          this.authService.storeToken(res.token);
-          this.router.navigate(['/tabs/home']);
-        },
-        error: (err) => {
-          console.error('Google sign-in failed', err);
-          alert(err.error?.message || 'Google sign-in failed');
-        },
-        complete: () => {
-          this.isLoading = false;
-        },
+    try {
+      this.http
+        .post(`${environment.apiUrl}/api/users/google-auth`, {
+          credential: response.credential,
+        })
+        .subscribe({
+          next: (res: any) => {
+            console.log('Google sign-in response', res);
+            this.authService.storeToken(res.token);
+            this.router.navigate(['/tabs/home']);
+          },
+          error: (err) => {
+            console.error('Google sign-in failed', err);
+            alert(err.error?.message || 'Google sign-in failed');
+          },
+          complete: () => {
+            this.authGuard.canActivate();
+            this.isLoading = false;
+          },
+        });
+
+      await this.router.navigate(['/tabs/home'], {
+        replaceUrl: true,
+        skipLocationChange: false,
       });
+
+      setTimeout(() => {
+        const loginPage = document.querySelector('app-login');
+        if (loginPage) loginPage.remove();
+      }, 300);
+    } catch (error: any) {
+      console.error('Login failed', error);
+      alert(
+        error.error?.message || 'Login failed. Please check your credentials.'
+      );
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   ngOnDestroy() {
