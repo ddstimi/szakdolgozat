@@ -12,7 +12,7 @@ declare const google: any;
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class frontendService {
   constructor(private http: HttpClient, private router: Router) {}
 
   async login(username: string, password: string) {
@@ -142,7 +142,7 @@ export class AuthService {
     }
 
     const formData = new FormData();
-    formData.append('profilePicture', file); // Must match Multer field name
+    formData.append('profilePicture', file);
 
     const headers = new HttpHeaders().set(
       'Authorization',
@@ -195,25 +195,15 @@ export class AuthService {
     genres: number[];
     venues: number[];
   }): Promise<any> {
-    const apiPrefs = {
-      ...prefs,
-      see_cancelled: prefs.see_cancelled ? 1 : 0,
-      see_not_available: prefs.see_not_available ? 1 : 0,
-      notify_push: prefs.notify_push ? 1 : 0,
-    };
     const token = await localStorage.getItem('token');
     if (!token) {
       this.router.navigate(['/login']);
       throw new Error('No authentication token found');
     }
     return firstValueFrom(
-      this.http.patch(
-        `${environment.apiUrl}/api/preferences/update`,
-        apiPrefs,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      this.http.patch(`${environment.apiUrl}/api/preferences/update`, prefs, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
     );
   }
 

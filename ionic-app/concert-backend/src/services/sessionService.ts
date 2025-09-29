@@ -8,14 +8,12 @@ class SessionService {
     const token = jwt.sign(
       { id: user.id, username: user.username },
       JWT_SECRET,
-      { expiresIn: '15m' } // Short-lived access token
+      { expiresIn: '15m' }
     );
 
-    const refreshToken = jwt.sign(
-      { id: user.id },
-      REFRESH_SECRET,
-      { expiresIn: '7d' } // Long-lived refresh token
-    );
+    const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
+      expiresIn: '7d',
+    });
 
     return { token, refreshToken };
   }

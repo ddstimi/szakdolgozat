@@ -166,8 +166,14 @@ export class EditPreferencesModalComponent {
   }
 
   remove(type: PreferenceType, index: number) {
-    this[type].splice(index, 1);
+    console.log(`Removing ${type} at index ${index}`);
+    console.log('Before:', this[type]);
 
+    this[type] = [
+      ...this[type].slice(0, index),
+      ...this[type].slice(index + 1),
+    ];
+    console.log('After:', this[type]);
     this.preferencesUpdated.emit({
       genres: this.genres,
       locations: this.locations,

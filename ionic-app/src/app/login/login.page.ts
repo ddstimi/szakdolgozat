@@ -6,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { GdprModalComponent } from './gdpr-modal/gdpr-modal/gdpr-modal.component';
 
-import { AuthService } from '../services/authService';
+import { frontendService } from '../services/frontendService';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../guards/authGuard';
 
@@ -28,7 +28,7 @@ export const environment = {
 export class LoginPage implements OnInit {
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+    private frontendService: frontendService,
     private router: Router,
     private modalController: ModalController,
     private authGuard: AuthGuard
@@ -80,7 +80,7 @@ export class LoginPage implements OnInit {
     this.isLoading = true;
 
     try {
-      await this.authService.login(
+      await this.frontendService.login(
         this.loginData.username,
         this.loginData.password
       );
@@ -167,7 +167,7 @@ export class LoginPage implements OnInit {
         .subscribe({
           next: (res: any) => {
             console.log('Google sign-in response', res);
-            this.authService.storeToken(res.token);
+            this.frontendService.storeToken(res.token);
             this.router.navigate(['/tabs/home']);
           },
           error: (err) => {

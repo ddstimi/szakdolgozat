@@ -11,46 +11,28 @@ interface JwtPayload {
   email: string;
 }
 
-export const authenticateJWT = async (
+export const authenticateJWT = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    res.status(401).json({ message: 'Authentication required' });
+    return;
+  }
+
+  const token = authHeader.split(' ')[1];
   try {
-    // 1. Check for access token first
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.split(' ')[1];
-      try {
-        const decoded = SessionService.verifyToken(token);
-        (req as any).user = decoded;
-        return next();
-      } catch (err) {
-        throw err;
-      }
+    const decoded = SessionService.verifyToken(token);
+    (req as any).user = decoded;
+    next();
+  } catch (err: any) {
+    if (err.name === 'TokenExpiredError') {
+      res.status(401).json({ message: 'Token expired' });
+      return;
     }
-
-    // 2. If access token expired, check refresh token
-    const refreshToken = req.headers['x-refresh-token'] as string;
-    if (refreshToken) {
-      try {
-        const decoded = SessionService.verifyToken(refreshToken, true);
-        const { token, refreshToken: newRefreshToken } =
-          SessionService.createTokens(decoded);
-
-        (req as any).user = decoded;
-        res.set({
-          Authorization: `Bearer ${token}`,
-          'X-New-Refresh-Token': newRefreshToken,
-        });
-        return next();
-      } catch (err) {
-        throw new Error('Session expired');
-      }
-    }
-
-    throw new Error('Authentication required');
-  } catch (error) {
-    next(error);
+    res.status(401).json({ message: 'Invalid token' });
   }
 };

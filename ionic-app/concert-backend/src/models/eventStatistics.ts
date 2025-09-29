@@ -98,7 +98,7 @@ const EventsModel = {
         ticket_url: row.ticket_url,
         ticket_available: row.ticket_available,
         cancelled: row.cancelled,
-        constructor: { name: 'RowDataPacket' }, // This ensures type compatibility
+        constructor: { name: 'RowDataPacket' },
       } as Concert,
       venue: {
         id: row.venue_id,

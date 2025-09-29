@@ -1,4 +1,3 @@
-// controllers/eventStatisticsController.ts
 import { Request, Response } from 'express';
 import EventStatisticsService from '../services/eventStatisticsService';
 

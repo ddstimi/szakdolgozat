@@ -6,11 +6,11 @@
   flex-direction: column;
   height: fit-content;
   width: 80%;
-  justify-self: center;
   background-color: #0e0e1062 !important;
   border-radius: 1rem;
   margin-top: 5%;
-  margin-left: 3rem;
+  margin-left: auto;
+  margin-right: auto;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.282);
   animation:  fadeIn ease-out 0.3s;
 }
@@ -191,7 +191,6 @@ canvas {
 
   #container{
     width: 90% !important;
-    margin-left: 0.3rem;
     margin-top: 20%;
   }
 

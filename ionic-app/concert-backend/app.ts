@@ -40,9 +40,10 @@ app.get('/', (req: Request, res: Response) => {
 app.use(express.json({ limit: '10mb' })); // or '10mb' if needed
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  const status = err.statusCode || 500;
+  res.status(status).json({ message: err.message });
 });
 
 app.listen(port, () => {

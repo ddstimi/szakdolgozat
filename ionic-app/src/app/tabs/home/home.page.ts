@@ -1,23 +1,60 @@
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import {  Router, RouterModule } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonGrid, IonRow, IonCol, IonLabel, IonButton } from '@ionic/angular/standalone';
+import { Router, RouterModule } from '@angular/router';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonSegment,
+  IonSegmentButton,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonLabel,
+  IonButton,
+} from '@ionic/angular/standalone';
 import { ConcertCardComponent } from 'src/app/components/concert-card/concert-card.component';
-import { ConcertCardFullComponent } from "../../components/concert-card-full/concert-card-full.component";
+import { ConcertCardFullComponent } from '../../components/concert-card-full/concert-card-full.component';
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';
-import { AuthService } from 'src/app/services/authService';
+import { frontendService } from 'src/app/services/frontendService';
 
 @Component({
   selector: 'home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [RouterModule, IonButton, IonLabel, IonCol, IonRow, IonGrid, IonSegmentButton, IonSegment, IonContent, ConcertCardComponent, IonInfiniteScrollContent, IonInfiniteScroll, IonHeader, IonToolbar, IonTitle, IonContent, CommonModule, NgFor, ConcertCardFullComponent],
-  providers: [ModalController]
+  imports: [
+    RouterModule,
+    IonButton,
+    IonLabel,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonSegmentButton,
+    IonSegment,
+    IonContent,
+    ConcertCardComponent,
+    IonInfiniteScrollContent,
+    IonInfiniteScroll,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    CommonModule,
+    NgFor,
+    ConcertCardFullComponent,
+  ],
+  providers: [ModalController],
 })
 export class HomePage {
-
-  constructor(private router: Router,private modalController: ModalController, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private modalController: ModalController,
+    private frontendService: frontendService
+  ) {}
 
   concerts = [
     {
@@ -55,7 +92,7 @@ export class HomePage {
       title: 'Arctic Monkeys Live',
       date: '2025-07-18',
       location: 'Vienna, Austria',
-      image: 'assets/images/asd.jpg'
+      image: 'assets/images/asd.jpg',
     },
     {
       title: 'Arctic Monkeys',
@@ -70,7 +107,7 @@ export class HomePage {
       image: 'assets/images/aa.jpg',
     },
   ];
-  
+
   results = [
     {
       title: 'Rocking Budapest',
@@ -105,26 +142,23 @@ export class HomePage {
       artist: 'Metallica',
     },
   ];
-  
 
- 
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
       component: ConcertDetailsPage,
-      componentProps: { concert }
+      componentProps: { concert },
     });
-  
+
     document.body.classList.add('modal-open');
-  
+
     modal.onDidDismiss().then(() => {
       document.body.classList.remove('modal-open');
     });
-  
+
     await modal.present();
   }
   loggedIn = false;
-  ngOnInit() { 
-      this.loggedIn = this.authService.isLoggedIn();
+  ngOnInit() {
+    this.loggedIn = this.frontendService.isLoggedIn();
   }
-
 }

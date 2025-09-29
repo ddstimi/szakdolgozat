@@ -5,7 +5,7 @@ import { EditPreferencesModalComponent } from '../../components/edit-preferences
 import { EditUserModalComponent } from '../../components/edit-user-modal-component/edit-user-modal-component.component';
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
-import { AuthService } from 'src/app/services/authService';
+import { frontendService } from 'src/app/services/frontendService';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 @Component({
@@ -18,7 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
 export class ProfilePage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
-    private authService: AuthService,
+    private frontendService: frontendService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -58,7 +58,7 @@ export class ProfilePage implements OnInit {
 
   async ngOnInit() {
     try {
-      const userData = await this.authService.getUserData();
+      const userData = await this.frontendService.getUserData();
       this.user = {
         name: userData.name,
         username: userData.username,
@@ -73,8 +73,8 @@ export class ProfilePage implements OnInit {
       this.selectedPicture = this.user.img_url;
       await this.loadPreferences();
       const [optionsResponse, preferencesResponse] = await Promise.all([
-        this.authService.getPreferenceOptions(),
-        this.authService.getPreferences(),
+        this.frontendService.getPreferenceOptions(),
+        this.frontendService.getPreferences(),
       ]);
 
       console.log('Options API Response:', optionsResponse);
@@ -96,7 +96,7 @@ export class ProfilePage implements OnInit {
 
   async loadPreferences() {
     try {
-      const response = await this.authService.getPreferences();
+      const response = await this.frontendService.getPreferences();
       console.log('Full preferences response:', response);
 
       this.genres = response.genres || [];
@@ -148,7 +148,7 @@ export class ProfilePage implements OnInit {
 
       console.log('Saving preferences:', prefs);
 
-      const response = await this.authService.updatePreferences(prefs);
+      const response = await this.frontendService.updatePreferences(prefs);
       console.log('Save response:', response);
 
       if (response?.data) {
@@ -161,6 +161,9 @@ export class ProfilePage implements OnInit {
     } catch (error) {
       console.error('Save failed:', error);
     }
+    this.cdr.detectChanges();
+
+    await this.loadPreferences();
   }
   newGenre = '';
   newLocation = '';
@@ -194,7 +197,7 @@ export class ProfilePage implements OnInit {
     if (file) {
       this.readImage(file);
       try {
-        const response = await this.authService.uploadImage(file);
+        const response = await this.frontendService.uploadImage(file);
         this.user.img_url = response.user.img_url;
         this.selectedPicture = response.user.img_url;
       } catch (error) {
@@ -208,7 +211,7 @@ export class ProfilePage implements OnInit {
     reader.onload = async () => {
       this.selectedPicture = reader.result as string;
       try {
-        await this.authService.uploadImage(file);
+        await this.frontendService.uploadImage(file);
         console.log('Profile picture updated successfully.');
       } catch (error) {
         console.error('Failed to update profile picture', error);
@@ -219,14 +222,14 @@ export class ProfilePage implements OnInit {
 
   async updateProfilePicture() {
     try {
-      const response = await this.authService.updateUserProfilePicture(
+      const response = await this.frontendService.updateUserProfilePicture(
         this.selectedPicture
       );
 
       if (response.user) {
         this.user.img_url = response.user.img_url;
 
-        this.authService.storeToken(response.token);
+        this.frontendService.storeToken(response.token);
       }
     } catch (error) {
       console.error('Failed to update profile picture', error);
@@ -347,7 +350,6 @@ export class ProfilePage implements OnInit {
       this.saveUser(data);
     }
   }
-
   async openEditPreferences() {
     const modal = await this.modalCtrl.create({
       component: EditPreferencesModalComponent,
@@ -367,15 +369,17 @@ export class ProfilePage implements OnInit {
     });
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(({ data }) => {
+    modal.onDidDismiss().then(async ({ data }) => {
       if (data) {
-        // Update local state with returned data
+        this.genres = data.genres || [];
+        this.locations = data.locations || [];
+        this.artists = data.artists || [];
+        this.venues = data.venues || [];
         this.seeCancelled = Boolean(data.seeCancelled);
         this.seeNotAvailable = Boolean(data.seeNotAvailable);
         this.notifyPush = Boolean(data.notifyPush);
 
-        // Save to backend
-        this.savePreferences();
+        await this.savePreferences();
       }
     });
 
@@ -384,14 +388,18 @@ export class ProfilePage implements OnInit {
   closePrefModal() {
     document.body.classList.remove('modal-open');
     this.showPrefModal = false;
+
     this.modalCtrl.dismiss();
   }
 
-  updatePreferences(event: any) {
+  async updatePreferences(event: any) {
     console.log('Updated preferences:', event);
     this.genres = event.genres;
     this.locations = event.locations;
     this.artists = event.artists;
+    this.cdr.detectChanges();
+
+    await this.loadPreferences();
   }
 
   getGenreName(id: number): string {
@@ -449,7 +457,7 @@ export class ProfilePage implements OnInit {
     this.user = { ...updatedUser };
 
     try {
-      await this.authService.updateUserData(this.user);
+      await this.frontendService.updateUserData(this.user);
     } catch (err) {
       console.error('Error updating user', err);
     }
@@ -486,7 +494,7 @@ export class ProfilePage implements OnInit {
   }
 
   async onLogout() {
-    await this.authService.logout();
+    await this.frontendService.logout();
     this.router.navigate(['/login'], {
       state: { fromLogout: true },
     });

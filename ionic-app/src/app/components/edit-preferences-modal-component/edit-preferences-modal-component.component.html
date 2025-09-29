@@ -34,7 +34,7 @@
             {{ getArtistName(+artist) }}
             <ion-icon
               name="close-circle"
-              (click)="remove('artists', i)"
+              (click)="$event.stopPropagation(); remove('artists', i)"
             ></ion-icon>
           </ion-chip>
         </div>
@@ -58,7 +58,7 @@
             {{ getGenreName(+genre) }}
             <ion-icon
               name="close-circle"
-              (click)="remove('genres', i)"
+              (click)="$event.stopPropagation(); remove('genres', i)"
             ></ion-icon>
           </ion-chip>
         </div>
@@ -83,7 +83,7 @@
             {{ getVenueName(+venue) }}
             <ion-icon
               name="close-circle"
-              (click)="remove('venues', i)"
+              (click)="$event.stopPropagation(); remove('venues', i)"
             ></ion-icon>
           </ion-chip>
         </div>
@@ -107,7 +107,7 @@
             {{ getLocationName(+location) }}
             <ion-icon
               name="close-circle"
-              (click)="remove('locations', i)"
+              (click)="$event.stopPropagation(); remove('locations', i)"
             ></ion-icon>
           </ion-chip>
         </div>
