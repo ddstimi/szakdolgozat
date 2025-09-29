@@ -1,4 +1,3 @@
-// routes/eventStatistics.ts
 import express from 'express';
 import EventStatisticsController from '../controllers/eventStatisticsController';
 import { authenticateJWT } from '../middleware/authMiddleware';
