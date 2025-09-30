@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ConcertService from '../services/concertService';
+import ConcertsModel from '../models/Concerts';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -22,7 +22,7 @@ const concertController = {
       }
 
       const userId = req.user.id;
-      const topPicks = await ConcertService.getTopPicks(userId);
+      const topPicks = await ConcertsModel.getTopPicks(userId);
 
       res.status(200).json({ success: true, data: topPicks });
     } catch (err) {
@@ -41,7 +41,7 @@ const concertController = {
         return;
       }
 
-      const concerts = await ConcertService.getNearMe(city);
+      const concerts = await ConcertsModel.getNearMe(city);
       res.status(200).json({ success: true, data: concerts });
     } catch (err) {
       console.error(err);

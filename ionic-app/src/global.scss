@@ -248,15 +248,15 @@ ion-infinite-scroll {
   }
 
   ion-button.glow-blue{
-    --background: #80ffcc2c !important;
+    --background: #80dbff2c !important;
     border-radius: 8px;
-    color: #80ffcc;
-    border: solid 2px #80ffcc;
-    box-shadow: 0 0 10px #80ffccaa;
+    color: #80f4ff;
+    border: solid 2px #80dbff;
+    box-shadow: 0 0 10px #80e8ffaa;
         border-width: 2px !important;
 
         :hover{
-    --background: #80ffcc75 !important;
+    --background: #80f0ff75 !important;
     }
   }
 

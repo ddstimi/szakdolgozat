@@ -9,6 +9,20 @@ import { Router } from '@angular/router';
 
 declare const google: any;
 
+export interface Concert {
+  id: number;
+  title: string;
+  date: string;
+  description?: string;
+  ticket_url?: string;
+  ticket_available: boolean;
+  cancelled: boolean;
+  venue_name: string;
+  city_id: number;
+  city_name: string;
+  artist_name: string;
+  image?: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -232,7 +246,6 @@ export class frontendService {
         headers: { Authorization: `Bearer ${token}` },
       })
     );
-
     return (
       response?.data || {
         artists: [],
@@ -242,6 +255,26 @@ export class frontendService {
       }
     );
   }
+
+  async getTopPicks(): Promise<Concert[]> {
+    const token = this.getToken();
+    if (!token) {
+      this.router.navigate(['/login']);
+      throw new Error('No authentication token found');
+    }
+
+    const response = await firstValueFrom(
+      this.http.get<{
+        success: boolean;
+        data: Concert[];
+      }>(`${environment.apiUrl}/api/concerts/top-picks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+
+    return response.data;
+  }
+
   forceRemoveStrayPages() {
     setTimeout(() => {
       const profilePage = document.querySelector('app-profile');

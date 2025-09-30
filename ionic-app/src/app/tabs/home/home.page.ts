@@ -20,7 +20,7 @@ import { ConcertCardComponent } from 'src/app/components/concert-card/concert-ca
 import { ConcertCardFullComponent } from '../../components/concert-card-full/concert-card-full.component';
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';
-import { frontendService } from 'src/app/services/frontendService';
+import { Concert, frontendService } from 'src/app/services/frontendService';
 
 @Component({
   selector: 'home',
@@ -56,92 +56,7 @@ export class HomePage {
     private frontendService: frontendService
   ) {}
 
-  concerts = [
-    {
-      title: 'Coldplay - Music of the Spheres Tour',
-      date: '2025-06-12',
-      location: 'Budapest, Hungary',
-      image: 'assets/images/asd.jpg',
-      genres: ['Rock', 'Pop', 'Indie'],
-    },
-    {
-      title: 'Arctic Monkeys Live',
-      date: '2025-07-18',
-      location: 'Budapest Park',
-      image: 'assets/images/asd.jpg',
-    },
-    {
-      title: 'Imagine Dragons',
-      date: '2025-07-15',
-      location: 'Budapest Arena',
-      image: 'assets/images/aa.jpg',
-    },
-    {
-      title: 'Arctic Monkeys',
-      date: '2025-08-02',
-      location: 'Sziget Festival',
-      image: 'assets/images/aa.jpg',
-    },
-    {
-      title: 'Billie Eilish',
-      date: '2025-09-10',
-      location: 'Papp László Sportaréna',
-      image: 'assets/images/aa.jpg',
-    },
-    {
-      title: 'Arctic Monkeys Live',
-      date: '2025-07-18',
-      location: 'Vienna, Austria',
-      image: 'assets/images/asd.jpg',
-    },
-    {
-      title: 'Arctic Monkeys',
-      date: '2025-08-02',
-      location: 'Sziget Festival',
-      image: 'assets/images/aa.jpg',
-    },
-    {
-      title: 'Billie Eilish',
-      date: '2025-09-10',
-      location: 'Papp László Sportaréna',
-      image: 'assets/images/aa.jpg',
-    },
-  ];
-
-  results = [
-    {
-      title: 'Rocking Budapest',
-      date: '2025-05-12',
-      location: 'Budapest',
-      image: 'assets/images/asd.jpg',
-      genre: 'Rock',
-      artist: 'Metallica',
-    },
-    {
-      title: 'Jazz Night',
-      date: '2025-06-02',
-      location: 'Debrecen',
-      image: 'assets/images/aa.jpg',
-      genre: 'Jazz',
-      artist: 'Norah Jones',
-    },
-    {
-      title: 'Jazz Night',
-      date: '2025-06-02',
-      location: 'Debrecen',
-      image: 'assets/images/aa.jpg',
-      genre: 'Jazz',
-      artist: 'Norah Jones',
-    },
-    {
-      title: 'Rocking Budapest After Midnight',
-      date: '2025-05-12',
-      location: 'Budapest',
-      image: 'assets/images/asd.jpg',
-      genre: 'Rock',
-      artist: 'Metallica',
-    },
-  ];
+  topPicks: Concert[] = [];
 
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
@@ -158,7 +73,30 @@ export class HomePage {
     await modal.present();
   }
   loggedIn = false;
-  ngOnInit() {
-    this.loggedIn = this.frontendService.isLoggedIn();
+  async ngOnInit() {
+    this.loggedIn = await this.frontendService.isLoggedIn();
+    this.topPicks = await this.frontendService.getTopPicks();
+    this.topPicks = this.topPicks.map((concert) => {
+      console.log('Concert title:', concert.title);
+      return {
+        ...concert,
+        image: concert.image?.includes('http://localhost:3000')
+          ? concert.image
+          : 'http://localhost:3000' +
+            (concert.image || '/profile-pictures/bikini.jpg'),
+      };
+    });
   }
 }
+/* <div class="results">
+      <app-concert-card-full
+        class="search-page"
+        *ngFor="let concert of results"
+        [title]="concert.title"
+        [date]="concert.date"
+        [location]="concert.location"
+        [image]="concert.image"
+        [genre]="concert.genre"
+        [artist]="concert.artist"
+      ></app-concert-card-full>
+    </div>*/

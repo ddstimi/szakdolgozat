@@ -8,9 +8,13 @@
     <div id="flex">
       <ion-card-subtitle>
         <ion-icon name="calendar-outline"></ion-icon
-        >{{ date }}</ion-card-subtitle
+        >{{ date | date : "yyyy-MM-dd • HH:mm" }}</ion-card-subtitle
       >
-      <ion-icon name="checkmark-circle-outline" id="checkmark"></ion-icon>
+      <ion-icon
+        name="ticket-outline"
+        id="checkmark"
+        [ngStyle]="{ color: ticket_available ? '#28fdab' : '#ff4d4d' }"
+      ></ion-icon>
     </div>
   </ion-card-header>
 </ion-card>

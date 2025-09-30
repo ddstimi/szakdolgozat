@@ -15,32 +15,19 @@
     <div class="concert-scroll-wrapper">
       <div class="concert-scroll-container">
         <app-concert-card
-          *ngFor="let concert of concerts"
+          *ngFor="let concert of topPicks"
           [title]="concert.title"
           [date]="concert.date"
-          [location]="concert.location"
+          [location]="concert.city_name + ', ' + concert.venue_name"
           [image]="concert.image"
+          [ticket_available]="concert.ticket_available"
           (click)="openDetails(concert)"
         >
-          ></app-concert-card
-        >
+        </app-concert-card>
       </div>
     </div>
     <hr class="section-divider" />
 
     <h1 id="near">Near me</h1>
-
-    <div class="results">
-      <app-concert-card-full
-        class="search-page"
-        *ngFor="let concert of results"
-        [title]="concert.title"
-        [date]="concert.date"
-        [location]="concert.location"
-        [image]="concert.image"
-        [genre]="concert.genre"
-        [artist]="concert.artist"
-      ></app-concert-card-full>
-    </div>
   </div>
 </ion-content>
