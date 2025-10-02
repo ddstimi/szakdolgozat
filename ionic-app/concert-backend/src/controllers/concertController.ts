@@ -33,15 +33,20 @@ const concertController = {
     }
   },
 
-  getNearMe: async (req: AuthenticatedRequest, res: Response) => {
+  getPopular: async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const city = req.query.city as string;
-      if (!city) {
-        res.status(400).json({ success: false, message: 'City is required' });
-        return;
-      }
-
-      const concerts = await ConcertsModel.getNearMe(city);
+      const concerts = await ConcertsModel.getPopular();
+      res.status(200).json({ success: true, data: concerts });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ success: false, message: 'Failed to fetch nearby concerts' });
+    }
+  },
+  getUpcoming: async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const concerts = await ConcertsModel.getUpcoming();
       res.status(200).json({ success: true, data: concerts });
     } catch (err) {
       console.error(err);

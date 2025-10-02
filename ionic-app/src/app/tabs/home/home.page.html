@@ -3,9 +3,10 @@
     <img id="concert" src="../../../assets/images/aa.jpg" alt="concert" />
     <div id="concert-container">
       <ion-button
-        *ngIf="(!loggedIn)"
+        [style.display]="loggedIn ? 'none' : 'visible'"
         id="sign-in-btn"
-        [routerLink]="['/login']"
+        type="button"
+        (click)="openLogin()"
         class="glow"
         >Sign in</ion-button
       >
@@ -29,5 +30,17 @@
     <hr class="section-divider" />
 
     <h1 id="near">Near me</h1>
+    <div class="results">
+      <app-concert-card-full
+        class="search-page"
+        *ngFor="let concert of popular"
+        [title]="concert.title"
+        [date]="concert.date"
+        [location]="concert.city_name"
+        [image]="concert.image"
+        [genre]="concert.genre"
+        [artist]="concert.artist_name"
+      ></app-concert-card-full>
+    </div>
   </div>
 </ion-content>

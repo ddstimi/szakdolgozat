@@ -242,26 +242,31 @@ ion-infinite-scroll {
     -webkit-text-stroke: 1px;
   }
   
-  ion-button {
+  ion-button,button {
     --border-radius: 8px; 
     box-shadow: 5px rgba(0, 0, 0, 0.718);
   }
 
-  ion-button.glow-blue{
+  ion-button.glow-blue, button.glow-blue{
     --background: #80dbff2c !important;
     border-radius: 8px;
     color: #80f4ff;
     border: solid 2px #80dbff;
     box-shadow: 0 0 10px #80e8ffaa;
         border-width: 2px !important;
+          z-index: 9999;
 
         :hover{
     --background: #80f0ff75 !important;
     }
   }
 
-  
-  ion-button.glow{
+  [hidden] {
+  display: none !important;
+}
+
+  ion-button.glow,button.glow{
+      z-index: 9999;
     border-width: 2px !important;
     --background: #c17b8c1a !important;
     color:#c17b8c;

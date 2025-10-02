@@ -22,6 +22,7 @@ export interface Concert {
   city_name: string;
   artist_name: string;
   image?: string;
+  genre?: string[];
 }
 @Injectable({
   providedIn: 'root',
@@ -258,18 +259,38 @@ export class frontendService {
 
   async getTopPicks(): Promise<Concert[]> {
     const token = this.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);
-      throw new Error('No authentication token found');
+    if (!this.isLoggedIn()) {
+      return this.getPopularConcerts();
+    } else {
+      const response = await firstValueFrom(
+        this.http.get<{
+          success: boolean;
+          data: Concert[];
+        }>(`${environment.apiUrl}/api/concerts/top-picks`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+      return response.data;
     }
+  }
 
+  async getPopularConcerts(): Promise<Concert[]> {
     const response = await firstValueFrom(
       this.http.get<{
         success: boolean;
         data: Concert[];
-      }>(`${environment.apiUrl}/api/concerts/top-picks`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      }>(`${environment.apiUrl}/api/concerts/popular`)
+    );
+
+    return response.data;
+  }
+
+  async getUpcomingConcerts(): Promise<Concert[]> {
+    const response = await firstValueFrom(
+      this.http.get<{
+        success: boolean;
+        data: Concert[];
+      }>(`${environment.apiUrl}/api/concerts/upcoming`)
     );
 
     return response.data;

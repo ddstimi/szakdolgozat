@@ -14,6 +14,7 @@ interface Concert extends RowDataPacket {
   city_name: string;
   artist_name: string;
   image?: string;
+  genre?: string[];
 }
 
 const ConcertsModel = {
@@ -47,8 +48,7 @@ const ConcertsModel = {
       }
       let remaining = limit - preferredConcerts.length;
 
-      if (map.size >= 10) return preferredConcerts;
-
+      if (map.size >= limit) return Array.from(map.values());
       const [popularConcerts] = await pool.query<Concert[]>(
         `
         SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
@@ -104,25 +104,98 @@ const ConcertsModel = {
       throw err;
     }
   },
-
-  getNearMe: async (city: string): Promise<Concert[]> => {
+  getUpcoming: async (): Promise<Concert[]> => {
+    const limit = 10;
     try {
-      const [rows] = await pool.query<Concert[]>(
+      const [concerts] = await pool.query<Concert[]>(
         `
-        SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled,
+        SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
                v.name AS venue_name, v.city_id, ci.name AS city_name,
-               a.name AS artist_name
+               a.name AS artist_name,
+             GROUP_CONCAT(g.name) AS genre
+
         FROM concerts c
         JOIN venues v ON c.venue_id = v.id
         JOIN cities ci ON v.city_id = ci.id
         JOIN artists a ON c.artist_id = a.id
-        WHERE c.date >= NOW() AND c.cancelled = FALSE AND v.city_id = ?
-        ORDER BY c.date ASC
-        LIMIT 10
+      LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+      LEFT JOIN genres g ON g.id = ag.genre_id
+GROUP BY 
+    c.id, c.title, c.date, c.description, c.ticket_url, 
+    c.ticket_available, c.cancelled, c.image,
+    v.name, v.city_id, ci.name, a.name  ORDER BY c.date ASC      LIMIT ?
         `,
-        [city]
+        [limit]
       );
-      return rows;
+
+      return concerts;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+  getPopular: async (): Promise<Concert[]> => {
+    try {
+      const limit = 20;
+      const map = new Map<number, Concert>();
+      const [popularConcerts] = await pool.query<Concert[]>(
+        `
+         SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
+             v.name AS venue_name, v.city_id, ci.name AS city_name,
+             a.name AS artist_name,
+             GROUP_CONCAT(g.name) AS genre,
+             COUNT(att.id) AS going_count
+      FROM concerts c
+      JOIN venues v ON c.venue_id = v.id
+      JOIN cities ci ON v.city_id = ci.id
+      JOIN artists a ON c.artist_id = a.id
+      LEFT JOIN attends att ON att.concert_id = c.id
+      LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+      LEFT JOIN genres g ON g.id = ag.genre_id
+      WHERE c.date >= NOW() AND c.cancelled = FALSE
+      GROUP BY c.id
+      ORDER BY going_count DESC
+        LIMIT ?
+        `,
+        [limit]
+      );
+
+      for (const concert of popularConcerts) {
+        if (!map.has(concert.id)) {
+          map.set(concert.id, concert);
+        }
+      }
+      let remaining = limit - map.size;
+      if (map.size >= 10) return Array.from(map.values());
+
+      const [upcomingConcerts] = await pool.query<Concert[]>(
+        `
+        SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
+               v.name AS venue_name, v.city_id, ci.name AS city_name,
+               a.name AS artist_name,
+             GROUP_CONCAT(g.name) AS genre
+
+        FROM concerts c
+        JOIN venues v ON c.venue_id = v.id
+        JOIN cities ci ON v.city_id = ci.id
+        JOIN artists a ON c.artist_id = a.id
+      LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+      LEFT JOIN genres g ON g.id = ag.genre_id
+
+        WHERE c.date >= NOW() AND c.cancelled = FALSE
+        ORDER BY c.date ASC
+        LIMIT ?
+        `,
+        [remaining]
+      );
+
+      for (const concert of upcomingConcerts) {
+        if (!map.has(concert.id)) {
+          map.set(concert.id, concert);
+        }
+      }
+
+      return Array.from(map.values());
     } catch (err) {
       console.error(err);
       throw err;

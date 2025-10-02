@@ -57,6 +57,7 @@ export class HomePage {
   ) {}
 
   topPicks: Concert[] = [];
+  popular: Concert[] = [];
 
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
@@ -75,28 +76,54 @@ export class HomePage {
   loggedIn = false;
   async ngOnInit() {
     this.loggedIn = await this.frontendService.isLoggedIn();
-    this.topPicks = await this.frontendService.getTopPicks();
-    this.topPicks = this.topPicks.map((concert) => {
-      console.log('Concert title:', concert.title);
-      return {
-        ...concert,
-        image: concert.image?.includes('http://localhost:3000')
-          ? concert.image
-          : 'http://localhost:3000' +
-            (concert.image || '/profile-pictures/bikini.jpg'),
-      };
-    });
+    if (this.loggedIn) {
+      this.topPicks = await this.frontendService.getTopPicks();
+      this.topPicks = this.topPicks.map((concert) => {
+        return {
+          ...concert,
+          image: concert.image?.includes('http://localhost:3000')
+            ? concert.image
+            : 'http://localhost:3000' +
+              (concert.image || '/profile-pictures/bikini.jpg'),
+        };
+      });
+      this.popular = await this.frontendService.getPopularConcerts();
+      this.popular = this.topPicks.map((concert) => {
+        console.log(concert.description);
+        return {
+          ...concert,
+          image: concert.image?.includes('http://localhost:3000')
+            ? concert.image
+            : 'http://localhost:3000' +
+              (concert.image || '/profile-pictures/bikini.jpg'),
+        };
+      });
+    } else {
+      this.topPicks = await this.frontendService.getPopularConcerts();
+      this.topPicks = this.topPicks.map((concert) => {
+        return {
+          ...concert,
+          image: concert.image?.includes('http://localhost:3000')
+            ? concert.image
+            : 'http://localhost:3000' +
+              (concert.image || '/profile-pictures/bikini.jpg'),
+        };
+      });
+      this.popular = await this.frontendService.getUpcomingConcerts();
+      this.popular = this.popular.map((concert) => {
+        console.log(concert.description);
+        return {
+          ...concert,
+          image: concert.image?.includes('http://localhost:3000')
+            ? concert.image
+            : 'http://localhost:3000' +
+              (concert.image || '/profile-pictures/bikini.jpg'),
+        };
+      });
+    }
+  }
+  openLogin() {
+    console.log('Navigating to login...');
+    this.router.navigate(['/login']);
   }
 }
-/* <div class="results">
-      <app-concert-card-full
-        class="search-page"
-        *ngFor="let concert of results"
-        [title]="concert.title"
-        [date]="concert.date"
-        [location]="concert.location"
-        [image]="concert.image"
-        [genre]="concert.genre"
-        [artist]="concert.artist"
-      ></app-concert-card-full>
-    </div>*/

@@ -5,8 +5,11 @@ const ConcertService = {
     return await EventsModel.getTopPicks(userId);
   },
 
-  getNearMe: async (city: string) => {
-    return await EventsModel.getNearMe(city);
+  getNearMe: async () => {
+    return await EventsModel.getPopular();
+  },
+  getUpcoming: async () => {
+    return await EventsModel.getUpcoming();
   },
 };
 

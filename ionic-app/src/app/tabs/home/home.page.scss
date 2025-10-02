@@ -13,11 +13,17 @@ ion-content{
 }
 
 #concert-container {
-  position: relative !important;
+  position: absolute;
+  top: 20%;
+  left: auto;
+  right: auto;
   width: 100% !important;
-  z-index: 10 !important;
+  z-index: 100 !important;
 }
-
+#concert{
+  pointer-events: none;
+    z-index: 1;
+}
 
 
 
@@ -225,6 +231,9 @@ margin-top: 3rem !important;
   app-concert-card-full ion-card{
     gap: 2rem;
 
+  }
+  #near{
+    height: fit-content;
   }
   .results {
     display: flex;
