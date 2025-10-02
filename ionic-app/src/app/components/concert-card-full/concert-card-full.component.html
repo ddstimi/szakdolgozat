@@ -11,11 +11,13 @@
       </div>
       <div class="calendar">
         <ion-icon name="calendar-number-outline"></ion-icon>
-        <ion-card-content class="date">{{ date }}</ion-card-content>
+        <ion-card-content class="date">{{
+          date | date : "yyyy-MM-dd"
+        }}</ion-card-content>
       </div>
 
       <ion-card-content class="genre">
-        <ion-chip>{{ genre }}</ion-chip>
+        <ion-chip *ngFor="let g of genreArray">{{ g }}</ion-chip>
       </ion-card-content>
     </div>
   </ion-card-header>

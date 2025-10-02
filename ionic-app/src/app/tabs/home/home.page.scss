@@ -13,8 +13,7 @@ ion-content{
 }
 
 #concert-container {
-  position: absolute;
-  top: 20%;
+  position: relative;
   left: auto;
   right: auto;
   width: 100% !important;
@@ -236,24 +235,23 @@ margin-top: 3rem !important;
     height: fit-content;
   }
   .results {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-left: 7rem;
-    margin-right: 1rem;
-    margin-top: 8rem;
-    border-radius: 12px;
-    max-width: 100%;  
-    padding: 1rem;   
-    background-color: rgba(0, 0, 0, 0.222);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+  display: flex;
+  flex-wrap: wrap;
+  width: 90%;
+  gap: 0rem;
+  margin: 10% auto auto 8% ;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.222);
+  border-radius: 12px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
 
   
     app-concert-card-full {
       width: calc(33.33% - 0.5rem);
       transform: scale(0.9);
       transition: transform 0.3s ease-in-out;
+      height: fit-content;
+
   
       &:hover {
         transform: scale(0.94);

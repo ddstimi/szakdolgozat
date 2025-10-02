@@ -37,6 +37,9 @@ export class ConcertCardFullComponent implements OnInit {
   @Input() date?: string;
   @Input() location?: string;
   @Input() image?: string;
-  @Input() genre?: string[];
+  @Input() genre?: string;
   @Input() artist?: string;
+  get genreArray(): string[] {
+    return this.genre ? this.genre.split(',') : [];
+  }
 }

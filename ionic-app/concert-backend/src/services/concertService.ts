@@ -11,6 +11,12 @@ const ConcertService = {
   getUpcoming: async () => {
     return await EventsModel.getUpcoming();
   },
+  getUpcomingByUserId: async (userId: number) => {
+    return await EventsModel.getUpcomingByUserId(userId);
+  },
+  getPastByUserId: async (userId: number) => {
+    return await EventsModel.getPastByUserId(userId);
+  },
 };
 
 export default ConcertService;

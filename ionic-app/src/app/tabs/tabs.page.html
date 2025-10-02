@@ -36,6 +36,7 @@
         id="logout-button"
         (click)="onLogout()"
         class="g_id_signout"
+        [style.display]="loggedIn ? 'visible' : 'none'"
       >
         <ion-icon name="log-out-outline"></ion-icon>
       </ion-tab-button>

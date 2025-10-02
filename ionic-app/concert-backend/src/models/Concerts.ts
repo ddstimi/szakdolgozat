@@ -134,6 +134,75 @@ GROUP BY
       throw err;
     }
   },
+
+  getUpcomingByUserId: async (userId: number): Promise<Concert[]> => {
+    try {
+      const [concerts] = await pool.query<Concert[]>(
+        `
+        SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
+               v.name AS venue_name, v.city_id, ci.name AS city_name,
+               a.name AS artist_name,
+             GROUP_CONCAT(g.name) AS genre
+
+        FROM concerts c
+        JOIN venues v ON c.venue_id = v.id
+        JOIN cities ci ON v.city_id = ci.id
+        JOIN artists a ON c.artist_id = a.id
+      LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+      LEFT JOIN genres g ON g.id = ag.genre_id
+WHERE c.id IN (
+    SELECT concert_id
+    FROM attends
+    WHERE user_id = ?
+)
+AND c.date >= NOW()
+
+GROUP BY c.id
+        `,
+        [userId]
+      );
+
+      return concerts;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+
+  getPastByUserId: async (userId: number): Promise<Concert[]> => {
+    try {
+      const [concerts] = await pool.query<Concert[]>(
+        `
+        SELECT c.id, c.title, c.date, c.description, c.ticket_url, c.ticket_available, c.cancelled, c.image,
+               v.name AS venue_name, v.city_id, ci.name AS city_name,
+               a.name AS artist_name,
+             GROUP_CONCAT(g.name) AS genre
+
+        FROM concerts c
+        JOIN venues v ON c.venue_id = v.id
+        JOIN cities ci ON v.city_id = ci.id
+        JOIN artists a ON c.artist_id = a.id
+      LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+      LEFT JOIN genres g ON g.id = ag.genre_id
+WHERE c.id IN (
+    SELECT concert_id
+    FROM attends
+    WHERE user_id = ?
+)
+AND c.date < NOW()
+
+GROUP BY c.id
+        `,
+        [userId]
+      );
+
+      return concerts;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+
   getPopular: async (): Promise<Concert[]> => {
     try {
       const limit = 20;

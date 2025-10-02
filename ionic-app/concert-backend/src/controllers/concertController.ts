@@ -41,7 +41,7 @@ const concertController = {
       console.error(err);
       res
         .status(500)
-        .json({ success: false, message: 'Failed to fetch nearby concerts' });
+        .json({ success: false, message: 'Failed to fetch popular concerts' });
     }
   },
   getUpcoming: async (req: AuthenticatedRequest, res: Response) => {
@@ -52,7 +52,44 @@ const concertController = {
       console.error(err);
       res
         .status(500)
-        .json({ success: false, message: 'Failed to fetch nearby concerts' });
+        .json({ success: false, message: 'Failed to fetch upcoming concerts' });
+    }
+  },
+
+  getUpcomingByUserId: async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.user) {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+        return;
+      }
+
+      const userId = req.user.id;
+      const concerts = await ConcertsModel.getUpcomingByUserId(userId);
+
+      res.status(200).json({ success: true, data: concerts });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ success: false, message: 'Failed to fetch top picks' });
+    }
+  },
+  getPastByUserId: async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.user) {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+        return;
+      }
+
+      const userId = req.user.id;
+      const concerts = await ConcertsModel.getPastByUserId(userId);
+
+      res.status(200).json({ success: true, data: concerts });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ success: false, message: 'Failed to fetch top picks' });
     }
   },
 };

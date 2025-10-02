@@ -66,7 +66,7 @@ export class SearchPage implements OnInit {
       date: '2025-05-12',
       location: 'Budapest',
       image: 'assets/images/asd.jpg',
-      genre: ['Rock'],
+      genre: 'Rock',
       artist: 'Metallica',
     },
     {
@@ -74,7 +74,7 @@ export class SearchPage implements OnInit {
       date: '2025-06-02',
       location: 'Debrecen',
       image: 'assets/images/aa.jpg',
-      genre: ['Jazz'],
+      genre: 'Jazz',
       artist: 'Norah Jones',
     },
     {
@@ -82,7 +82,7 @@ export class SearchPage implements OnInit {
       date: '2025-06-02',
       location: 'Debrecen',
       image: 'assets/images/aa.jpg',
-      genre: ['Jazz'],
+      genre: 'Jazz',
       artist: 'Norah Jones',
     },
     {
@@ -90,7 +90,7 @@ export class SearchPage implements OnInit {
       date: '2025-05-12',
       location: 'Budapest',
       image: 'assets/images/asd.jpg',
-      genre: ['Rock'],
+      genre: 'Rock',
       artist: 'Metallica',
     },
     // Add more dummy concert objects

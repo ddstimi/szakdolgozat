@@ -65,12 +65,13 @@ export class TabsPage implements OnInit {
   ) {
     addIcons({ search, home, calendarOutline, person, logOutOutline });
   }
-
+  loggedIn = false;
   ngOnInit() {
     this.checkIfMobile();
     this.platform.resize.subscribe(() => {
       this.checkIfMobile();
     });
+    this.loggedIn = this.frontendService.isLoggedIn();
   }
 
   checkIfMobile() {

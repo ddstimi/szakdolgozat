@@ -22,7 +22,7 @@ export interface Concert {
   city_name: string;
   artist_name: string;
   image?: string;
-  genre?: string[];
+  genre?: string;
 }
 @Injectable({
   providedIn: 'root',
@@ -267,6 +267,40 @@ export class frontendService {
           success: boolean;
           data: Concert[];
         }>(`${environment.apiUrl}/api/concerts/top-picks`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+      return response.data;
+    }
+  }
+
+  async getUpcomingByUser(): Promise<Concert[]> {
+    const token = this.getToken();
+    if (!this.isLoggedIn()) {
+      return this.getUpcomingByUser();
+    } else {
+      const response = await firstValueFrom(
+        this.http.get<{
+          success: boolean;
+          data: Concert[];
+        }>(`${environment.apiUrl}/api/concerts/upcoming-by-user`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+      return response.data;
+    }
+  }
+
+  async getPastByUser(): Promise<Concert[]> {
+    const token = this.getToken();
+    if (!this.isLoggedIn()) {
+      return this.getPastByUser();
+    } else {
+      const response = await firstValueFrom(
+        this.http.get<{
+          success: boolean;
+          data: Concert[];
+        }>(`${environment.apiUrl}/api/concerts/past`, {
           headers: { Authorization: `Bearer ${token}` },
         })
       );

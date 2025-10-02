@@ -19,7 +19,7 @@
           *ngFor="let concert of topPicks"
           [title]="concert.title"
           [date]="concert.date"
-          [location]="concert.city_name + ', ' + concert.venue_name"
+          [location]="concert.city_name + ' • ' + concert.venue_name"
           [image]="concert.image"
           [ticket_available]="concert.ticket_available"
           (click)="openDetails(concert)"
@@ -29,7 +29,7 @@
     </div>
     <hr class="section-divider" />
 
-    <h1 id="near">Near me</h1>
+    <h1 id="near">Popular</h1>
     <div class="results">
       <app-concert-card-full
         class="search-page"

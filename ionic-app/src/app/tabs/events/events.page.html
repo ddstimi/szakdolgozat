@@ -3,16 +3,18 @@
     <ion-title>Upcoming Events</ion-title>
 
     <div class="event-cards">
-      <ion-card *ngFor="let event of filteredEvents" class="event-card">
+      <ion-card *ngFor="let concert of upcoming" class="event-card">
         <ion-card-header>
-          <ion-card-title>{{ event.title }}</ion-card-title>
+          <ion-card-title>{{ concert.title }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <div class="location">
-            <ion-icon name="location-outline"></ion-icon>{{ event.location }}
+            <ion-icon name="location-outline"></ion-icon>{{ concert.city_name+'
+            • '+concert.venue_name }}
           </div>
           <div class="date">
-            <ion-icon name="calendar-outline"></ion-icon> {{ event.date }}
+            <ion-icon name="calendar-outline"></ion-icon> {{ concert.date | date
+            : "yyyy-MM-dd" }}
           </div>
         </ion-card-content>
       </ion-card>
