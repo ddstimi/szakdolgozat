@@ -1,24 +1,154 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonImg, IonCardTitle, IonCardHeader, IonCardSubtitle, IonCardContent, IonButton, IonIcon, IonList, IonAvatar, IonListHeader, IonItem, IonLabel, IonChip } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonTitle,
+  IonToolbar,
+  IonCard,
+  IonImg,
+  IonCardTitle,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardContent,
+  IonChip,
+  IonLabel,
+} from '@ionic/angular/standalone';
+import { environment } from 'src/environments/environment.prod';
+
+declare const google: any;
+declare const gapi: any;
 
 @Component({
   selector: 'app-concert-details',
   templateUrl: './concert-details.page.html',
   styleUrls: ['./concert-details.page.scss'],
   standalone: true,
-  imports: [IonChip, IonLabel, IonItem, IonListHeader, IonAvatar, IonList, IonIcon, IonButton, IonCardContent, IonCardSubtitle, IonCardHeader, IonCardTitle, IonImg, IonCard, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    IonLabel,
+    IonChip,
+    IonCardContent,
+    IonCardSubtitle,
+    IonCardHeader,
+    IonCardTitle,
+    IonImg,
+    IonCard,
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class ConcertDetailsPage implements OnInit {
   @Input() concert: any;
 
+  private tokenClient: any = null;
+  private gapiLoaded = false;
+  private accessToken: string | null = null;
+
   constructor(private modalController: ModalController) {}
 
+  async ngOnInit() {
+    await this.loadGisScript();
+    this.initTokenClient();
+    await this.loadGapiClient();
+  }
 
-  
-  ngOnInit(): void {}
+  private async loadGisScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.getElementById('gisScript')) return resolve();
+
+      const script = document.createElement('script');
+      script.id = 'gisScript';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  }
+
+  private initTokenClient() {
+    this.tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: environment.googleClientId,
+      scope: 'https://www.googleapis.com/auth/calendar.events',
+      callback: (tokenResponse: any) => {
+        this.accessToken = tokenResponse.access_token;
+        this.insertEventToCalendar();
+      },
+    });
+  }
+
+  private async loadGapiClient(): Promise<void> {
+    return new Promise((resolve) => {
+      gapi.load('client', async () => {
+        await gapi.client.init({
+          apiKey: environment.calendarApiKey,
+          discoveryDocs: [
+            'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+          ],
+        });
+        this.gapiLoaded = true;
+        resolve();
+      });
+    });
+  }
+
+  addToCalendar() {
+    if (!this.tokenClient) {
+      alert('Google OAuth not ready yet. Please try again.');
+      return;
+    }
+    this.tokenClient.requestAccessToken({ prompt: '' });
+  }
+
+  private async insertEventToCalendar() {
+    if (!this.gapiLoaded || !this.accessToken) return;
+
+    gapi.client.setToken({ access_token: this.accessToken });
+
+    const event = {
+      summary: this.concert.title,
+      description: this.concert.description || 'Concert event',
+      location: `${this.concert.venue_name}, ${this.concert.city_name}`,
+      start: {
+        dateTime: new Date(this.concert.date).toISOString(),
+        timeZone: 'Europe/Budapest',
+      },
+      end: {
+        dateTime: new Date(
+          new Date(this.concert.date).getTime() + 2 * 60 * 60 * 1000
+        ).toISOString(),
+        timeZone: 'Europe/Budapest',
+      },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'popup', minutes: 30 },
+          { method: 'popup', minutes: 24 * 60 },
+        ],
+      },
+    };
+
+    try {
+      const response = await gapi.client.calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+      });
+      alert('🎉 Event added to your Google Calendar!');
+      console.log('Event created:', response);
+    } catch (error) {
+      console.error('Error adding event:', error);
+      alert('Failed to add event. Check console for details.');
+    }
+  }
 
   closeModal() {
     this.modalController.dismiss();

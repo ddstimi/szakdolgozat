@@ -40,16 +40,19 @@
                 <ion-select-option value="all">All</ion-select-option>
               </ion-select>
             </ion-item>
-
-            <div class="statistics">
-              <ion-card id="stat">
-                <div class="stat-label">Total Concerts Attended:</div>
-                <div class="stat-number">{{ totalConcerts }}</div>
-              </ion-card>
-            </div>
-            <div class="slide-description">
-              <p>{{ chartDescriptions[activeSlideIndex].staticText }}</p>
-              <p>{{ chartDescriptions[activeSlideIndex].personalizedText }}</p>
+            <div class="stat-row">
+              <div class="statistics">
+                <ion-card id="stat">
+                  <div class="stat-label">Total Concerts Attended:</div>
+                  <div class="stat-number">{{ totalConcerts }}</div>
+                </ion-card>
+              </div>
+              <div class="slide-description">
+                <p>{{ chartDescriptions[activeSlideIndex].staticText }}</p>
+                <p>
+                  {{ chartDescriptions[activeSlideIndex].personalizedText }}
+                </p>
+              </div>
             </div>
           </div>
           <swiper-container

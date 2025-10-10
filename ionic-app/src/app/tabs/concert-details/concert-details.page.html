@@ -19,7 +19,11 @@
           <ion-card-title>{{ concert?.title }}</ion-card-title>
           <ion-card-subtitle>
             <ion-icon name="calendar-outline"></ion-icon>
-            {{ concert?.date }} • {{ concert?.location }}
+            {{ concert?.date | date: "yyyy-MM-dd • HH:MM" }}
+          </ion-card-subtitle>
+          <ion-card-subtitle id="location-subtitle">
+            <ion-icon name="location-outline"></ion-icon>{{ concert?.city_name +
+            ' • ' + concert?.venue_name }}
           </ion-card-subtitle>
         </ion-card-header>
 
@@ -45,7 +49,7 @@
               Buy Tickets
             </ion-button>
             <div id="options">
-              <ion-button fill="clear">
+              <ion-button fill="clear" (click)="addToCalendar()">
                 <ion-icon name="calendar" slot="start"></ion-icon>
                 Add to Calendar
               </ion-button>

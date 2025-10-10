@@ -93,6 +93,8 @@ export class EventsPage implements OnInit, AfterViewInit {
             (concert.image || '/profile-pictures/bikini.jpg'),
       };
     });
+    this.selectedInterval = 'all';
+    this.applyIntervalFilter();
   }
 
   ngAfterViewInit() {
@@ -115,7 +117,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     );
     this.totalConcerts = this.filteredPast.length;
 
-    this.updateRadarData(this.filteredPast); // <-- pass filtered concerts
+    this.updateRadarData(this.filteredPast);
     this.createRadarCharts();
 
     this.chartDescriptions[0].personalizedText = `You're in the top 8% for Pop lovers.`;
@@ -139,20 +141,17 @@ export class EventsPage implements OnInit, AfterViewInit {
     this.artistData = {};
 
     concerts.forEach((concert) => {
-      // Genres (split by comma if multiple)
       concert.genre?.split(',').forEach((genre) => {
         genre = genre.trim();
         if (!genre) return;
         this.genreData[genre] = (this.genreData[genre] || 0) + 1;
       });
 
-      // Locations / venues
       if (concert.venue_name) {
         this.locationData[concert.venue_name] =
           (this.locationData[concert.venue_name] || 0) + 1;
       }
 
-      // Artists
       if (concert.artist_name) {
         this.artistData[concert.artist_name] =
           (this.artistData[concert.artist_name] || 0) + 1;
@@ -167,7 +166,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     );
 
     this.totalConcerts = this.filteredPast.length;
-    this.updateRadarData(this.filteredPast); // <-- pass filtered concerts
+    this.updateRadarData(this.filteredPast);
     this.createRadarCharts();
   }
 

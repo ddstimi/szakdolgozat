@@ -77,6 +77,9 @@ export class HomePage {
   async ngOnInit() {
     this.loggedIn = await this.frontendService.isLoggedIn();
     if (this.loggedIn) {
+      console.log(
+        'User is logged in, fetching top picks and popular concerts.'
+      );
       this.topPicks = await this.frontendService.getTopPicks();
       this.topPicks = this.topPicks.map((concert) => {
         return {
@@ -88,7 +91,7 @@ export class HomePage {
         };
       });
       this.popular = await this.frontendService.getPopularConcerts();
-      this.popular = this.topPicks.map((concert) => {
+      this.popular = this.popular.map((concert) => {
         console.log(concert.description);
         return {
           ...concert,
@@ -99,6 +102,9 @@ export class HomePage {
         };
       });
     } else {
+      console.log(
+        'User is not logged in, fetching popular and upcoming concerts.'
+      );
       this.topPicks = await this.frontendService.getPopularConcerts();
       this.topPicks = this.topPicks.map((concert) => {
         return {

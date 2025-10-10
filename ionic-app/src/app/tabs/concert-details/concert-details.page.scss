@@ -70,6 +70,8 @@ p {
   gap: 16px;
   padding: 16px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 
@@ -97,11 +99,21 @@ p {
     width: 100%;
     ion-button{
       font-size: smaller;
-      color: #f4f4f490;
+      color: #f4f4f495;
     }
   }
 }
+ #options > ion-button:hover{
+background: #525252;
+background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0) 100%);
+ }
+#location-subtitle{
+ color: #b8f9ffb4;
+}
 
+.concert-description{
+  color: #ddddddd0;
+}
 
 .ion-img-wrapper {
   width: 50%;

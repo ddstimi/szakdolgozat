@@ -32,7 +32,7 @@
   height: auto;
   margin-top: 5%;
   margin-bottom: 10rem;
-
+  padding: auto auto;
 }
 
 ion-title {
@@ -136,10 +136,10 @@ ion-card-content{
 .stat-column{
   flex: 1;
   max-width: 50%;
-  align-items: center;
-  justify-items: center;
+  margin-left: 5%;
   #statLabel{
-    width: 70% !important;
+    width: 80% !important;
+    font-size: medium;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.566);
     background-color: rgba(0, 0, 0, 0.142) !important;
   }
@@ -182,6 +182,8 @@ canvas {
   background-color: #55625c28;
   border: 2px solid #80ffcc7a;
   box-shadow: 0 0 15px #80ffcc46;
+    margin-bottom: 3rem;
+
 }
 
 
@@ -227,14 +229,20 @@ canvas {
       font-size: 2rem !important;
     }
   }
+
+  .stat-row{
+    display: flex;
+    flex-direction: row;
+  }
   
   .stat-column{
     width: 100% ;
     max-width: 100%;
+      margin-left: 0;
 
     
   #statLabel{
-    width: 80% !important;
+    width: 100% !important;
     font-size: smaller;
     padding: 2px !important;
     height: fit-content;
@@ -250,8 +258,14 @@ canvas {
     width: 90% !important;
   }
 
+  .slide-description{
+    align-self: center;
+    margin: auto auto;
+    font-size: medium;
+  }
+
   .stat-cont{
-    margin-top: 4rem;
+    margin-top: 1rem;
   }
 
 }
