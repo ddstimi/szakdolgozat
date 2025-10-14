@@ -119,11 +119,12 @@ const ConcertsModel = {
         JOIN cities ci ON v.city_id = ci.id
         JOIN artists a ON c.artist_id = a.id
       LEFT JOIN artist_genres ag ON ag.artist_id = a.id
-      LEFT JOIN genres g ON g.id = ag.genre_id
+      LEFT JOIN genres g ON g.id = ag.genre_id WHERE c.date >= NOW() AND c.cancelled = FALSE
 GROUP BY 
     c.id, c.title, c.date, c.description, c.ticket_url, 
     c.ticket_available, c.cancelled, c.image,
-    v.name, v.city_id, ci.name, a.name  ORDER BY c.date ASC      LIMIT ?
+    v.name, v.city_id, ci.name, a.name  ORDER BY c.date ASC    
+  LIMIT ?
         `,
         [limit]
       );
