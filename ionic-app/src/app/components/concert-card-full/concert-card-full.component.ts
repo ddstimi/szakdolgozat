@@ -39,6 +39,21 @@ export class ConcertCardFullComponent implements OnInit {
   @Input() image?: string;
   @Input() genre?: string;
   @Input() artist?: string;
+  @Input() ticket_available?: boolean;
+  @Input() attending?: boolean;
+  @Input() loggedIn?: boolean;
+
+  get attendCheckmarkColor(): string {
+    if (!this.loggedIn) return '#737373';
+    return this.attending ? '#c17b8c' : '#737373';
+  }
+  get attendCheckmarkIcon(): string {
+    if (!this.loggedIn || !this.attending) {
+      return 'checkmark-circle-outline';
+    }
+    return 'checkmark-circle';
+  }
+
   get genreArray(): string[] {
     return this.genre ? this.genre.split(',') : [];
   }

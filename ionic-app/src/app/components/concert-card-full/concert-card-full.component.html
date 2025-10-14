@@ -22,6 +22,15 @@
     </div>
   </ion-card-header>
   <ion-card-content id="checkmark-container">
-    <ion-icon name="checkmark-circle-outline" id="checkmark"></ion-icon>
+    <ion-icon
+      [name]="attendCheckmarkIcon"
+      id="checkmark"
+      [ngStyle]="{ color: attendCheckmarkColor }"
+    ></ion-icon>
+    <ion-icon
+      name="ticket-outline"
+      id="checkmark"
+      [ngStyle]="{ color: ticket_available ? '#28fdab' : '#ff4d4d' }"
+    ></ion-icon>
   </ion-card-content>
 </ion-card>

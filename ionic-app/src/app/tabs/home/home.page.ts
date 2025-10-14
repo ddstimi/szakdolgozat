@@ -59,6 +59,7 @@ export class HomePage {
 
   topPicks: Concert[] = [];
   popular: Concert[] = [];
+  userAttendingConcerts: number[] = [];
 
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
@@ -81,6 +82,9 @@ export class HomePage {
       console.log(
         'User is logged in, fetching top picks and popular concerts.'
       );
+      this.userAttendingConcerts = (
+        await this.frontendService.getUpcomingByUser()
+      ).map((c) => c.id);
       this.topPicks = await this.frontendService.getTopPicks();
       this.topPicks = this.topPicks.map((concert) => {
         return {
