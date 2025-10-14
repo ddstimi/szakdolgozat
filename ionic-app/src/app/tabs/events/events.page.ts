@@ -20,6 +20,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
 import { frontendService, Concert } from 'src/app/services/frontendService';
+import { environment } from 'src/environments/environment.prod';
 
 Chart.register(
   RadarController,
@@ -77,9 +78,9 @@ export class EventsPage implements OnInit, AfterViewInit {
     this.upcoming = this.upcoming.map((concert) => {
       return {
         ...concert,
-        image: concert.image?.includes('http://localhost:3000')
+        image: concert.image?.includes(environment.apiUrl)
           ? concert.image
-          : 'http://localhost:3000' +
+          : environment.apiUrl +
             (concert.image || '/profile-pictures/bikini.jpg'),
       };
     });
@@ -87,9 +88,9 @@ export class EventsPage implements OnInit, AfterViewInit {
     this.past = this.past.map((concert) => {
       return {
         ...concert,
-        image: concert.image?.includes('http://localhost:3000')
+        image: concert.image?.includes(environment.apiUrl)
           ? concert.image
-          : 'http://localhost:3000' +
+          : environment.apiUrl +
             (concert.image || '/profile-pictures/bikini.jpg'),
       };
     });

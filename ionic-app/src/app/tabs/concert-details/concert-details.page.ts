@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import {
   IonButton,
   IonContent,
@@ -102,11 +104,34 @@ export class ConcertDetailsPage implements OnInit {
   }
 
   addToCalendar() {
-    if (!this.tokenClient) {
-      alert('Google OAuth not ready yet. Please try again.');
-      return;
+    const isMobile = Capacitor.getPlatform() === 'android';
+
+    if (isMobile) {
+      if (!this.concert) return;
+
+      const title = encodeURIComponent(this.concert.title);
+      const details = encodeURIComponent(this.concert.description || '');
+      const location = encodeURIComponent(
+        `${this.concert.venue_name}, ${this.concert.city_name}`
+      );
+
+      const start = new Date(this.concert.date);
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+
+      const formatDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
+
+      const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${formatDate(
+        start
+      )}/${formatDate(end)}`;
+
+      Browser.open({ url });
+    } else {
+      if (!this.tokenClient) {
+        alert('Google OAuth not ready yet. Please try again.');
+        return;
+      }
+      this.tokenClient.requestAccessToken({ prompt: '' });
     }
-    this.tokenClient.requestAccessToken({ prompt: '' });
   }
 
   private async insertEventToCalendar() {
@@ -119,7 +144,7 @@ export class ConcertDetailsPage implements OnInit {
       description: this.concert.description || 'Concert event',
       location: `${this.concert.venue_name}, ${this.concert.city_name}`,
       start: {
-        dateTime: new Date(this.concert.date).toISOString(),
+        dateTime: new Date(this.concert.date),
         timeZone: 'Europe/Budapest',
       },
       end: {
@@ -148,6 +173,18 @@ export class ConcertDetailsPage implements OnInit {
       console.error('Error adding event:', error);
       alert('Failed to add event. Check console for details.');
     }
+  }
+
+  viewOnMap() {
+    if (!this.concert) return;
+
+    const query = encodeURIComponent(
+      `${this.concert.city_name},+${this.concert.venue_name}`
+    );
+
+    const url = `https://www.google.com/maps/search/?api=1&query=${query}`;
+
+    window.open(url, '_system');
   }
 
   closeModal() {

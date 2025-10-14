@@ -9,14 +9,9 @@ import { GdprModalComponent } from './gdpr-modal/gdpr-modal/gdpr-modal.component
 import { frontendService } from '../services/frontendService';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../guards/authGuard';
+import { environment } from 'src/environments/environment';
 
 declare const google: any;
-export const environment = {
-  production: false,
-  googleClientId:
-    '413636504400-i4ft6hbngklp9juman43te2vkmouatdg.apps.googleusercontent.com',
-  apiUrl: 'http://localhost:3000',
-};
 
 @Component({
   selector: 'app-login',

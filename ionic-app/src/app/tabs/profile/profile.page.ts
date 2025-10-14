@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { frontendService } from 'src/app/services/frontendService';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -23,14 +24,14 @@ export class ProfilePage implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
   predefinedPics: string[] = [
-    'http://localhost:3000/profile-pictures/hawer.jpg',
-    'http://localhost:3000/profile-pictures/krubi.jpg',
-    'http://localhost:3000/profile-pictures/balazs_korda.jpg',
-    'http://localhost:3000/profile-pictures/colee.jpg',
-    'http://localhost:3000/profile-pictures/desh.jpg',
-    'http://localhost:3000/profile-pictures/hofi.jpg',
-    'http://localhost:3000/profile-pictures/dzsudlo.jpg',
-    'http://localhost:3000/profile-pictures/bikini.jpg',
+    environment.apiUrl + '/profile-pictures/hawer.jpg',
+    environment.apiUrl + '/profile-pictures/krubi.jpg',
+    environment.apiUrl + '/profile-pictures/balazs_korda.jpg',
+    environment.apiUrl + '/profile-pictures/colee.jpg',
+    environment.apiUrl + '/profile-pictures/desh.jpg',
+    environment.apiUrl + '/profile-pictures/hofi.jpg',
+    environment.apiUrl + '/profile-pictures/dzsudlo.jpg',
+    environment.apiUrl + '/profile-pictures/bikini.jpg',
   ];
 
   artists: number[] = [];
@@ -65,9 +66,9 @@ export class ProfilePage implements OnInit {
         email: userData.email,
         gdpr: userData.gdpr,
         password: userData.password,
-        img_url: userData.img_url?.includes('http://localhost:3000')
+        img_url: userData.img_url?.includes(environment.apiUrl)
           ? userData.img_url
-          : 'http://localhost:3000' +
+          : environment.apiUrl +
             (userData.img_url || '/profile-pictures/bikini.jpg'),
       };
       this.selectedPicture = this.user.img_url;

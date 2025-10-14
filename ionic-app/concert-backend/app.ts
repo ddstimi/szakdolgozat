@@ -48,6 +48,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(status).json({ message: err.message });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.listen(3000, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${port}`);
 });

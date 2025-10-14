@@ -9,6 +9,8 @@
 .env
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
+environment.ts
+environment.prod.ts
 
 *.log
 log.txt

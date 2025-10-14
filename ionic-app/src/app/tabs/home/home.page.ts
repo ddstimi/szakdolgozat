@@ -21,6 +21,7 @@ import { ConcertCardFullComponent } from '../../components/concert-card-full/con
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';
 import { Concert, frontendService } from 'src/app/services/frontendService';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'home',
@@ -84,9 +85,9 @@ export class HomePage {
       this.topPicks = this.topPicks.map((concert) => {
         return {
           ...concert,
-          image: concert.image?.includes('http://localhost:3000')
+          image: concert.image?.includes(environment.apiUrl)
             ? concert.image
-            : 'http://localhost:3000' +
+            : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
         };
       });
@@ -95,9 +96,9 @@ export class HomePage {
         console.log(concert.description);
         return {
           ...concert,
-          image: concert.image?.includes('http://localhost:3000')
+          image: concert.image?.includes(environment.apiUrl)
             ? concert.image
-            : 'http://localhost:3000' +
+            : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
         };
       });
@@ -109,9 +110,9 @@ export class HomePage {
       this.topPicks = this.topPicks.map((concert) => {
         return {
           ...concert,
-          image: concert.image?.includes('http://localhost:3000')
+          image: concert.image?.includes(environment.apiUrl)
             ? concert.image
-            : 'http://localhost:3000' +
+            : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
         };
       });
@@ -120,9 +121,9 @@ export class HomePage {
         console.log(concert.description);
         return {
           ...concert,
-          image: concert.image?.includes('http://localhost:3000')
+          image: concert.image?.includes(environment.apiUrl)
             ? concert.image
-            : 'http://localhost:3000' +
+            : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
         };
       });
