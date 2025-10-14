@@ -104,34 +104,24 @@ export class ConcertDetailsPage implements OnInit {
   }
 
   addToCalendar() {
-    const isMobile = Capacitor.getPlatform() === 'android';
+    if (!this.concert) return;
 
-    if (isMobile) {
-      if (!this.concert) return;
+    const title = encodeURIComponent(this.concert.title);
+    const details = encodeURIComponent(this.concert.description || '');
+    const location = encodeURIComponent(
+      `${this.concert.venue_name}, ${this.concert.city_name}`
+    );
 
-      const title = encodeURIComponent(this.concert.title);
-      const details = encodeURIComponent(this.concert.description || '');
-      const location = encodeURIComponent(
-        `${this.concert.venue_name}, ${this.concert.city_name}`
-      );
+    const start = new Date(this.concert.date);
+    const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
-      const start = new Date(this.concert.date);
-      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const formatDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
 
-      const formatDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
+    const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${formatDate(
+      start
+    )}/${formatDate(end)}`;
 
-      const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${formatDate(
-        start
-      )}/${formatDate(end)}`;
-
-      Browser.open({ url });
-    } else {
-      if (!this.tokenClient) {
-        alert('Google OAuth not ready yet. Please try again.');
-        return;
-      }
-      this.tokenClient.requestAccessToken({ prompt: '' });
-    }
+    Browser.open({ url });
   }
 
   private async insertEventToCalendar() {

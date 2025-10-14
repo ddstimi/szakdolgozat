@@ -14,32 +14,37 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-
-
-@import url(https://db.onlinewebfonts.com/c/0c1b1565e8b9ee3c19050302aedf2120?family=Garet+W05+Extra+Bold); 
+@import url(https://db.onlinewebfonts.com/c/0c1b1565e8b9ee3c19050302aedf2120?family=Garet+W05+Extra+Bold);
 @font-face {
-    font-family: "Garet W05 Extra Bold";
-    src: url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot");
-    src: url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot?#iefix")format("embedded-opentype"),
-    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff2")format("woff2"),
-    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff")format("woff"),
-    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.ttf")format("truetype"),
-    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.svg#Garet W05 Extra Bold")format("svg");
+  font-family: "Garet W05 Extra Bold";
+  src: url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot");
+  src:
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.eot?#iefix") format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff2") format("woff2"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.woff") format("woff"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.ttf") format("truetype"),
+    url("https://db.onlinewebfonts.com/t/0c1b1565e8b9ee3c19050302aedf2120.svg#Garet W05 Extra Bold") format("svg");
 }
-  
+
 ion-app {
   position: relative;
   min-height: 100vh;
 
   &::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: -1;
-    background: linear-gradient(90deg, rgba(20, 18, 32, 1) 0%, rgba(49, 31, 55, 1) 37%, rgba(49, 31, 55, 1) 66%, rgba(21, 30, 59, 1) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(20, 18, 32, 1) 0%,
+      rgba(49, 31, 55, 1) 37%,
+      rgba(49, 31, 55, 1) 66%,
+      rgba(21, 30, 59, 1) 100%
+    );
     filter: blur(6px);
     -webkit-filter: blur(6px); // Safari
     background-attachment: fixed;
@@ -47,12 +52,15 @@ ion-app {
   }
 }
 
-:host{
-  --highlight-color-valid:#80FFCC !important;
-  --border-color: #80FFCC !important;
+:host {
+  --highlight-color-valid: #80ffcc !important;
+  --border-color: #80ffcc !important;
 }
 
-ion-content, ion-header, ion-footer, ion-card {
+ion-content,
+ion-header,
+ion-footer,
+ion-card {
   --background: transparent !important;
   background: transparent !important;
 }
@@ -61,223 +69,215 @@ ion-content, ion-header, ion-footer, ion-card {
   background: rgba(0, 0, 0, 0.9) !important;
   border-radius: 6px;
 
-  .alert-radio-label.sc-ion-alert-md{
-  color: #f9f4f5 !important;
+  .alert-radio-label.sc-ion-alert-md {
+    color: #f9f4f5 !important;
   }
 }
 
-ion-backdrop.sc-ion-alert-md.md{
+ion-backdrop.sc-ion-alert-md.md {
   background: rgba(0, 0, 0, 9) !important;
   filter: blur(10px) !important;
 }
 
-ion-alert{
+ion-alert {
   backdrop-filter: blur(6px) !important;
-
 }
-
 
 ion-searchbar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    z-index: 999;
-    padding: 0.5rem;
-  }
-  
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 0.5rem;
+}
 
 ion-header {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: none;
-    height: fit-content;
-    padding: 2px;
-    --ion-border-color: transparent;
-    --box-shadow: none;
-    box-shadow: none !important;
-    border: none !important;
-  }
-  
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: none;
+  height: fit-content;
+  padding: 2px;
+  --ion-border-color: transparent;
+  --box-shadow: none;
+  box-shadow: none !important;
+  border: none !important;
+}
 
-#concert{
-    border-radius: 8px;
-    box-shadow: 2px rgba(0, 0, 0, 0.778);
-    max-width: 90%;
-    min-width: 90%;
-    justify-content:center ;
-    margin-bottom: auto;
-    object-fit: cover;
-    filter:blur(1px);
+#concert {
+  border-radius: 8px;
+  box-shadow: 2px rgba(0, 0, 0, 0.778);
+  max-width: 90%;
+  min-width: 90%;
+  justify-content: center;
+  margin-bottom: auto;
+  object-fit: cover;
+  filter: blur(1px);
 }
 ion-infinite-scroll {
-    width: 100%;
-    padding-top: 10rem;
-  }
-  
-  #fy-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
-    z-index: 2;
-  }
+  width: 100%;
+  padding-top: 10rem;
+}
 
- @mixin fadeIn {
-    opacity: 1;
-    animation-name: fadeInOpacity;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-in;
-    animation-duration: 2s;
+#fy-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem;
+  z-index: 2;
+}
+
+@mixin fadeIn {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
 }
 
 @keyframes fadeInOpacity {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-  .genre{
-
-    ion-chip {
-      border-radius: 12px;
-      padding: 0.4rem;
-      font-size: 0.65rem !important;
-      transform: scale(0.8) !important;
-    }
-    
+.genre {
+  ion-chip {
+    border-radius: 12px;
+    padding: 0.4rem;
+    font-size: 0.65rem !important;
+    transform: scale(0.8) !important;
   }
+}
 
-  .results {
-    padding: 1rem;
+.results {
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  app-concert-card-full {
+    width: 45%;
+    min-width: 20rem;
+
+    ion-img {
+      flex-grow: 2;
+    }
+    &:hover {
+      transform: scale(1.03);
+      transition: transform 0.3s ease-in-out;
+    }
+  }
+  ion-concert-card ion-card-header {
+    height: 100% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  ion-tabs {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    app-concert-card-full{
-      width: 45%;
-      min-width: 20rem;
-      
-      ion-img{
-        flex-grow: 2;
-      }
-      &:hover {
-        transform: scale(1.03);
-        transition: transform 0.3s ease-in-out;
+    flex-direction: column;
+    height: 100%;
+    z-index: 10;
+  }
 
-      }
-    }
-    ion-concert-card ion-card-header{
-      height: 100% !important;
+  ion-tab-bar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 3.5rem;
+    width: 3%;
+    z-index: 10;
+  }
+
+  ion-tab-button {
+    max-height: 5rem;
+    margin-top: 3rem;
+    z-index: 10;
+  }
+
+  #logout-button {
+    margin-top: 5rem;
+  }
+
+  .genre {
+    ion-chip {
+      margin-top: -12px;
     }
   }
 
-@media (min-width: 769px) { 
-    ion-tabs {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        z-index: 10;
-    }
-    
-    ion-tab-bar {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        min-width: 3.5rem;
-        width: 3%;
-        z-index: 10;
-    }
-
-    ion-tab-button {
-        max-height: 5rem;
-        margin-top: 3rem;
-        z-index: 10;
-    }
-
-
-    #logout-button {
-        margin-top: 5rem;
-    }
-
-    .genre{
-      ion-chip {
-        margin-top: -12px;
-      }
-    }
-
-    .concert-card .infos > div{
-      height: 2.4rem;
-    }
-
-
+  .concert-card .infos > div {
+    height: 2.4rem;
+  }
 }
 
+@media (max-width: 768px) {
+  #logout-button {
+    display: none;
+  }
 
-@media (max-width: 768px) { 
-    #logout-button {
-        display: none;
-    }
-
-    ion-tabs,ion-tab-bar,ion-tab-button{
-        z-index: 7;
-    }
+  ion-tabs,
+  ion-tab-bar,
+  ion-tab-button {
+    z-index: 7;
+  }
 }
 
-
-  
 .hollow {
-    font-family: 'Garet W05 Extra Bold', sans-serif;
-    font-size: 2rem;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 1px;
-  }
-  
-  ion-button,button {
-    --border-radius: 8px; 
-    box-shadow: 5px rgba(0, 0, 0, 0.718);
-  }
+  font-family: "Garet W05 Extra Bold", sans-serif;
+  font-size: 2rem;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px;
+}
 
-  ion-button.glow-blue, button.glow-blue{
-    --background: #80dbff2c !important;
-    border-radius: 8px;
-    color: #80f4ff;
-    border: solid 2px #80dbff;
-    box-shadow: 0 0 10px #80e8ffaa;
-        border-width: 2px !important;
-          z-index: 9999;
+ion-button,
+button {
+  --border-radius: 8px;
+  box-shadow: 5px rgba(0, 0, 0, 0.718);
+}
 
-        :hover{
+ion-button.glow-blue,
+button.glow-blue {
+  --background: #80dbff2c !important;
+  border-radius: 8px;
+  color: #80f4ff;
+  border: solid 2px #80dbff;
+  box-shadow: 0 0 10px #80e8ffaa;
+  border-width: 2px !important;
+  z-index: 9999;
+
+  :hover {
     --background: #80f0ff75 !important;
-    }
   }
+}
 
-  [hidden] {
+[hidden] {
   display: none !important;
 }
 
-  ion-button.glow,button.glow{
-      z-index: 9999;
-    border-width: 2px !important;
-    --background: #c17b8c1a !important;
-    color:#c17b8c;
-    border-radius: 8px;
-    border: solid 2px #c17b8c;
-    box-shadow: 0 0 10px #c17b8c81;
+ion-button.glow,
+button.glow {
+  z-index: 9999;
+  border-width: 2px !important;
+  --background: #c17b8c1a !important;
+  color: #c17b8c;
+  border-radius: 8px;
+  border: solid 2px #c17b8c;
+  box-shadow: 0 0 10px #c17b8c81;
 
-    :hover{
+  :hover {
     --background: #c17b8c64 !important;
-    }
   }
+}
 
 body.modal-open .page-container {
   filter: blur(8px);
@@ -292,14 +292,13 @@ body.modal-open #container {
   z-index: 2;
 }
 
-
 ion-modal {
   filter: none !important;
   z-index: 300;
 }
 
 body.modal-open::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -310,7 +309,7 @@ body.modal-open::before {
 }
 
 .modal-open::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -321,7 +320,6 @@ body.modal-open::before {
   opacity: 1;
 }
 
-
 body ion-app::after {
   opacity: 0;
 }
@@ -331,21 +329,26 @@ ion-modal::part(backdrop) {
   background: rgba(0, 0, 0, 0.878) !important; // optional dim background
 }
 
-
 ion-modal::part(content) {
   backdrop-filter: none !important;
   background: transparent !important;
   box-shadow: none !important;
   height: 100%;
   @media (min-width: 769px) {
-  max-width: 60%;}
+    max-width: 60%;
+  }
   align-self: center !important;
 }
 
-
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 hr.section-divider {
@@ -353,11 +356,6 @@ hr.section-divider {
   margin: 2rem auto;
   border: none;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    #f9f4f571,
-    transparent
-  );
+  background: linear-gradient(to right, transparent, #f9f4f571, transparent);
   opacity: 0.5;
 }
