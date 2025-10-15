@@ -5,7 +5,7 @@
         [(ngModel)]="searchQuery"
         (ionInput)="onSearchChange($event)"
         (ionClear)="onSearchChange($event)"
-        placeholder="Search concerts"
+        placeholder="Search"
         #searchBar
       >
       </ion-searchbar>
@@ -26,12 +26,14 @@
 
       <ion-tab-button tab="events" routerLink="/tabs/events">
         <ion-icon name="calendar-outline"></ion-icon>
-        <ion-badge color="primary">{{upcomingNum}}</ion-badge>
+        <ion-badge color="primary" *ngIf="upcomingNum>0"
+          >{{upcomingNum}}</ion-badge
+        >
       </ion-tab-button>
 
       <ion-tab-button tab="profile" routerLink="/tabs/profile">
         <ion-icon name="person"></ion-icon>
-        <ion-badge color="primary">3</ion-badge>
+        <ion-badge color="primary" *ngIf="notifNum>0">{{notifNum}}</ion-badge>
       </ion-tab-button>
 
       <ion-tab-button

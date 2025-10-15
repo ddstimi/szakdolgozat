@@ -51,6 +51,8 @@ export class TabsPage implements OnInit {
   loggedIn = false;
   upcoming: Concert[] = [];
   upcomingNum = 0;
+  notifNum = 0;
+
   isMobile = false;
 
   constructor(
