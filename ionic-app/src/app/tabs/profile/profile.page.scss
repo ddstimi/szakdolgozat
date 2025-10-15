@@ -4,7 +4,7 @@
   align-items: center;
 }
 
-#row{
+#row {
   text-align: center;
   padding: 2rem;
   width: 90%;
@@ -15,7 +15,7 @@
   gap: 2rem;
 }
 
-#col{
+#col {
   text-align: center;
   padding: 2rem;
   width: 90%;
@@ -34,7 +34,7 @@
   border-radius: 12px;
   align-self: center;
   justify-self: center;
-  position:relative;
+  position: relative;
   margin: auto;
 
   .main-picture-container {
@@ -103,18 +103,15 @@
 
   .selected {
     transform: scale(1.1);
-    border: 2px solid #80FFCC;
-    box-shadow: 0 0 12px #80FFCCaa;
+    border: 2px solid #80ffcc;
+    box-shadow: 0 0 12px #80ffccaa;
   }
 }
-
 
 app-edit-user-modal,
 app-edit-preference-modal {
   z-index: 1000 !important;
 }
-
-
 
 ion-modal {
   z-index: 20000 !important;
@@ -139,8 +136,14 @@ ion-modal ion-toolbar {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .profile-card {
@@ -155,21 +158,21 @@ ion-modal ion-toolbar {
   background-color: #0e0e1074 !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
   align-items: center;
-  p{
+  p {
     justify-self: flex-start;
     align-self: flex-start;
   }
   color: #f9f4f5;
 
-.card-flex{
-  width: 100%;
-}
+  .card-flex {
+    width: 100%;
+  }
 
-  p{
+  p {
     font-size: larger;
   }
 
-  ion-button{
+  ion-button {
     align-self: center;
     border-width: 1px !important;
   }
@@ -193,8 +196,7 @@ ion-modal ion-toolbar {
 
 ion-chip {
   margin: 0.25rem;
-  background-color: #80FFCCaa !important;
-
+  background-color: #80f4ff !important;
 }
 
 ion-card-title {
@@ -252,8 +254,7 @@ ion-list {
   color: var(--ion-color-light);
 }
 
-
-.notif{
+.notif {
   display: flex;
   flex-direction: column;
   gap: 0rem;
@@ -263,13 +264,13 @@ ion-list {
   width: 100%;
   height: auto;
 
-  #message{
-        border: solid 2px #c17b8c;
+  #message {
+    border: solid 2px #c17b8c;
     box-shadow: 0 0 10px #c17b8c81;
     margin: 10px;
-    border-radius:8px;
+    border-radius: 8px;
     background-color: #07070755;
-    border-radius:8px;
+    border-radius: 8px;
     padding: 0.5rem;
     width: 100%;
   }
@@ -289,26 +290,26 @@ ion-list {
   color: #f9f4f5;
   margin-bottom: 2rem;
 
-  ion-card-content{
+  ion-card-content {
     width: 100%;
   }
 
-  ion-button{
+  ion-button {
     margin-top: 1rem;
   }
 }
 
-ion-button#logout-btn{
+ion-button#logout-btn {
   --align-self: center;
   --justify-self: center;
   margin: auto;
   position: relative;
 }
 
-#logout{
+#logout {
   padding: 2rem;
-  background: radial-gradient(rgba(0, 0, 0, 0.436),rgba(0, 0, 0, 0.075));
-  max-width:30%;
+  background: radial-gradient(rgba(0, 0, 0, 0.436), rgba(0, 0, 0, 0.075));
+  max-width: 30%;
   align-self: center;
   justify-self: center;
   border-radius: 8px;
@@ -317,14 +318,13 @@ ion-button#logout-btn{
 }
 
 @media (max-width: 769px) {
-
-  .notif-card{
+  .notif-card {
     width: 100%;
     margin: 0;
     align-self: center;
   }
 
-  #row{
+  #row {
     flex-direction: column;
     padding: 0px !important;
   }
@@ -337,7 +337,7 @@ ion-button#logout-btn{
     width: 100% !important;
   }
 
-  ion-card-content{
+  ion-card-content {
     padding: 0;
   }
 
@@ -345,7 +345,7 @@ ion-button#logout-btn{
     transform: scale(0.7);
   }
 
-  .pref-group{
+  .pref-group {
     gap: 0;
   }
 
@@ -356,26 +356,26 @@ ion-button#logout-btn{
   ion-toolbar ion-title {
     font-size: small;
   }
-  h1{
+  h1 {
     margin-top: 20% !important;
   }
-  #container{
+  #container {
     gap: 1rem !important;
     flex-direction: column;
     width: 100%;
   }
 
-  #col{
+  #col {
     width: 100%;
     padding: 0px;
-    gap:0;
+    gap: 0;
   }
 
-  #row{
+  #row {
     width: 100%;
   }
 
-  .main-picture-container{
+  .main-picture-container {
     transform: scale(0.6);
     margin-bottom: none;
     width: 90%;
@@ -385,19 +385,19 @@ ion-button#logout-btn{
     height: 2.5rem !important;
   }
 
-  #picture-card{
-  margin: 2rem auto;
+  #picture-card {
+    margin: 2rem auto;
 
-  .options-row {
-    gap: 0.3rem;
-    flex-wrap:wrap;
-    width: 100%;
-    overflow-x: auto;
-    height: calc(max-height);
-  }
+    .options-row {
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      width: 100%;
+      overflow-x: auto;
+      height: calc(max-height);
+    }
   }
 
-  .profile-card{
+  .profile-card {
     width: 100% !important;
   }
 }

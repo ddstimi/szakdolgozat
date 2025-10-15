@@ -326,7 +326,7 @@ body ion-app::after {
 
 ion-modal::part(backdrop) {
   backdrop-filter: none !important;
-  background: rgba(0, 0, 0, 0.878) !important; // optional dim background
+  background: rgba(0, 0, 0, 0.878) !important;
 }
 
 ion-modal::part(content) {

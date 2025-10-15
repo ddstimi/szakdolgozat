@@ -40,9 +40,8 @@ export class SearchPage implements OnInit {
   recentSearches: string[] = [];
   searchQuery: string = '';
   private querySub?: Subscription;
-
-  cities: string[] = ['Budapest', 'London', 'Paris'];
-  genres: string[] = ['Rock', 'Pop', 'Indie', 'Jazz'];
+  cities: string[] = [];
+  genres: string[] = [];
 
   constructor(
     private frontendService: frontendService,
@@ -57,7 +56,18 @@ export class SearchPage implements OnInit {
       if (c.image) c.image = `${environment.apiUrl}${c.image}`;
     });
     this.filteredResults = [...this.concerts];
-
+    const citySet = new Set<string>();
+    const genreSet = new Set<string>();
+    this.concerts.forEach((c) => {
+      if (c.city_name) citySet.add(c.city_name);
+      if (c.genre) {
+        for (const g of c.genre.split(',')) {
+          genreSet.add(g.trim());
+        }
+      }
+    });
+    this.cities = Array.from(citySet).sort();
+    this.genres = Array.from(genreSet).sort();
     this.querySub = this.searchService.currentQuery$.subscribe((query) => {
       this.ngZone.run(() => {
         this.searchQuery = query || '';
@@ -74,17 +84,23 @@ export class SearchPage implements OnInit {
   applyFilter(query: string) {
     const lower = (query || '').toLowerCase();
 
-    if (!lower || lower.length < 2) {
-      this.filteredResults = [...this.concerts];
-      this.cd.detectChanges();
-      return;
-    }
+    this.filteredResults = this.concerts.filter((c) => {
+      const title = (c.title || '').toLowerCase();
+      const artist = (c.artist_name || '').toLowerCase();
 
-    this.filteredResults = this.concerts.filter(
-      (c) =>
-        (c.title?.toLowerCase().includes(lower) ?? false) ||
-        (c.artist_name?.toLowerCase().includes(lower) ?? false)
-    );
+      const matchesQuery =
+        !lower || title.includes(lower) || artist.includes(lower);
+      const matchesCity =
+        !this.selectedCity || c.city_name === this.selectedCity;
+      const matchesGenre =
+        !this.selectedGenre || c.genre?.includes(this.selectedGenre);
+
+      return matchesQuery && matchesCity && matchesGenre;
+    });
+
     this.cd.detectChanges();
+  }
+  onFilterChange() {
+    this.applyFilter(this.searchQuery);
   }
 }
