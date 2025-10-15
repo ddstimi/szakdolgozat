@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import {
   IonContent,
   IonChip,
@@ -12,6 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { Concert, frontendService } from 'src/app/services/frontendService';
 import { ConcertCardFullComponent } from 'src/app/components/concert-card-full/concert-card-full.component';
 import { environment } from 'src/environments/environment';
+import { SearchService } from 'src/app/services/searchService';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -33,59 +35,56 @@ import { environment } from 'src/environments/environment';
 export class SearchPage implements OnInit {
   concerts: Concert[] = [];
   filteredResults: Concert[] = [];
-  searchQuery = '';
   selectedCity = '';
   selectedGenre = '';
   recentSearches: string[] = [];
+  searchQuery: string = '';
+  private querySub?: Subscription;
 
   cities: string[] = ['Budapest', 'London', 'Paris'];
   genres: string[] = ['Rock', 'Pop', 'Indie', 'Jazz'];
 
-  constructor(private frontendService: frontendService) {}
+  constructor(
+    private frontendService: frontendService,
+    private searchService: SearchService,
+    private ngZone: NgZone,
+    private cd: ChangeDetectorRef
+  ) {}
 
   async ngOnInit() {
     this.concerts = await this.frontendService.getUpcomingConcerts();
-    this.concerts.forEach((concert) => {
-      if (concert.image) {
-        concert.image = `${environment.apiUrl}${concert.image}`;
-      }
+    this.concerts.forEach((c) => {
+      if (c.image) c.image = `${environment.apiUrl}${c.image}`;
     });
     this.filteredResults = [...this.concerts];
-  }
 
-  handleSearch(event: Event) {
-    const target = event.target as HTMLIonSearchbarElement;
-    this.searchQuery = target.value?.toLowerCase() || '';
-    this.applyFilters();
+    this.querySub = this.searchService.currentQuery$.subscribe((query) => {
+      this.ngZone.run(() => {
+        this.searchQuery = query || '';
+        this.applyFilter(query);
+      });
+    });
 
-    if (this.searchQuery && !this.recentSearches.includes(this.searchQuery)) {
-      this.recentSearches.unshift(this.searchQuery);
-      this.recentSearches = this.recentSearches.slice(0, 5);
+    const initialQuery = this.searchService.getCurrentQuery();
+    if (initialQuery) {
+      this.ngZone.run(() => this.applyFilter(initialQuery));
     }
   }
 
-  onCityChange() {
-    this.applyFilters();
-  }
+  applyFilter(query: string) {
+    const lower = (query || '').toLowerCase();
 
-  onGenreChange() {
-    this.applyFilters();
-  }
+    if (!lower || lower.length < 2) {
+      this.filteredResults = [...this.concerts];
+      this.cd.detectChanges();
+      return;
+    }
 
-  applyFilters() {
-    this.filteredResults = this.concerts.filter((concert) => {
-      const matchesQuery =
-        !this.searchQuery ||
-        concert.title.toLowerCase().includes(this.searchQuery) ||
-        concert.artist_name.toLowerCase().includes(this.searchQuery);
-
-      const matchesCity =
-        !this.selectedCity || concert.city_name === this.selectedCity;
-
-      const matchesGenre =
-        !this.selectedGenre || concert.genre === this.selectedGenre;
-
-      return matchesQuery && matchesCity && matchesGenre;
-    });
+    this.filteredResults = this.concerts.filter(
+      (c) =>
+        (c.title?.toLowerCase().includes(lower) ?? false) ||
+        (c.artist_name?.toLowerCase().includes(lower) ?? false)
+    );
+    this.cd.detectChanges();
   }
 }

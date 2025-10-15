@@ -1,36 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { addIcons } from 'ionicons';
+import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
-
 import {
-  add,
-  home,
-  calendarOutline,
-  person,
-  search,
-  logOutOutline,
-} from 'ionicons/icons';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
-  IonButton,
-  IonInput,
+  IonHeader,
+  IonToolbar,
   IonSearchbar,
   IonBadge,
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
-import { Concert, frontendService } from '../services/frontendService';
-import { searchService } from '../services/searchService';
+import { addIcons } from 'ionicons';
+import {
+  home,
+  search,
+  calendarOutline,
+  person,
+  logOutOutline,
+} from 'ionicons/icons';
+import { frontendService, Concert } from '../services/frontendService';
+import { SearchService } from '../services/searchService';
 
 @Component({
   selector: 'app-tabs',
@@ -38,58 +32,58 @@ import { searchService } from '../services/searchService';
   styleUrls: ['./tabs.page.scss'],
   standalone: true,
   imports: [
-    IonBadge,
-    IonSearchbar,
-    IonInput,
-    IonButton,
-    IonRouterOutlet,
-    IonLabel,
-    IonIcon,
-    IonTabButton,
-    IonTabBar,
     IonTabs,
-    IonContent,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
+    IonLabel,
+    IonRouterOutlet,
     IonHeader,
-    IonTitle,
     IonToolbar,
+    IonSearchbar,
+    IonBadge,
     CommonModule,
     FormsModule,
   ],
 })
 export class TabsPage implements OnInit {
-  public isMobile: boolean = false;
   searchQuery: string = '';
+  loggedIn = false;
   upcoming: Concert[] = [];
-  upcomingNum: number = 0;
+  upcomingNum = 0;
+  isMobile = false;
 
   constructor(
     private platform: Platform,
     private router: Router,
-    public frontendService: frontendService,
-    private searchService: searchService
+    private frontendService: frontendService,
+    private searchService: SearchService
   ) {
-    addIcons({ search, home, calendarOutline, person, logOutOutline });
+    addIcons({ home, search, calendarOutline, person, logOutOutline });
   }
-  loggedIn = false;
+
   async ngOnInit() {
-    this.upcoming = await this.frontendService.getUpcomingByUser();
-    this.checkIfMobile();
-    this.platform.resize.subscribe(() => {
-      this.checkIfMobile();
-    });
     this.loggedIn = this.frontendService.isLoggedIn();
     if (this.loggedIn) {
+      this.upcoming = await this.frontendService.getUpcomingByUser();
       this.upcomingNum = this.upcoming.length;
     }
+
+    this.checkIfMobile();
+    this.platform.resize.subscribe(() => this.checkIfMobile());
   }
 
   checkIfMobile() {
     this.isMobile = this.platform.width() <= 768;
   }
 
-  onSearch() {
-    this.router.navigate(['/tabs/search']);
-    this.searchService.setQuery(this.searchQuery);
+  onSearchChange(event: any) {
+    const query = event.detail.value || '';
+    this.searchQuery = query;
+    this.searchService.setQuery(query);
+    if (!this.router.url.includes('/tabs/search')) {
+      this.router.navigate(['/tabs/search']);
+    }
   }
 
   onLogout() {

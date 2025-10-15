@@ -1,36 +1,25 @@
 <ion-content [fullscreen]="true" class="search-content">
   <div class="search-wrapper">
-    <!-- Recent Searches -->
     <div class="recent-searches" *ngIf="recentSearches.length">
       <ion-chip *ngFor="let item of recentSearches">
         <ion-label>{{ item }}</ion-label>
       </ion-chip>
     </div>
 
-    <!-- Filters -->
     <div class="filters">
-      <ion-select
-        placeholder="Select city"
-        [(ngModel)]="selectedCity"
-        (ionChange)="onCityChange()"
-      >
+      <ion-select placeholder="Select city" [(ngModel)]="selectedCity">
         <ion-select-option *ngFor="let city of cities" [value]="city">
           {{ city }}
         </ion-select-option>
       </ion-select>
 
-      <ion-select
-        placeholder="Select genre"
-        [(ngModel)]="selectedGenre"
-        (ionChange)="onGenreChange()"
-      >
+      <ion-select placeholder="Select genre" [(ngModel)]="selectedGenre">
         <ion-select-option *ngFor="let genre of genres" [value]="genre">
           {{ genre }}
         </ion-select-option>
       </ion-select>
     </div>
 
-    <!-- Search Results -->
     <div class="results" *ngIf="filteredResults.length">
       <app-concert-card-full
         class="search-page"
@@ -44,7 +33,6 @@
       ></app-concert-card-full>
     </div>
 
-    <!-- No results message -->
     <div *ngIf="filteredResults.length === 0 && searchQuery">
       <p>No concerts found for "{{ searchQuery }}"</p>
     </div>

@@ -3,12 +3,12 @@
     <ion-toolbar>
       <ion-searchbar
         [(ngModel)]="searchQuery"
-        (ionInput)="onSearch()"
-        id="global-searchbar"
-        show-clear-button="focus"
-        value="Show on Focus"
-        animated="true"
-      ></ion-searchbar>
+        (ionInput)="onSearchChange($event)"
+        (ionClear)="onSearchChange($event)"
+        placeholder="Search concerts"
+        #searchBar
+      >
+      </ion-searchbar>
     </ion-toolbar>
   </ion-header>
 
