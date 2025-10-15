@@ -1,10 +1,8 @@
 import { firstValueFrom } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-export const environment = {
-  production: false,
-  apiUrl: 'http://10.129.2.145:3000',
-};
+import { environment } from 'src/environments/environment';
+
 import { Router } from '@angular/router';
 
 declare const google: any;

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { Platform } from '@ionic/angular';
+
 import {
   add,
   home,
@@ -28,7 +29,8 @@ import {
   IonBadge,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
-import { frontendService } from '../services/frontendService';
+import { Concert, frontendService } from '../services/frontendService';
+import { searchService } from '../services/searchService';
 
 @Component({
   selector: 'app-tabs',
@@ -57,21 +59,28 @@ import { frontendService } from '../services/frontendService';
 export class TabsPage implements OnInit {
   public isMobile: boolean = false;
   searchQuery: string = '';
+  upcoming: Concert[] = [];
+  upcomingNum: number = 0;
 
   constructor(
     private platform: Platform,
     private router: Router,
-    public frontendService: frontendService
+    public frontendService: frontendService,
+    private searchService: searchService
   ) {
     addIcons({ search, home, calendarOutline, person, logOutOutline });
   }
   loggedIn = false;
-  ngOnInit() {
+  async ngOnInit() {
+    this.upcoming = await this.frontendService.getUpcomingByUser();
     this.checkIfMobile();
     this.platform.resize.subscribe(() => {
       this.checkIfMobile();
     });
     this.loggedIn = this.frontendService.isLoggedIn();
+    if (this.loggedIn) {
+      this.upcomingNum = this.upcoming.length;
+    }
   }
 
   checkIfMobile() {
@@ -79,12 +88,10 @@ export class TabsPage implements OnInit {
   }
 
   onSearch() {
-    if (this.searchQuery.trim() !== '') {
-      this.router.navigate(['/tabs/search'], {
-        queryParams: { query: this.searchQuery },
-      });
-    }
+    this.router.navigate(['/tabs/search']);
+    this.searchService.setQuery(this.searchQuery);
   }
+
   onLogout() {
     this.frontendService.logout();
   }
