@@ -107,9 +107,6 @@ export class HomePage {
         };
       });
     } else {
-      console.log(
-        'User is not logged in, fetching popular and upcoming concerts.'
-      );
       this.topPicks = await this.frontendService.getPopularConcerts();
       this.topPicks = this.topPicks.map((concert) => {
         return {
@@ -131,6 +128,7 @@ export class HomePage {
               (concert.image || '/profile-pictures/bikini.jpg'),
         };
       });
+      this.frontendService.forceRemoveStrayPages();
     }
   }
   openLogin() {

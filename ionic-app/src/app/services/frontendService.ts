@@ -38,7 +38,7 @@ export class frontendService {
         })
       );
 
-      this.setSession(response);
+      await this.setSession(response);
       return response;
     } catch (error) {
       throw error;
@@ -335,6 +335,8 @@ export class frontendService {
 
       const homePage = document.querySelector('app-home');
       if (homePage) homePage.remove();
+      const loginPage = document.querySelector('app-login');
+      if (loginPage) loginPage.remove();
     }, 300);
   }
 

@@ -93,6 +93,10 @@ export class ProfilePage implements OnInit {
     } catch (error) {
       console.error('Initialization error:', error);
     }
+    if (!this.frontendService.isLoggedIn()) {
+      this.frontendService.logout();
+      this.router.navigate(['/login']);
+    }
   }
 
   async loadPreferences() {

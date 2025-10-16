@@ -21,6 +21,7 @@ import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
 import { frontendService, Concert } from 'src/app/services/frontendService';
 import { environment } from 'src/environments/environment.prod';
+import { Router } from '@angular/router';
 
 Chart.register(
   RadarController,
@@ -70,7 +71,10 @@ export class EventsPage implements OnInit, AfterViewInit {
   private locationChart: Chart | undefined;
   private artistChart: Chart | undefined;
 
-  constructor(private frontendService: frontendService) {}
+  constructor(
+    private frontendService: frontendService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     this.updateStatistics();
@@ -96,6 +100,10 @@ export class EventsPage implements OnInit, AfterViewInit {
     });
     this.selectedInterval = 'all';
     this.applyIntervalFilter();
+    if (!this.frontendService.isLoggedIn()) {
+      this.frontendService.logout();
+      this.router.navigate(['/login']);
+    }
   }
 
   ngAfterViewInit() {
