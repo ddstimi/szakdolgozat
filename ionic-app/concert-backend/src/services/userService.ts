@@ -3,6 +3,7 @@ import UserModel from '../models/User';
 import { IUser } from '../interfaces/IUser';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
+import SessionService from './sessionService';
 const client = new OAuth2Client(process.env['GOOGLE_CLIENT_ID']);
 
 const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
@@ -58,39 +59,32 @@ const UserService = {
 
   loginUser: async (
     username: string,
-    password: string
-  ): Promise<LoginResponse> => {
-    console.log('Attempting to login user:', username); // Debug log
-
+    password: string,
+    stayLoggedIn = false
+  ): Promise<{
+    user: Omit<IUser, 'password'>;
+    token: string;
+    refreshToken: string;
+  }> => {
     const user = await UserModel.findByUsername(username);
-    console.log('User found:', user); // Debug log
-
     if (!user || !user.password) {
-      console.log('User not found or password missing'); // Debug log
       throw new CustomError('Invalid credentials', 401);
     }
 
-    console.log('Stored password hash:', user.password); // Debug log
-    console.log('Input password:', password); // Debug log
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Hashed password:', hashedPassword); // Add this debug log
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('Password match result:', isMatch); // Debug log
-
     if (!isMatch) {
       throw new CustomError('Invalid credentials', 401);
     }
 
     await UserModel.updateLastLogin(user.id as number);
-
     const { password: _, ...userDataWithoutPassword } = user;
-    const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '1h' }
+
+    const { token, refreshToken } = SessionService.createTokens(
+      user,
+      stayLoggedIn
     );
 
-    return { user: userDataWithoutPassword, token };
+    return { user: userDataWithoutPassword, token, refreshToken };
   },
 
   handleGoogleAuth: async (credential: string): Promise<LoginResponse> => {

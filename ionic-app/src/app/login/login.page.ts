@@ -47,6 +47,8 @@ export class LoginPage implements OnInit {
     gdpr: false,
   };
 
+  stayLoggedIn = false;
+
   async onRegister() {
     if (this.registerData.password !== this.registerData.confirmPassword) {
       return alert("Passwords don't match");
@@ -60,7 +62,6 @@ export class LoginPage implements OnInit {
           this.registerData
         )
       );
-      console.log('Registered:', res);
       this.isSignUp = false;
     } catch (err) {
       console.error('Registration failed', err);
@@ -73,11 +74,13 @@ export class LoginPage implements OnInit {
     }
 
     this.isLoading = true;
+    console.log('Stay logged in:', this.stayLoggedIn);
 
     try {
       await this.frontendService.login(
         this.loginData.username,
-        this.loginData.password
+        this.loginData.password,
+        this.stayLoggedIn
       );
 
       await this.router.navigate(['/tabs/home'], {

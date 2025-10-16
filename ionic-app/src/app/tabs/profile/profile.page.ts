@@ -58,6 +58,18 @@ export class ProfilePage implements OnInit {
   availableVenues: { id: number; name: string }[] = [];
 
   async ngOnInit() {
+    let token = this.frontendService.getToken();
+
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const newToken = await this.frontendService.refreshAccessToken();
+    if (!newToken) {
+      this.router.navigate(['/login']);
+      return;
+    }
     try {
       const userData = await this.frontendService.getUserData();
       this.user = {
@@ -92,10 +104,6 @@ export class ProfilePage implements OnInit {
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Initialization error:', error);
-    }
-    if (!this.frontendService.isLoggedIn()) {
-      this.frontendService.logout();
-      this.router.navigate(['/login']);
     }
   }
 
@@ -228,7 +236,8 @@ export class ProfilePage implements OnInit {
   async updateProfilePicture() {
     try {
       const response = await this.frontendService.updateUserProfilePicture(
-        this.selectedPicture
+        this.selectedPicture,
+        true
       );
 
       if (response.user) {
@@ -462,7 +471,7 @@ export class ProfilePage implements OnInit {
     this.user = { ...updatedUser };
 
     try {
-      await this.frontendService.updateUserData(this.user);
+      await this.frontendService.updateUserData(this.user, true);
     } catch (err) {
       console.error('Error updating user', err);
     }

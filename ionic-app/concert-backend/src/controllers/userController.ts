@@ -57,7 +57,7 @@ const UserController = {
   },
 
   login: (async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body;
+    const { username, password, stayLoggedIn } = req.body;
 
     if (!username || !password) {
       return res
@@ -66,11 +66,16 @@ const UserController = {
     }
 
     try {
-      const { user, token } = await UserService.loginUser(username, password);
+      const { user, token, refreshToken } = await UserService.loginUser(
+        username,
+        password,
+        stayLoggedIn
+      );
       return res.status(200).json({
         message: 'Login successful!',
         user,
         token,
+        refreshToken,
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
@@ -79,6 +84,7 @@ const UserController = {
       return next(error);
     }
   }) as RequestHandler,
+
   googleAuth: (async (req: Request, res: Response, next: NextFunction) => {
     const { credential } = req.body;
     if (!credential) {
@@ -188,6 +194,28 @@ const UserController = {
       });
     } catch (error) {
       return next(error);
+    }
+  }) as RequestHandler,
+  refreshSession: (async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken)
+      return res.status(400).json({ message: 'Refresh token required.' });
+
+    try {
+      const payload: any = SessionService.verifyToken(refreshToken, true);
+      const user = await UserModel.findById(payload.id);
+      if (!user) throw new Error('User not found');
+
+      const newAccessToken = jwt.sign(
+        { id: user.id, username: user.username, email: user.email },
+        process.env.JWT_SECRET!,
+        { expiresIn: '30m' }
+      );
+
+      res.status(200).json({ token: newAccessToken });
+    } catch (err) {
+      console.error(err);
+      res.status(401).json({ message: 'Invalid or expired refresh token.' });
     }
   }) as RequestHandler,
 };

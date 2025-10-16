@@ -39,7 +39,12 @@
             ><span *ngIf="!isLoading">Sign in</span>
             <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
           </ion-button>
-          <h5>Or</h5>
+          <ion-checkbox
+            [(ngModel)]="stayLoggedIn"
+            name="stayLoggedIn"
+            id="stayLoggedIn"
+            >I want to stay logged in</ion-checkbox
+          >
 
           <div
             class="g_id_signin"

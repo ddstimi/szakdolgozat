@@ -28,64 +28,77 @@ export interface Concert {
 export class frontendService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  async login(username: string, password: string) {
+  async login(username: string, password: string, stayLoggedIn: boolean) {
     try {
       this.forceRemoveStrayPages();
       const response: any = await firstValueFrom(
         this.http.post(`${environment.apiUrl}/api/users/login`, {
           username,
           password,
+          stayLoggedIn,
         })
       );
 
-      await this.setSession(response);
+      await this.setSession(response, stayLoggedIn);
       return response;
     } catch (error) {
       throw error;
     }
   }
   async getUserData() {
-    const headers = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.getToken()}`
-    );
-
     try {
+      const headers = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.getToken()}`
+      );
       const res: any = await firstValueFrom(
         this.http.get(`${environment.apiUrl}/api/users/profile-info`, {
           headers,
         })
       );
-
-      console.log('User data', res);
       return res.user;
     } catch (error: any) {
       if (
         error.status === 401 ||
-        error.error?.name === 'TokenExpiredError' ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        alert('Session expired. Please log in again.');
-        this.router.navigate(['/login']);
+        const newToken = await this.refreshAccessToken();
+        if (!newToken) {
+          this.router.navigate(['/login']);
+          return null;
+        }
+        const headers = new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${newToken}`
+        );
+        const res: any = await firstValueFrom(
+          this.http.get(`${environment.apiUrl}/api/users/profile-info`, {
+            headers,
+          })
+        );
+        return res.user;
       }
-      console.error('Failed to fetch user data', error);
       throw error;
     }
   }
-  async updateUserData(updatedUser: {
-    name: string;
-    email: string;
-    password?: string;
-    username: string;
-    gdpr: boolean;
-  }) {
+
+  async updateUserData(
+    updatedUser: {
+      name: string;
+      email: string;
+      password?: string;
+      username: string;
+      gdpr: boolean;
+    },
+    stayLoggedIn: boolean
+  ): Promise<any> {
     const headers = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.getToken()}`
     );
-
+    let res: any;
     try {
-      const res: any = await firstValueFrom(
+      res = await firstValueFrom(
         this.http.put(
           `${environment.apiUrl}/api/users/update-profile`,
           updatedUser,
@@ -94,29 +107,73 @@ export class frontendService {
       );
 
       console.log('User data updated', res);
-      this.setSession(res);
+      this.setSession(res, stayLoggedIn);
       return res.user;
     } catch (error: any) {
       if (
         error.status === 401 ||
-        error.error?.name === 'TokenExpiredError' ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        this.router.navigate(['/login']);
+        const newToken = await this.refreshAccessToken();
+        if (!newToken) {
+          this.router.navigate(['/login']);
+          return null;
+        }
+        const headers = new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${newToken}`
+        );
+        const res: any = await firstValueFrom(
+          this.http.put(
+            `${environment.apiUrl}/api/users/update-profile`,
+            updatedUser,
+            { headers }
+          )
+        );
+        return res.user;
       }
       console.error('Failed to update user data', error);
       throw error;
     }
   }
 
-  async updateUserProfilePicture(imageUrl: string): Promise<any> {
+  async refreshAccessToken(): Promise<string | null> {
+    const refreshToken =
+      localStorage.getItem('refresh_token') ||
+      sessionStorage.getItem('refresh_token');
+
+    if (!refreshToken) return null;
+
+    try {
+      const res: any = await firstValueFrom(
+        this.http.post(`${environment.apiUrl}/api/users/refresh`, {
+          refreshToken,
+        })
+      );
+      console.log('try token refresh', res);
+      if (res.token) {
+        localStorage.setItem('token', res.token);
+        return res.token;
+      }
+      return null;
+    } catch (err) {
+      console.error('Failed to refresh token', err);
+      this.logout();
+      return null;
+    }
+  }
+
+  async updateUserProfilePicture(
+    imageUrl: string,
+    stayLoggedIn: boolean
+  ): Promise<any> {
     const headers = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.getToken()}`
     );
-
+    let res: any;
     try {
-      const res: any = await firstValueFrom(
+      res = await firstValueFrom(
         this.http.patch(
           `${environment.apiUrl}/api/users/update-static-picture`,
           { img_url: imageUrl },
@@ -125,25 +182,47 @@ export class frontendService {
       );
 
       console.log('User picture updated', res);
-      this.setSession(res);
+      this.setSession(res, stayLoggedIn);
       return res.user;
     } catch (error: any) {
       if (
         error.status === 401 ||
-        error.error?.name === 'TokenExpiredError' ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        this.router.navigate(['/login']);
+        const newToken = await this.refreshAccessToken();
+        if (!newToken) {
+          this.router.navigate(['/login']);
+          return null;
+        }
+        const headers = new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${newToken}`
+        );
+        const res: any = await firstValueFrom(
+          this.http.patch(
+            `${environment.apiUrl}/api/users/update-static-picture`,
+            { img_url: imageUrl },
+            { headers }
+          )
+        );
+        return res.user;
       }
       console.error('Failed to update user picture', error);
       throw error;
     }
   }
 
-  private setSession(authResult: any) {
-    localStorage.setItem('token', authResult.token);
+  private setSession(authResult: any, stayLoggedIn: boolean) {
+    if (stayLoggedIn) {
+      localStorage.setItem('token', authResult.token);
+      localStorage.setItem('refresh_token', authResult.refreshToken);
+    } else {
+      sessionStorage.setItem('token', authResult.token);
+      sessionStorage.setItem('refresh_token', authResult.refreshToken);
+    }
     localStorage.setItem('user', JSON.stringify(authResult.user));
   }
+
   async uploadImage(file: File) {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
@@ -170,17 +249,31 @@ export class frontendService {
           { headers }
         )
       );
-
-      this.setSession(response);
       return response;
     } catch (error: any) {
       if (
         error.status === 401 ||
-        error.error?.name === 'TokenExpiredError' ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        this.router.navigate(['/login']);
+        const newToken = await this.refreshAccessToken();
+        if (!newToken) {
+          this.router.navigate(['/login']);
+          return null;
+        }
+        const headers = new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${newToken}`
+        );
+        const res: any = await firstValueFrom(
+          this.http.patch<{ user: any; token: string }>(
+            `${environment.apiUrl}/api/users/update-picture`,
+            formData,
+            { headers }
+          )
+        );
+        return res.user;
       }
+
       console.error('Upload failed:', error);
       throw error;
     }
@@ -228,8 +321,34 @@ export class frontendService {
   }> {
     const token = this.getToken();
     if (!token) {
-      this.router.navigate(['/login']);
-      throw new Error('No authentication token found');
+      const newToken = await this.refreshAccessToken();
+      if (!newToken) {
+        this.router.navigate(['/login']);
+        return {
+          artists: [],
+          cities: [],
+          genres: [],
+          venues: [],
+        };
+      }
+      const headers = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${newToken}`
+      );
+      const res: any = await firstValueFrom(
+        this.http.get<{
+          success: boolean;
+          data: {
+            artists: { id: number; name: string }[];
+            cities: { id: number; name: string }[];
+            genres: { id: number; name: string }[];
+            venues: { id: number; name: string }[];
+          };
+        }>(`${environment.apiUrl}/api/preferences/options`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+      return res.user;
     }
 
     const response = await firstValueFrom(
@@ -335,8 +454,6 @@ export class frontendService {
 
       const homePage = document.querySelector('app-home');
       if (homePage) homePage.remove();
-      const loginPage = document.querySelector('app-login');
-      if (loginPage) loginPage.remove();
     }, 300);
   }
 
@@ -348,7 +465,7 @@ export class frontendService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('token') || !!sessionStorage.getItem('token');
   }
 
   getCurrentUser(): any {
@@ -357,7 +474,7 @@ export class frontendService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
   }
 
   storeToken(token: string) {

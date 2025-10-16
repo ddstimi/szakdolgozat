@@ -4,15 +4,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const REFRESH_SECRET = process.env.REFRESH_SECRET || 'your_refresh_secret';
 
 class SessionService {
-  static createTokens(user: any) {
+  static createTokens(user: any, stayLoggedIn = false) {
     const token = jwt.sign(
       { id: user.id, username: user.username },
       JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '30m' }
     );
 
     const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
-      expiresIn: '7d',
+      expiresIn: stayLoggedIn ? '30d' : '7d',
     });
 
     return { token, refreshToken };

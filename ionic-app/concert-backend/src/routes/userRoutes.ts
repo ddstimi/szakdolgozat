@@ -22,5 +22,6 @@ router.patch(
   UserController.updateUserPic
 );
 router.put('/preferences', authenticateJWT, UserController.updateUser);
+router.post('/refresh', UserController.refreshSession);
 
 export default router;

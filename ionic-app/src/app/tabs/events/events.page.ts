@@ -77,6 +77,18 @@ export class EventsPage implements OnInit, AfterViewInit {
   ) {}
 
   async ngOnInit() {
+    let token = this.frontendService.getToken();
+
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const newToken = await this.frontendService.refreshAccessToken();
+    if (!newToken) {
+      this.router.navigate(['/login']);
+      return;
+    }
     this.updateStatistics();
     this.upcoming = await this.frontendService.getUpcomingByUser();
     this.upcoming = this.upcoming.map((concert) => {
@@ -100,10 +112,6 @@ export class EventsPage implements OnInit, AfterViewInit {
     });
     this.selectedInterval = 'all';
     this.applyIntervalFilter();
-    if (!this.frontendService.isLoggedIn()) {
-      this.frontendService.logout();
-      this.router.navigate(['/login']);
-    }
   }
 
   ngAfterViewInit() {
