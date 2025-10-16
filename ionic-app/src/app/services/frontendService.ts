@@ -141,8 +141,13 @@ export class frontendService {
     const refreshToken =
       localStorage.getItem('refresh_token') ||
       sessionStorage.getItem('refresh_token');
+    if (!localStorage.getItem('user')) {
+      return null;
+    }
 
-    if (!refreshToken) return null;
+    if (!refreshToken) {
+      return null;
+    }
 
     try {
       const res: any = await firstValueFrom(
@@ -393,9 +398,7 @@ export class frontendService {
 
   async getUpcomingByUser(): Promise<Concert[]> {
     const token = this.getToken();
-    if (!this.isLoggedIn()) {
-      return this.getUpcomingByUser();
-    } else {
+    if (this.isLoggedIn()) {
       const response = await firstValueFrom(
         this.http.get<{
           success: boolean;
@@ -406,6 +409,7 @@ export class frontendService {
       );
       return response.data;
     }
+    return this.getUpcomingConcerts();
   }
 
   async getPastByUser(): Promise<Concert[]> {

@@ -78,18 +78,6 @@ export class HomePage {
   loggedIn = false;
   async ngOnInit() {
     this.loggedIn = await this.frontendService.isLoggedIn();
-    let token = this.frontendService.getToken();
-
-    if (!token) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    const newToken = await this.frontendService.refreshAccessToken();
-    if (!newToken) {
-      this.router.navigate(['/login']);
-      return;
-    }
     if (this.loggedIn) {
       console.log(
         'User is logged in, fetching top picks and popular concerts.'

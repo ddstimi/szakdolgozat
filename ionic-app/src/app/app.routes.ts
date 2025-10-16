@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/authGuard';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,19 @@ export const routes: Routes = [
       import('./tabs/profile/notifications/notifications.page').then(
         (m) => m.NotificationsPage
       ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'tabs/events',
+    loadComponent: () =>
+      import('./tabs/events/events.page').then((m) => m.EventsPage),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'tabs/profile',
+    loadComponent: () =>
+      import('./tabs/profile/profile.page').then((m) => m.ProfilePage),
+    canActivate: [AuthGuard],
   },
 ];
 
