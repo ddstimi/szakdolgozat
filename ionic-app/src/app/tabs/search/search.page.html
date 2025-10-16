@@ -1,50 +1,53 @@
 <ion-content [fullscreen]="true" class="search-content">
-  <div class="search-wrapper">
-    <div class="recent-searches" *ngIf="recentSearches.length">
-      <ion-chip *ngFor="let item of recentSearches">
-        <ion-label>{{ item }}</ion-label>
-      </ion-chip>
-    </div>
+  <div id="container">
+    <div class="search-wrapper">
+      <div class="recent-searches" *ngIf="recentSearches.length">
+        <ion-chip *ngFor="let item of recentSearches">
+          <ion-label>{{ item }}</ion-label>
+        </ion-chip>
+      </div>
 
-    <div class="filters">
-      <ion-select
-        placeholder="Select city"
-        [(ngModel)]="selectedCity"
-        (ionChange)="onFilterChange()"
-      >
-        <ion-select-option value="">All cities</ion-select-option>
-        <ion-select-option *ngFor="let city of cities" [value]="city"
-          >{{ city }}</ion-select-option
+      <div class="filters">
+        <ion-select
+          placeholder="Select city"
+          [(ngModel)]="selectedCity"
+          (ionChange)="onFilterChange()"
         >
-      </ion-select>
+          <ion-select-option value="">All cities</ion-select-option>
+          <ion-select-option *ngFor="let city of cities" [value]="city"
+            >{{ city }}</ion-select-option
+          >
+        </ion-select>
 
-      <ion-select
-        placeholder="Select genre"
-        [(ngModel)]="selectedGenre"
-        (ionChange)="onFilterChange()"
-      >
-        <ion-select-option value="">All genres</ion-select-option>
-        <ion-select-option *ngFor="let genre of genres" [value]="genre"
-          >{{ genre }}</ion-select-option
+        <ion-select
+          placeholder="Select genre"
+          [(ngModel)]="selectedGenre"
+          (ionChange)="onFilterChange()"
         >
-      </ion-select>
-    </div>
+          <ion-select-option value="">All genres</ion-select-option>
+          <ion-select-option *ngFor="let genre of genres" [value]="genre"
+            >{{ genre }}</ion-select-option
+          >
+        </ion-select>
+      </div>
 
-    <div class="results" *ngIf="filteredResults.length">
-      <app-concert-card-full
-        class="search-page"
-        *ngFor="let concert of filteredResults"
-        [title]="concert.title"
-        [date]="concert.date"
-        [location]="concert.city_name + ', ' + concert.venue_name"
-        [image]="concert.image"
-        [genre]="concert.genre"
-        [artist]="concert.artist_name"
-      ></app-concert-card-full>
-    </div>
+      <div class="results" *ngIf="filteredResults.length">
+        <app-concert-card-full
+          class="search-page"
+          *ngFor="let concert of filteredResults"
+          [title]="concert.title"
+          [date]="concert.date"
+          [location]="concert.city_name + ', ' + concert.venue_name"
+          [image]="concert.image"
+          [genre]="concert.genre"
+          [artist]="concert.artist_name"
+          (click)="openDetails(concert)"
+        ></app-concert-card-full>
+      </div>
 
-    <div *ngIf="filteredResults.length === 0 && searchQuery">
-      <p>No concerts found for "{{ searchQuery }}"</p>
+      <div *ngIf="filteredResults.length === 0 && searchQuery">
+        <p>No concerts found for "{{ searchQuery }}"</p>
+      </div>
     </div>
   </div>
 </ion-content>

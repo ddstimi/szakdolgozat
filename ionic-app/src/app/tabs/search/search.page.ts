@@ -14,6 +14,8 @@ import { ConcertCardFullComponent } from 'src/app/components/concert-card-full/c
 import { environment } from 'src/environments/environment';
 import { SearchService } from 'src/app/services/searchService';
 import { Subscription } from 'rxjs';
+import { ModalController } from '@ionic/angular';
+import { ConcertDetailsPage } from '../concert-details/concert-details.page';
 
 @Component({
   selector: 'app-search',
@@ -31,6 +33,7 @@ import { Subscription } from 'rxjs';
     CommonModule,
     ConcertCardFullComponent,
   ],
+  providers: [ModalController],
 })
 export class SearchPage implements OnInit {
   concerts: Concert[] = [];
@@ -47,7 +50,8 @@ export class SearchPage implements OnInit {
     private frontendService: frontendService,
     private searchService: SearchService,
     private ngZone: NgZone,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private modalController: ModalController
   ) {}
 
   async ngOnInit() {
@@ -102,5 +106,20 @@ export class SearchPage implements OnInit {
   }
   onFilterChange() {
     this.applyFilter(this.searchQuery);
+  }
+
+  async openDetails(concert: any) {
+    const modal = await this.modalController.create({
+      component: ConcertDetailsPage,
+      componentProps: { concert },
+    });
+
+    document.body.classList.add('modal-open');
+
+    modal.onDidDismiss().then(() => {
+      document.body.classList.remove('modal-open');
+    });
+
+    await modal.present();
   }
 }
