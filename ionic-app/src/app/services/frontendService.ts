@@ -450,7 +450,12 @@ export class frontendService {
 
     return response.data;
   }
-
+  async attendConcert(concertId: number, attending: boolean): Promise<any> {
+    return this.http.post(`${environment.apiUrl}/user_concerts`, {
+      concertId,
+      attending,
+    });
+  }
   forceRemoveStrayPages() {
     setTimeout(() => {
       const profilePage = document.querySelector('app-profile');
@@ -469,7 +474,10 @@ export class frontendService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token') || !!sessionStorage.getItem('token');
+    return (
+      (!!localStorage.getItem('token') || !!sessionStorage.getItem('token')) &&
+      !!localStorage.getItem('user')
+    );
   }
 
   getCurrentUser(): any {

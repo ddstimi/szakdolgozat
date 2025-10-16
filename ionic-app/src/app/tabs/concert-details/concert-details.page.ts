@@ -20,6 +20,7 @@ import {
   IonLabel,
 } from '@ionic/angular/standalone';
 import { environment } from 'src/environments/environment.prod';
+import { frontendService } from 'src/app/services/frontendService';
 
 declare const google: any;
 declare const gapi: any;
@@ -53,13 +54,23 @@ export class ConcertDetailsPage implements OnInit {
   private tokenClient: any = null;
   private gapiLoaded = false;
   private accessToken: string | null = null;
+  attending: boolean = false;
 
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private frontendService: frontendService
+  ) {}
 
   async ngOnInit() {
     await this.loadGisScript();
     this.initTokenClient();
     await this.loadGapiClient();
+    this.attending = this.concert?.is_attending || false;
+  }
+
+  toggleAttend() {
+    this.attending = !this.attending;
+    this.frontendService.attendConcert(this.concert.id, this.attending);
   }
 
   private async loadGisScript(): Promise<void> {

@@ -39,9 +39,18 @@
           </p>
 
           <div class="button-group">
-            <ion-button id="attend" expand="block" class="glow-blue">
-              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
-              Attending
+            <ion-button
+              id="attend"
+              expand="block"
+              class="glow-blue"
+              [class]="attending ? 'glow-blue-attend' : 'glow-blue'"
+              (click)="toggleAttend()"
+            >
+              <ion-icon
+                [name]="attending ? 'checkmark-circle' : 'checkmark-circle-outline'"
+                slot="start"
+              ></ion-icon>
+              {{ attending ? 'Attending' : 'Attend' }}
             </ion-button>
 
             <ion-button expand="block" fill="outline" id="ticket">

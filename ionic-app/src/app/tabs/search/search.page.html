@@ -41,6 +41,9 @@
           [image]="concert.image"
           [genre]="concert.genre"
           [artist]="concert.artist_name"
+          [attending]="userAttendingConcerts.includes(+concert.id)"
+          [loggedIn]="loggedIn"
+          [ticket_available]="concert.ticket_available"
           (click)="openDetails(concert)"
         ></app-concert-card-full>
       </div>

@@ -33,7 +33,7 @@ ion-card-header {
 ion-card-content {
   background: none;
   box-shadow: none !important;
-  .genre-chips{
+  .genre-chips {
     align-self: center;
     align-items: center;
     justify-self: center;
@@ -61,7 +61,13 @@ p {
   text-align: center;
 }
 
-
+.glow-blue-attend {
+  background-color: #80ffea5e !important;
+}
+:hover .glow-blue-attend {
+  --background-color: #80f0ff3e !important;
+  background-color: #80f0ff3e !important;
+}
 
 .concert-modal-container {
   display: flex;
@@ -73,7 +79,6 @@ p {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
 
 .button-group {
   display: flex;
@@ -87,37 +92,36 @@ p {
     margin-right: auto;
     width: 60%;
   }
-  #ticket{
+  #ticket {
     border-radius: 8px;
     box-shadow: 0 0 8px var(--ion-color-primary);
   }
 
-
-  #options{
+  #options {
     display: flex;
     flex-direction: row;
     width: 100%;
-    ion-button{
+    ion-button {
       font-size: smaller;
       color: #f4f4f495;
     }
   }
 }
- #options > ion-button:hover{
-background: #525252;
-background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0) 100%);
- }
-#location-subtitle{
- color: #b8f9ffb4;
+#options > ion-button:hover {
+  background: #525252;
+  background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0) 100%);
+}
+#location-subtitle {
+  color: #b8f9ffb4;
 }
 
-.concert-description{
+.concert-description {
   color: #ddddddd0;
 }
 
 .ion-img-wrapper {
   width: 50%;
-  max-height: 30% ;
+  max-height: 30%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,11 +146,11 @@ background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0)
   .modal-content {
     transform: scale(0.9);
     height: 100% !important;
-    background-color:  rgba(0, 0, 0, 0.703) !important;
+    background-color: rgba(0, 0, 0, 0.703) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.414);
     border-radius: 12px;
     padding: 1rem;
-    overflow-y:auto;
+    overflow-y: auto;
   }
 
   .concert-modal-container {
@@ -160,7 +164,6 @@ background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0)
   .concert-modal-container::-webkit-scrollbar {
     display: none;
   }
-
 
   ion-content {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
@@ -177,13 +180,13 @@ background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0)
     border-radius: 12px;
     width: fit-content;
 
-    ion-card-content{
+    ion-card-content {
       width: 20rem;
-      .genre-chips{
+      .genre-chips {
         align-self: center;
         align-items: center;
         justify-self: center;
-        ion-chip{
+        ion-chip {
           transform: scale(0.8);
         }
       }
@@ -194,9 +197,7 @@ background: radial-gradient(circle, rgba(82, 82, 82, 0.125) 0%, rgba(0, 0, 0, 0)
     font-size: small;
   }
 
-
   .button-group ion-button {
     width: 80%;
   }
-
 }

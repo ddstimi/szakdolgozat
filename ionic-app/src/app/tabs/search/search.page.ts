@@ -45,6 +45,8 @@ export class SearchPage implements OnInit {
   private querySub?: Subscription;
   cities: string[] = [];
   genres: string[] = [];
+  userAttendingConcerts: number[] = [];
+  loggedIn = false;
 
   constructor(
     private frontendService: frontendService,
@@ -56,6 +58,13 @@ export class SearchPage implements OnInit {
 
   async ngOnInit() {
     this.concerts = await this.frontendService.getUpcomingConcerts();
+    this.loggedIn = this.frontendService.isLoggedIn();
+    if (this.loggedIn) {
+      this.userAttendingConcerts = (
+        await this.frontendService.getUpcomingByUser()
+      ).map((c) => +c.id);
+    }
+
     this.concerts.forEach((c) => {
       if (c.image) c.image = `${environment.apiUrl}${c.image}`;
     });
