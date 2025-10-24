@@ -65,12 +65,19 @@ export class ConcertDetailsPage implements OnInit {
     await this.loadGisScript();
     this.initTokenClient();
     await this.loadGapiClient();
-    this.attending = this.concert?.is_attending || false;
+    this.attending = await this.concert?.is_attending;
   }
 
-  toggleAttend() {
-    this.attending = !this.attending;
-    this.frontendService.attendConcert(this.concert.id, this.attending);
+  async toggleAttend() {
+    if (!this.concert?.id) return;
+
+    try {
+      const res = await this.frontendService.attendConcert(this.concert.id);
+      this.attending = res.attending;
+    } catch (err) {
+      console.error('Failed to update attendance', err);
+      alert('Failed to update attendance. Try again.');
+    }
   }
 
   private async loadGisScript(): Promise<void> {
@@ -189,6 +196,9 @@ export class ConcertDetailsPage implements OnInit {
   }
 
   closeModal() {
-    this.modalController.dismiss();
+    this.modalController.dismiss({
+      attending: this.attending,
+      concertId: this.concert.id,
+    });
   }
 }

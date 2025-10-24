@@ -218,6 +218,29 @@ const UserController = {
       res.status(401).json({ message: 'Invalid or expired refresh token.' });
     }
   }) as RequestHandler,
+
+  attendConcert: (async (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req as any).user.id;
+    const { concertId } = req.body;
+
+    if (!concertId) {
+      return res.status(400).json({ message: 'concertId is required.' });
+    }
+
+    try {
+      const result = await UserService.attendConcert(userId, concertId);
+
+      return res.status(200).json({
+        message: 'Concert attendance updated successfully!',
+        attending: result.attending,
+      });
+    } catch (error: any) {
+      if (error instanceof CustomError && error.statusCode) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+      return next(error);
+    }
+  }) as RequestHandler,
 };
 
 export default UserController;

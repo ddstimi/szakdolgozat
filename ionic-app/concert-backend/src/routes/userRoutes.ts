@@ -23,5 +23,6 @@ router.patch(
 );
 router.put('/preferences', authenticateJWT, UserController.updateUser);
 router.post('/refresh', UserController.refreshSession);
+router.patch('/attend_concert', authenticateJWT, UserController.attendConcert);
 
 export default router;

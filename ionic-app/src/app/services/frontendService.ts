@@ -21,6 +21,7 @@ export interface Concert {
   artist_name: string;
   image?: string;
   genre?: string;
+  is_attending?: boolean;
 }
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,6 @@ export class frontendService {
 
   async login(username: string, password: string, stayLoggedIn: boolean) {
     try {
-      this.forceRemoveStrayPages();
       const response: any = await firstValueFrom(
         this.http.post(`${environment.apiUrl}/api/users/login`, {
           username,
@@ -450,12 +450,24 @@ export class frontendService {
 
     return response.data;
   }
-  async attendConcert(concertId: number, attending: boolean): Promise<any> {
-    return this.http.post(`${environment.apiUrl}/user_concerts`, {
-      concertId,
-      attending,
-    });
+
+  async attendConcert(concertId: number): Promise<{ attending: boolean }> {
+    const token = this.getToken();
+    if (!token) throw new Error('Not logged in');
+
+    const res: any = await firstValueFrom(
+      this.http.patch(
+        `${environment.apiUrl}/api/users/attend_concert`,
+        { concertId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+    );
+
+    return { attending: res.attending };
   }
+
   forceRemoveStrayPages() {
     setTimeout(() => {
       const profilePage = document.querySelector('app-profile');

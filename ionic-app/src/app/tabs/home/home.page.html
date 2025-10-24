@@ -22,6 +22,7 @@
           [location]="concert.city_name + ' • ' + concert.venue_name"
           [image]="concert.image"
           [ticket_available]="concert.ticket_available"
+          [attend]="concert.is_attending"
           (click)="openDetails(concert)"
         >
         </app-concert-card>

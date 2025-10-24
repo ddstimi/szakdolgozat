@@ -178,15 +178,7 @@ export class LoginPage implements OnInit {
           },
         });
 
-      await this.router.navigate(['/tabs/home'], {
-        replaceUrl: true,
-        skipLocationChange: false,
-      });
-
-      setTimeout(() => {
-        const loginPage = document.querySelector('app-login');
-        if (loginPage) loginPage.remove();
-      }, 300);
+      await this.router.navigate(['/tabs/home'], { replaceUrl: true });
     } catch (error: any) {
       console.error('Login failed', error);
       alert(
@@ -195,9 +187,5 @@ export class LoginPage implements OnInit {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  ngOnDestroy() {
-    console.log('Login component destroyed');
   }
 }

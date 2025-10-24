@@ -206,6 +206,23 @@ const UserService = {
         : new CustomError('Failed to update profile picture', 500);
     }
   },
+  attendConcert: async (
+    userId: number,
+    concertId: number
+  ): Promise<{ attending: boolean }> => {
+    const user = await UserModel.findById(userId);
+    if (!user) throw new CustomError('User not found', 404);
+
+    const isAttending = await UserModel.isAttendingConcert(userId, concertId);
+
+    if (isAttending) {
+      await UserModel.removeAttendance(userId, concertId);
+      return { attending: false };
+    } else {
+      await UserModel.addAttendance(userId, concertId);
+      return { attending: true };
+    }
+  },
 };
 
 export default UserService;

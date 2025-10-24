@@ -32,4 +32,5 @@ export class ConcertCardComponent {
   @Input() location?: string;
   @Input() image?: string;
   @Input() ticket_available?: boolean;
+  @Input() attend?: boolean;
 }

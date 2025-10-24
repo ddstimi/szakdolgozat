@@ -57,6 +57,8 @@ export class SearchPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.cd.detectChanges();
+
     this.concerts = await this.frontendService.getUpcomingConcerts();
     this.loggedIn = this.frontendService.isLoggedIn();
     if (this.loggedIn) {
@@ -66,7 +68,10 @@ export class SearchPage implements OnInit {
     }
 
     this.concerts.forEach((c) => {
-      if (c.image) c.image = `${environment.apiUrl}${c.image}`;
+      if (c.image) {
+        c.image = `${environment.apiUrl}${c.image}`;
+      }
+      c.is_attending = this.userAttendingConcerts.includes(c.id);
     });
     this.filteredResults = [...this.concerts];
     const citySet = new Set<string>();
@@ -125,9 +130,31 @@ export class SearchPage implements OnInit {
 
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then((result) => {
       document.body.classList.remove('modal-open');
+
+      if (result.data) {
+        const updated = result.data;
+
+        if (updated.attending) {
+          if (!this.userAttendingConcerts.includes(+updated.concertId)) {
+            this.userAttendingConcerts.push(+updated.concertId);
+          }
+        } else {
+          this.userAttendingConcerts = this.userAttendingConcerts.filter(
+            (id) => id !== +updated.concertId
+          );
+        }
+
+        const filtConcert = this.filteredResults.find(
+          (c) => c.id === updated.concertId
+        );
+        if (filtConcert) filtConcert.is_attending = updated.attending;
+
+        this.cd.detectChanges();
+      }
     });
+    this.cd.detectChanges();
 
     await modal.present();
   }

@@ -129,6 +129,31 @@ const UserModel = {
     const users = rows as IUser[];
     return users[0] || null;
   },
+
+  isAttendingConcert: async (
+    userId: number,
+    concertId: number
+  ): Promise<boolean> => {
+    const [rows] = await pool.execute(
+      'SELECT 1 FROM attends WHERE user_id = ? AND concert_id = ?',
+      [userId, concertId]
+    );
+    return (rows as any[]).length > 0;
+  },
+
+  addAttendance: async (userId: number, concertId: number) => {
+    await pool.execute(
+      'INSERT INTO attends (user_id, concert_id) VALUES (?, ?)',
+      [userId, concertId]
+    );
+  },
+
+  removeAttendance: async (userId: number, concertId: number) => {
+    await pool.execute(
+      'DELETE FROM attends WHERE user_id = ? AND concert_id = ?',
+      [userId, concertId]
+    );
+  },
 };
 
 export default UserModel;

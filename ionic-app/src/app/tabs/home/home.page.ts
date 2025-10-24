@@ -1,5 +1,11 @@
 import { CommonModule, NgFor } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
   IonHeader,
@@ -54,7 +60,8 @@ export class HomePage {
   constructor(
     private router: Router,
     private modalController: ModalController,
-    private frontendService: frontendService
+    private frontendService: frontendService,
+    private cd: ChangeDetectorRef
   ) {}
 
   topPicks: Concert[] = [];
@@ -69,14 +76,44 @@ export class HomePage {
 
     document.body.classList.add('modal-open');
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then((result) => {
       document.body.classList.remove('modal-open');
+
+      if (result.data) {
+        const updated = result.data;
+
+        if (updated.attending) {
+          if (!this.userAttendingConcerts.includes(+updated.concertId)) {
+            this.userAttendingConcerts.push(+updated.concertId);
+          }
+        } else {
+          this.userAttendingConcerts = this.userAttendingConcerts.filter(
+            (id) => id !== +updated.concertId
+          );
+        }
+
+        const topPicks = this.topPicks.find((c) => c.id === updated.concertId);
+        if (topPicks) topPicks.is_attending = updated.attending;
+        const popular = this.popular.find((c) => c.id === updated.concertId);
+        if (popular) popular.is_attending = updated.attending;
+
+        this.cd.detectChanges();
+      }
     });
+    this.cd.detectChanges();
 
     await modal.present();
   }
+
+  ionViewWillEnter() {
+    console.log('Home will enter');
+    console.log('User:', this.frontendService.getCurrentUser);
+  }
+
   loggedIn = false;
   async ngOnInit() {
+    this.cd.detectChanges();
+
     this.loggedIn = await this.frontendService.isLoggedIn();
     if (this.loggedIn) {
       console.log(
@@ -84,7 +121,8 @@ export class HomePage {
       );
       this.userAttendingConcerts = (
         await this.frontendService.getUpcomingByUser()
-      ).map((c) => c.id);
+      ).map((c) => +c.id);
+
       this.topPicks = await this.frontendService.getTopPicks();
       this.topPicks = this.topPicks.map((concert) => {
         return {
@@ -93,6 +131,7 @@ export class HomePage {
             ? concert.image
             : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
+          is_attending: this.userAttendingConcerts.includes(concert.id),
         };
       });
       this.popular = await this.frontendService.getPopularConcerts();
