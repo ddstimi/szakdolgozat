@@ -8,6 +8,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-left: 5%;
 }
 
 ion-content {
@@ -25,13 +26,13 @@ ion-content {
 #concert {
   pointer-events: none;
   z-index: 1;
-  filter: blur(1px) opacity(70%);
+  filter: blur(1px) opacity(80%);
 }
 
 h1 {
   position: relative;
   align-self: self-start;
-  margin-left: 10%;
+  margin-left: 5%;
   font-size: 2.5rem;
 }
 
@@ -60,6 +61,8 @@ h1 {
 @media (max-width: 768px) {
   #container {
     top: 8%;
+    margin-left: 0;
+    gap: 0.2rem;
   }
   h1 {
     font-size: 1.5rem;
@@ -78,7 +81,14 @@ h1 {
     bottom: 2.5rem;
     right: 3.5rem;
   }
-
+  .pic {
+    bottom: 2rem;
+    right: 10%;
+  }
+  .medium {
+    width: 4rem;
+    height: 4rem;
+  }
   .concert-scroll-wrapper {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -185,9 +195,9 @@ h1 {
     scroll-padding: 1rem;
     margin: auto auto;
     margin-bottom: 1rem;
-    width: calc(100% - 16rem);
-    margin-left: 10rem;
-    margin-right: 6rem;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 5%;
 
     -ms-overflow-style: none;
     scrollbar-width: none;
