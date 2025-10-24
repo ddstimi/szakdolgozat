@@ -1,14 +1,16 @@
 #container {
   text-align: center;
-  position: relative; 
+  position: relative;
   height: fit-content;
   overflow: hidden;
   animation: fadeIn 0.3s ease-in-out;
   margin-bottom: 20% !important;
-
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-ion-content{
+ion-content {
   height: fit-content;
 }
 
@@ -19,28 +21,33 @@ ion-content{
   width: 100% !important;
   z-index: 100 !important;
 }
-#concert{
+#concert {
   pointer-events: none;
-    z-index: 1;
+  z-index: 1;
 }
 
+h1 {
+  position: relative;
+  align-self: self-start;
+  margin-left: 10%;
+  font-size: 2.5rem;
+}
 
-
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   #container {
-    top:8%;}
-    h1{
-      position: absolute;
-      left: 2rem;
-    }
-    #concert-container {
-      height:fit-content;
-    }
-    #concert{
-      max-height: 8rem;
-      min-height: 7rem;
-      margin-left: auto;
-      margin-right: auto;
+    top: 8%;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  #concert-container {
+    height: fit-content;
+  }
+  #concert {
+    max-height: 8rem;
+    min-height: 7rem;
+    margin-left: auto;
+    margin-right: auto;
   }
   #sign-in-btn {
     position: absolute;
@@ -56,32 +63,26 @@ ion-content{
     padding: 1rem 1rem 2rem 1rem;
     -webkit-overflow-scrolling: touch;
     scroll-padding: 1rem;
-    margin: 1rem auto;
-    width: calc(100% + 2.5rem); 
+    margin: auto auto;
+    width: calc(100% + 2.5rem);
     margin-left: -1.5rem;
     margin-right: -1.5rem;
     transform: scale(0.75) !important;
 
-  
     &::-webkit-scrollbar {
       display: none;
-      
     }
   }
-  
-  
+
   .concert-scroll-container {
-    margin-top: 0.5rem;
-  
     display: flex;
     gap: 8px;
-  
-  
+
     > div {
       flex: 0 0 auto;
       scroll-snap-align: start;
     }
-  
+
     app-concert-card {
       width: 11rem;
       height: 12rem;
@@ -89,71 +90,55 @@ ion-content{
       overflow: hidden;
 
       transition: transform 0.3s ease-in-out;
-  
-      .concert-card ion-card-header{
+
+      .concert-card ion-card-header {
         height: 100% !important;
       }
 
       &:hover {
         transform: scale(1.05);
       }
-  
-      img{
+
+      img {
         max-height: 4rem;
       }
     }
-    ion-title{
+    ion-title {
       font-size: small !important;
     }
   }
 
-  #near {
-  margin-top: -1rem !important;
-}
-
-  .results{
-margin-top: 3rem !important;  
-}
- 
-    
-    hr.section-divider {
-      margin-top: -3rem;
-    }
-
-}
-
-  .glow{
-    background-color: #ab6d7d81;
-    color: #f8cfd9;
-    border: solid 3px #d5889b !important;
-    box-shadow: 0 0 15px #c17b8caa;
-
-    :hover{
-          background-color: #ab6d7de1;
-
-    }
+  hr.section-divider {
+    margin-top: -3rem;
   }
-  
+}
 
-@media (min-width: 769px) { 
+.glow {
+  background-color: #ab6d7d81;
+  color: #f8cfd9;
+  border: solid 3px #d5889b !important;
+  box-shadow: 0 0 15px #c17b8caa;
+
+  :hover {
+    background-color: #ab6d7de1;
+  }
+}
+
+@media (min-width: 769px) {
   #container {
     top: 4rem;
     bottom: auto;
   }
-  #concert-container{
+  #concert-container {
     max-height: 20rem;
     min-height: 18;
   }
-  h1{
-    position: absolute;
-    left: 10rem;  
-    font-size: 2.5rem;
-  }
-    #concert{
-      max-height: 15rem;
-      min-height: 12rem;
-      margin-left: 5%;
-      margin-right: auto;
+
+  #concert {
+    max-height: 15rem;
+    min-height: 12rem;
+    margin-left: 5%;
+    margin-right: auto;
   }
 
   #sign-in-btn {
@@ -164,7 +149,7 @@ margin-top: 3rem !important;
     top: auto;
     width: 9rem;
     height: 3.5rem;
-  }  
+  }
 
   .concert-scroll-wrapper {
     overflow-x: auto;
@@ -174,38 +159,34 @@ margin-top: 3rem !important;
     padding: 1rem 1rem 2rem 1rem;
     -webkit-overflow-scrolling: touch;
     scroll-padding: 1rem;
-    margin: 4rem auto;
+    margin: auto auto;
     margin-bottom: 1rem;
     width: calc(100% - 16rem);
     margin-left: 10rem;
     margin-right: 6rem;
-  
+
     -ms-overflow-style: none;
-      scrollbar-width: none;
-  
+    scrollbar-width: none;
+
     &::-webkit-scrollbar {
       display: none;
-      
     }
     hr.section-divider {
       margin-bottom: 2rem !important;
     }
-
   }
-  
 
   .concert-scroll-container {
     margin-top: 3rem;
-  
+
     display: flex;
     gap: 1rem;
-  
-  
+
     > div {
       flex: 0 0 auto;
       scroll-snap-align: start;
     }
-  
+
     app-concert-card {
       width: 12rem;
       height: 13rem;
@@ -213,58 +194,53 @@ margin-top: 3rem !important;
       border-radius: 8px;
       overflow: hidden;
       transition: transform 0.3s ease-in-out;
-  
+
       &:hover {
         transform: scale(1.05);
       }
-  
-      img{
+
+      img {
         max-height: 4rem;
       }
     }
-    ion-title{
+    ion-title {
       font-size: small !important;
     }
   }
 
-  app-concert-card-full ion-card{
+  app-concert-card-full ion-card {
     gap: 2rem;
-
   }
-  #near{
+  #near {
     height: fit-content;
   }
   .results {
-  display: flex;
-  flex-wrap: wrap;
-  width: 90%;
-  gap: 0rem;
-  margin: 10% auto auto 8% ;
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.222);
-  border-radius: 12px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    gap: 0rem;
+    margin: auto auto auto 5%;
+    justify-self: center;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.222);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.301);
 
-  
     app-concert-card-full {
       width: calc(33.33% - 0.5rem);
       transform: scale(0.9);
       transition: transform 0.3s ease-in-out;
       height: fit-content;
 
-  
       &:hover {
         transform: scale(0.94);
       }
     }
-
   }
-      
-
 }
 
-#sign-in-btn{
-  font-size:larger;
+#sign-in-btn {
+  font-size: larger;
   z-index: 10;
   box-shadow: 4px rgba(0, 0, 0, 0.67);
 }
@@ -287,12 +263,9 @@ margin-top: 3rem !important;
   text-decoration: none;
 }
 
-
-
-app-concert-details{
-  .modal-content{
+app-concert-details {
+  .modal-content {
     background-color: #0e0e10df !important;
     margin-top: 3rem !important;
   }
-
 }

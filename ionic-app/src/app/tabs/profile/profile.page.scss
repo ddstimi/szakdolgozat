@@ -396,7 +396,17 @@ ion-button#logout-btn {
       height: calc(max-height);
     }
   }
-
+  #logout {
+    padding: 2rem;
+    background: radial-gradient(rgba(0, 0, 0, 0.436), rgba(0, 0, 0, 0.075));
+    max-width: 80%;
+    align-self: center;
+    justify-self: center;
+    border-radius: 8px;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 2rem;
+  }
   .profile-card {
     width: 100% !important;
   }
