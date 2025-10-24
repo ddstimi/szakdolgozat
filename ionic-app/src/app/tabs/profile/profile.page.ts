@@ -57,6 +57,15 @@ export class ProfilePage implements OnInit {
   availableGenres: { id: number; name: string }[] = [];
   availableVenues: { id: number; name: string }[] = [];
 
+  user = {
+    name: '',
+    email: '',
+    password: '********',
+    username: '',
+    gdpr: false,
+    img_url: '',
+  };
+
   async ngOnInit() {
     let token = this.frontendService.getToken();
 
@@ -137,15 +146,6 @@ export class ProfilePage implements OnInit {
 
   showUserModal = false;
   showPrefModal = false;
-
-  user = {
-    name: '',
-    email: '',
-    password: '********',
-    username: '',
-    gdpr: false,
-    img_url: '',
-  };
 
   async savePreferences() {
     try {

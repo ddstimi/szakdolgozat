@@ -21,6 +21,7 @@ import {
   IonCol,
   IonLabel,
   IonButton,
+  IonImg,
 } from '@ionic/angular/standalone';
 import { ConcertCardComponent } from 'src/app/components/concert-card/concert-card.component';
 import { ConcertCardFullComponent } from '../../components/concert-card-full/concert-card-full.component';
@@ -34,6 +35,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
+    IonImg,
     RouterModule,
     IonButton,
     IonLabel,
@@ -67,6 +69,16 @@ export class HomePage {
   topPicks: Concert[] = [];
   popular: Concert[] = [];
   userAttendingConcerts: number[] = [];
+  selectedPicture: string = '';
+
+  user = {
+    name: '',
+    email: '',
+    password: '********',
+    username: '',
+    gdpr: false,
+    img_url: '',
+  };
 
   async openDetails(concert: any) {
     const modal = await this.modalController.create({
@@ -105,20 +117,49 @@ export class HomePage {
     await modal.present();
   }
 
-  ionViewWillEnter() {
-    console.log('Home will enter');
-    console.log('User:', this.frontendService.getCurrentUser);
+  async ionViewWillEnter() {
+    console.log('Home entering — refreshing user state');
+
+    this.loggedIn = await this.frontendService.isLoggedIn();
+
+    if (this.loggedIn) {
+      const userData = await this.frontendService.getUserData();
+      this.user = userData;
+      this.user.img_url = userData.img_url?.includes(environment.apiUrl)
+        ? userData.img_url
+        : environment.apiUrl +
+          (userData.img_url || '/profile-pictures/bikini.jpg');
+      this.selectedPicture = this.user.img_url;
+
+      this.userAttendingConcerts = (
+        await this.frontendService.getUpcomingByUser()
+      ).map((c) => +c.id);
+    }
+
+    this.cd.detectChanges();
   }
 
   loggedIn = false;
   async ngOnInit() {
     this.cd.detectChanges();
 
+    window.addEventListener('user-updated', () => {
+      this.ionViewWillEnter();
+    });
+
     this.loggedIn = await this.frontendService.isLoggedIn();
     if (this.loggedIn) {
       console.log(
         'User is logged in, fetching top picks and popular concerts.'
       );
+      const userData = await this.frontendService.getUserData();
+      this.user = userData;
+      this.user.img_url = userData.img_url?.includes(environment.apiUrl)
+        ? userData.img_url
+        : environment.apiUrl +
+          (userData.img_url || '/profile-pictures/bikini.jpg');
+      this.selectedPicture = this.user.img_url;
+
       this.userAttendingConcerts = (
         await this.frontendService.getUpcomingByUser()
       ).map((c) => +c.id);

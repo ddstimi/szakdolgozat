@@ -3,13 +3,16 @@
     <img id="concert" src="../../../assets/images/aa.jpg" alt="concert" />
     <div id="concert-container">
       <ion-button
-        [style.display]="loggedIn ? 'none' : 'visible'"
+        *ngIf="!loggedIn"
         id="sign-in-btn"
         type="button"
         (click)="openLogin()"
         class="glow"
         >Sign in</ion-button
       >
+      <div class="round medium pic" *ngIf="loggedIn">
+        <ion-img [src]="selectedPicture" class="preview-img" />
+      </div>
     </div>
     <h1 id="topPicks">Top picks</h1>
 

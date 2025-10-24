@@ -20,10 +20,12 @@ ion-content {
   right: auto;
   width: 100% !important;
   z-index: 100 !important;
+  filter: none !important;
 }
 #concert {
   pointer-events: none;
   z-index: 1;
+  filter: blur(1px) opacity(70%);
 }
 
 h1 {
@@ -31,6 +33,28 @@ h1 {
   align-self: self-start;
   margin-left: 10%;
   font-size: 2.5rem;
+}
+
+.pic {
+  position: absolute;
+  bottom: 3rem;
+  right: 13%;
+}
+
+.round {
+  border-radius: 50% !important;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medium {
+  width: 6rem;
+  height: 6rem;
+  border: 2px solid #ffffff2e;
+  box-shadow: 5px 5px 25px rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -109,7 +133,7 @@ h1 {
   }
 
   hr.section-divider {
-    margin-top: -3rem;
+    margin: 0;
   }
 }
 
