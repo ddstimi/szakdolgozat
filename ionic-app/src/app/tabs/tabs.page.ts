@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -59,7 +59,8 @@ export class TabsPage implements OnInit {
     private platform: Platform,
     private router: Router,
     private frontendService: frontendService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private cd: ChangeDetectorRef
   ) {
     addIcons({ home, search, calendarOutline, person, logOutOutline });
   }
@@ -86,6 +87,9 @@ export class TabsPage implements OnInit {
     if (!this.router.url.includes('/tabs/search')) {
       this.router.navigate(['/tabs/search']);
     }
+  }
+  async ionViewWillEnter() {
+    this.cd.detectChanges();
   }
 
   onLogout() {

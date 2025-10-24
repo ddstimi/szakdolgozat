@@ -89,9 +89,6 @@ export class LoginPage implements OnInit {
         replaceUrl: true,
         skipLocationChange: false,
       });
-      setTimeout(() => {
-        window.dispatchEvent(new Event('user-updated'));
-      }, 100);
 
       setTimeout(() => {
         const loginPage = document.querySelector('app-login');

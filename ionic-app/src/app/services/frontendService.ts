@@ -138,9 +138,7 @@ export class frontendService {
   }
 
   async refreshAccessToken(): Promise<string | null> {
-    const refreshToken =
-      localStorage.getItem('refresh_token') ||
-      sessionStorage.getItem('refresh_token');
+    const refreshToken = sessionStorage.getItem('refresh_token');
     if (!localStorage.getItem('user')) {
       return null;
     }
@@ -155,6 +153,7 @@ export class frontendService {
           refreshToken,
         })
       );
+      console.log('Sending refresh token:', refreshToken);
       console.log('try token refresh', res);
       if (res.token) {
         localStorage.setItem('token', res.token);
