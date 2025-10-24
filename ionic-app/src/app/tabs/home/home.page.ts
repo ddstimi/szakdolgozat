@@ -70,6 +70,7 @@ export class HomePage {
   popular: Concert[] = [];
   userAttendingConcerts: number[] = [];
   selectedPicture: string = '';
+  loggedIn = false;
 
   user = {
     name: '',
@@ -136,17 +137,6 @@ export class HomePage {
       ).map((c) => +c.id);
     }
 
-    this.cd.detectChanges();
-  }
-
-  loggedIn = false;
-  async ngOnInit() {
-    this.cd.detectChanges();
-
-    window.addEventListener('user-updated', () => {
-      this.ionViewWillEnter();
-    });
-
     this.loggedIn = await this.frontendService.isLoggedIn();
     if (this.loggedIn) {
       console.log(
@@ -164,7 +154,24 @@ export class HomePage {
         await this.frontendService.getUpcomingByUser()
       ).map((c) => +c.id);
 
+      const prefs = await this.frontendService.getPreferences();
+
+      const raw = prefs.preferences || prefs;
+
+      const preferences = {
+        seeCancelled: !!raw.see_cancelled,
+        seeNotAvailable: !!raw.see_not_available,
+      };
+
+      console.log('Preferences:', preferences);
+
       this.topPicks = await this.frontendService.getTopPicks();
+      if (!preferences.seeNotAvailable) {
+        this.topPicks = this.topPicks.filter((c) => c.ticket_available);
+      }
+      if (!preferences.seeCancelled) {
+        this.topPicks = this.topPicks.filter((c) => !c.cancelled);
+      }
       this.topPicks = this.topPicks.map((concert) => {
         return {
           ...concert,
@@ -175,7 +182,14 @@ export class HomePage {
           is_attending: this.userAttendingConcerts.includes(concert.id),
         };
       });
+
       this.popular = await this.frontendService.getPopularConcerts();
+      if (!preferences.seeNotAvailable) {
+        this.popular = this.popular.filter((c) => c.ticket_available);
+      }
+      if (!preferences.seeCancelled) {
+        this.popular = this.popular.filter((c) => !c.cancelled);
+      }
       this.popular = this.popular.map((concert) => {
         console.log(concert.description);
         return {
@@ -187,29 +201,36 @@ export class HomePage {
         };
       });
     } else {
-      this.topPicks = await this.frontendService.getPopularConcerts();
-      this.topPicks = this.topPicks.map((concert) => {
-        return {
-          ...concert,
-          image: concert.image?.includes(environment.apiUrl)
-            ? concert.image
-            : environment.apiUrl +
-              (concert.image || '/profile-pictures/bikini.jpg'),
-        };
-      });
-      this.popular = await this.frontendService.getUpcomingConcerts();
-      this.popular = this.popular.map((concert) => {
-        console.log(concert.description);
-        return {
-          ...concert,
-          image: concert.image?.includes(environment.apiUrl)
-            ? concert.image
-            : environment.apiUrl +
-              (concert.image || '/profile-pictures/bikini.jpg'),
-        };
-      });
+      this.topPicks = await this.frontendService.getTopPicks();
+      this.topPicks = this.topPicks.map((concert) => ({
+        ...concert,
+        image: concert.image?.includes(environment.apiUrl)
+          ? concert.image
+          : environment.apiUrl +
+            (concert.image || '/profile-pictures/bikini.jpg'),
+        is_attending: this.userAttendingConcerts.includes(concert.id),
+      }));
+      this.popular = await this.frontendService.getPopularConcerts();
+      this.popular = this.popular.map((concert) => ({
+        ...concert,
+        image: concert.image?.includes(environment.apiUrl)
+          ? concert.image
+          : environment.apiUrl +
+            (concert.image || '/profile-pictures/bikini.jpg'),
+      }));
     }
+
+    this.cd.detectChanges();
   }
+
+  async ngOnInit() {
+    this.cd.detectChanges();
+
+    window.addEventListener('user-updated', () => {
+      this.ionViewWillEnter();
+    });
+  }
+
   openLogin() {
     this.router.navigate(['/login']);
   }

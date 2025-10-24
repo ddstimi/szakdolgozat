@@ -23,7 +23,6 @@ const PreferencesController = {
     const userId = (req as any).user.id;
 
     try {
-      // Validate input
       const {
         see_cancelled,
         see_not_available,

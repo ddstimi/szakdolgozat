@@ -114,6 +114,7 @@ export class EditPreferencesModalComponent {
     this.isEditing.notifyPush = false;
 
     document.body.classList.remove('modal-open');
+    window.dispatchEvent(new Event('user-updated'));
   }
   private clearSelection(type: PreferenceType): void {
     this.setSelectedValue(type, '');
@@ -134,7 +135,7 @@ export class EditPreferencesModalComponent {
   }
 
   add(type: PreferenceType) {
-    const selectedId = this.getSelectedId(type); // New method to get ID
+    const selectedId = this.getSelectedId(type);
     const list = this[type];
 
     if (selectedId && !list.includes(selectedId)) {

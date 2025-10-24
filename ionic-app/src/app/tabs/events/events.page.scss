@@ -1,5 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/ruigslay');
-
+@import url("https://fonts.cdnfonts.com/css/ruigslay");
 
 #container {
   display: flex;
@@ -12,19 +11,19 @@
   margin-left: auto;
   margin-right: auto;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.282);
-  animation:  fadeIn ease-out 0.3s;
+  animation: fadeIn ease-out 0.3s;
 }
 
-.alert-wrapper.sc-ion-alert-md{
+.alert-wrapper.sc-ion-alert-md {
   --background-color: rgba(0, 0, 0, 0.9);
 }
 
-.stat-cont{
+.stat-cont {
   width: 100%;
   height: auto;
 }
 
-.statDiv{
+.statDiv {
   display: flex;
   justify-content: center;
   flex-direction: row;
@@ -41,27 +40,26 @@ ion-title {
   font-size: 2rem;
 }
 
-ion-card-header{
+ion-card-header {
   margin-bottom: 0;
   padding-bottom: 0;
-
 }
 
-ion-card-content{
+ion-card-content {
   display: flex;
   gap: 1rem;
   color: #f9f4f5c2;
   justify-content: space-around;
   align-items: center;
-  .date{
+  .date {
     margin-right: 1rem;
     color: #c17b8c;
     font-size: medium;
   }
-  .location{
+  .location {
     font-size: smaller;
   }
-  ion-icon{
+  ion-icon {
     margin-bottom: -2px !important;
     margin-right: 4px;
   }
@@ -75,12 +73,10 @@ ion-card-content{
   text-align: center;
   margin: 20px 0;
 
-
-
-  ion-card{
+  ion-card {
     border-radius: 6px;
-    border: 2px solid #80FFCC;
-    box-shadow: 0 0 10px #80FFCCaa;
+    border: 2px solid #80ffcc;
+    box-shadow: 0 0 10px #80ffccaa;
     padding: 1rem;
     width: 20rem;
     height: fit-content;
@@ -90,35 +86,32 @@ ion-card-content{
     align-content: center;
     gap: 0.5rem;
 
-    .stat-label{
+    .stat-label {
       font-size: 1.5rem !important;
       color: #f9f4f5c2;
     }
 
-    .stat-number{
+    .stat-number {
       font-size: 4rem !important;
-      color: #80FFCC;
-      font-family:sans-serif !important;
+      color: #80ffcc;
+      font-family: sans-serif !important;
       font-weight: 800;
     }
-   
   }
 
-   ion-card.stat{
+  ion-card.stat {
     --border-radius: 6px;
-    --border: 2px solid #80FFCC;
-    --box-shadow: 0 0 10px #80FFCCaa;
-    }
-
+    --border: 2px solid #80ffcc;
+    --box-shadow: 0 0 10px #80ffccaa;
+  }
 }
 
-
 .event-cards {
-  display:flex;
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
-  justify-items:flex-start;
+  justify-items: flex-start;
   margin-bottom: 20px;
   padding: 8px;
   width: fit-content !important;
@@ -133,20 +126,19 @@ ion-card-content{
   }
 }
 
-.stat-column{
+.stat-column {
   flex: 1;
   max-width: 50%;
   margin-left: 5%;
-  #statLabel{
+  #statLabel {
     width: 80% !important;
     font-size: medium;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.566);
     background-color: rgba(0, 0, 0, 0.142) !important;
   }
-  ion-label{
+  ion-label {
     margin-left: 1rem !important;
   }
-
 }
 swiper-container {
   flex: 1;
@@ -168,10 +160,8 @@ swiper-container::part(bullet-active) {
   font-size: x-large;
   max-height: max-content;
   color: #f9f4f5;
-font-family: 'Ruigslay', sans-serif;
-
+  font-family: "Ruigslay", sans-serif;
 }
-
 
 canvas {
   width: 80% !important;
@@ -182,90 +172,83 @@ canvas {
   background-color: #55625c28;
   border: 2px solid #80ffcc7a;
   box-shadow: 0 0 15px #80ffcc46;
-    margin-bottom: 3rem;
-
+  margin-bottom: 3rem;
 }
 
-
-
-
-@media (max-width: 768px) { 
-
-  #container{
+@media (max-width: 768px) {
+  #container {
     width: 90% !important;
     margin-top: 20%;
   }
 
- ion-title, ion-card-header{
+  ion-title,
+  ion-card-header {
     font-size: 1.5rem;
   }
 
-  .event-cards{
+  .event-cards {
     width: 100% !important;
     margin: 0;
     padding-left: 1.5rem;
     padding-right: 1rem;
-    .event-card{
+    .event-card {
       width: 100%;
       margin-left: 0;
     }
   }
 
-  .statDiv{
+  .statDiv {
     flex-direction: column;
   }
 
-
-  .statistics ion-card{
+  .statistics ion-card {
     width: 10rem;
     gap: 1rem;
     border-radius: 6px;
-    border: 2px solid #80FFCC;
-    box-shadow: 0 0 10px #80FFCCaa;
-    .stat-label{
-      font-size: 1rem!important;
+    border: 2px solid #80ffcc;
+    box-shadow: 0 0 10px #80ffccaa;
+    .stat-label {
+      font-size: 1rem !important;
     }
-    .stat-number{
+    .stat-number {
       font-size: 2rem !important;
     }
   }
 
-  .stat-row{
+  .stat-row {
     display: flex;
     flex-direction: row;
   }
-  
-  .stat-column{
-    width: 100% ;
-    max-width: 100%;
-      margin-left: 0;
 
-    
-  #statLabel{
-    width: 100% !important;
-    font-size: smaller;
-    padding: 2px !important;
-    height: fit-content;
-    min-height: auto !important;
-  }
+  .stat-column {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+
+    #statLabel {
+      width: 100% !important;
+      font-size: smaller;
+      padding: 2px !important;
+      height: fit-content;
+      min-height: auto !important;
+    }
   }
 
   swiper-container {
     max-width: 80%;
   }
-  
+
   canvas {
     width: 90% !important;
   }
 
-  .slide-description{
+  .slide-description {
     align-self: center;
     margin: auto auto;
     font-size: medium;
   }
 
-  .stat-cont{
+  .stat-cont {
     margin-top: 1rem;
   }
-
 }
