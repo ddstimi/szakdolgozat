@@ -450,6 +450,29 @@ export class frontendService {
     return response.data;
   }
 
+  async getEventStatistics(interval: '6months' | '1year' | 'all') {
+    const token = this.getToken();
+    if (!token) throw new Error('Not logged in');
+
+    const res = await firstValueFrom(
+      this.http.get<{
+        success: boolean;
+        data: {
+          totalConcerts: number;
+          genreData: Record<string, number>;
+          locationData: Record<string, number>;
+          artistData: Record<string, number>;
+          insights: { slides: string[] };
+          events: any[];
+        };
+      }>(`${environment.apiUrl}/api/event-statistics?interval=${interval}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+
+    return res.data;
+  }
+
   async attendConcert(concertId: number): Promise<{ attending: boolean }> {
     const token = this.getToken();
     if (!token) throw new Error('Not logged in');

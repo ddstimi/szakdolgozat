@@ -1,4 +1,3 @@
-// models/Events.ts
 import { Pool, RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
 
@@ -8,7 +7,10 @@ interface UserConcert extends RowDataPacket {
   concert_id: number;
   addition_date: Date;
 }
-
+interface DistRow extends RowDataPacket {
+  user_id: number;
+  cnt: number;
+}
 interface Concert extends RowDataPacket {
   id: number;
   title: string;
@@ -165,6 +167,95 @@ const EventsModel = {
     );
 
     return enrichedConcerts;
+  },
+  // ---------- DISTRIBUTION QUERIES (used for percentiles) ----------
+
+  // Total concerts per user (optionally filtered by fromDate)
+  async getUserTotals(fromDate?: Date): Promise<DistRow[]> {
+    let sql = `
+      SELECT a.user_id, COUNT(*) AS cnt
+      FROM attends a
+      JOIN concerts c ON c.id = a.concert_id
+      WHERE c.cancelled = 0 AND c.date <= NOW()
+    `;
+    const params: any[] = [];
+    if (fromDate) {
+      sql += ' AND c.date >= ?';
+      params.push(fromDate);
+    }
+    sql += ' GROUP BY a.user_id';
+
+    const [rows] = await pool.query<DistRow[]>(sql, params);
+    return rows;
+  },
+
+  // Per-user counts for a given GENRE id
+  async getUserCountsByGenreId(
+    genreId: number,
+    fromDate?: Date
+  ): Promise<DistRow[]> {
+    let sql = `
+      SELECT a.user_id, COUNT(*) AS cnt
+      FROM attends a
+      JOIN concerts c ON c.id = a.concert_id
+      JOIN artist_genres ag ON ag.artist_id = c.artist_id
+      WHERE c.cancelled = 0 AND c.date <= NOW() AND ag.genre_id = ? 
+    `;
+    const params: any[] = [genreId];
+    if (fromDate) {
+      sql += ' AND c.date >= ?';
+      params.push(fromDate);
+    }
+    sql += ' GROUP BY a.user_id';
+
+    const [rows] = await pool.query<DistRow[]>(sql, params);
+    return rows;
+  },
+
+  // Per-user counts for a given ARTIST id
+  async getUserCountsByArtistId(
+    artistId: number,
+    fromDate?: Date
+  ): Promise<DistRow[]> {
+    let sql = `
+      SELECT a.user_id, COUNT(*) AS cnt
+      FROM attends a
+      JOIN concerts c ON c.id = a.concert_id
+      WHERE c.cancelled = 0 AND c.date <= NOW() AND c.artist_id = ?
+    `;
+    const params: any[] = [artistId];
+    if (fromDate) {
+      sql += ' AND c.date >= ?';
+      params.push(fromDate);
+    }
+    sql += ' GROUP BY a.user_id';
+
+    const [rows] = await pool.query<DistRow[]>(sql, params);
+    return rows;
+  },
+
+  // Per-user counts for a given CITY id
+  async getUserCountsByCityId(
+    cityId: number,
+    fromDate?: Date
+  ): Promise<DistRow[]> {
+    let sql = `
+      SELECT a.user_id, COUNT(*) AS cnt
+      FROM attends a
+      JOIN concerts c ON c.id = a.concert_id
+      JOIN venues v ON v.id = c.venue_id
+      JOIN cities ci ON ci.id = v.city_id
+      WHERE c.cancelled = 0 AND c.date <= NOW() AND ci.id = ?
+    `;
+    const params: any[] = [cityId];
+    if (fromDate) {
+      sql += ' AND c.date >= ?';
+      params.push(fromDate);
+    }
+    sql += ' GROUP BY a.user_id';
+
+    const [rows] = await pool.query<DistRow[]>(sql, params);
+    return rows;
   },
 };
 

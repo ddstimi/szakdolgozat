@@ -1,18 +1,24 @@
+// src/controllers/eventStatisticsController.ts
 import { Request, Response } from 'express';
 import EventStatisticsService from '../services/eventStatisticsService';
 
 const EventStatisticsController = {
   getEventStatistics: async (req: Request, res: Response) => {
-    const userId = (req as any).user.id;
+    const userId = (req as any).user.id as number;
     const { interval } = req.query;
 
     try {
       const stats = await EventStatisticsService.getUserConcertStatistics(
         userId,
-        interval as string
+        interval as string | undefined
       );
 
-      const insights = EventStatisticsService.getPersonalizedInsights(stats);
+      // insights now async (percentiles from DB)
+      const insights = await EventStatisticsService.getPersonalizedInsights(
+        userId,
+        interval as string | undefined,
+        stats
+      );
 
       res.json({
         success: true,
@@ -21,8 +27,8 @@ const EventStatisticsController = {
           genreData: stats.genreData,
           locationData: stats.locationData,
           artistData: stats.artistData,
-          insights,
-          events: stats.concerts.map((concert) => ({
+          insights, // { slides: string[] }
+          events: stats.concerts.map((concert: any) => ({
             id: concert.id,
             title: concert.title,
             date: concert.date,

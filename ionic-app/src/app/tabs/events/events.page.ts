@@ -58,6 +58,7 @@ export class EventsPage implements OnInit, AfterViewInit {
   selectedInterval = 'all';
   totalConcerts = 0;
 
+  chartDescriptions: string[] = [];
   upcoming: Concert[] = [];
   past: Concert[] = [];
   filteredPast: Concert[] = [];
@@ -125,19 +126,26 @@ export class EventsPage implements OnInit, AfterViewInit {
       }
     }, 0);
   }
+  async updateStatistics() {
+    try {
+      const data = await this.frontendService.getEventStatistics(
+        this.selectedInterval as any
+      );
 
-  updateStatistics() {
-    const intervalStart = this.getIntervalStartDate();
+      this.totalConcerts = data.totalConcerts;
 
-    this.filteredPast = this.past.filter(
-      (concert) => new Date(concert.date) >= intervalStart
-    );
-    this.totalConcerts = this.filteredPast.length;
+      this.genreData = data.genreData;
+      this.artistData = data.artistData;
+      this.locationData = data.locationData;
 
-    this.updateRadarData(this.filteredPast);
-    this.createRadarCharts();
+      this.chartDescriptions = data.insights?.slides || [];
 
-    this.chartDescriptions[0].personalizedText = `You're in the top 8% for Pop lovers.`;
+      this.activeSlideIndex = 0;
+
+      this.createRadarCharts();
+    } catch (e) {
+      console.error('Failed to load event statistics', e);
+    }
   }
 
   getIntervalStartDate() {
@@ -278,23 +286,6 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   activeSlideIndex = 0;
   swiperInstance!: Swiper;
-
-  chartDescriptions = [
-    {
-      staticText:
-        'Your preferred genre was Pop based on your listening history.You clearly enjoy lyrical flow and urban vibes.',
-      personalizedText: 'You’re in the top 8% for Pop lovers.',
-    },
-    {
-      staticText:
-        'Your favorite artist is Korda György és Balázs Klári. They started in 999BC and typically play Rap, House and Techno.',
-      personalizedText: 'You’re in the top 1% of fans.',
-    },
-    {
-      staticText: 'Concert location you’ve visited the most was Berlin.',
-      personalizedText: 'You attend shows in Berlin more than 90% of users.',
-    },
-  ];
 
   @ViewChild('swiper')
   swiperRef: ElementRef | undefined;
