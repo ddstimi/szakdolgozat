@@ -284,7 +284,7 @@ export class frontendService {
   }
 
   async getPreferences(): Promise<any> {
-    const token = await localStorage.getItem('token');
+    const token = await this.getToken();
     if (!token) {
       this.router.navigate(['/login']);
       throw new Error('No authentication token found');

@@ -49,7 +49,7 @@ export class EditUserModalComponent implements OnInit, OnChanges {
   @Input() user: {
     name: string;
     email: string;
-    password: string;
+    password?: string;
     username: string;
     gdpr: boolean;
   } = { name: '', email: '', password: '', username: '', gdpr: false };
@@ -58,12 +58,12 @@ export class EditUserModalComponent implements OnInit, OnChanges {
   @Output() save = new EventEmitter<{
     name: string;
     email: string;
-    password: string;
+    password?: string;
     username: string;
     gdpr: boolean;
   }>();
 
-  editedUser = { name: '', email: '', password: '', username: '', gdpr: false };
+  editedUser = { ...this.user };
 
   isEditingUsername = false;
   isEditingName = false;
@@ -99,10 +99,22 @@ export class EditUserModalComponent implements OnInit, OnChanges {
 
   saveUserField(field: keyof typeof this.editedUser) {
     this.isEditing[field] = false;
+    console.log(field);
+    console.log(this.isEditing[field]);
   }
 
   async saveChanges() {
-    await this.modalController.dismiss(this.editedUser);
+    const updatedUser = { ...this.editedUser };
+
+    const pwd = (updatedUser.password ?? '').trim();
+
+    if (!pwd || pwd === '********' || pwd === this.user.password) {
+      delete updatedUser.password;
+    } else {
+      updatedUser.password = pwd;
+    }
+
+    await this.modalController.dismiss(updatedUser);
   }
 }
 

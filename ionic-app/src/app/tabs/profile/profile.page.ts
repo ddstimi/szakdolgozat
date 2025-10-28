@@ -86,7 +86,7 @@ export class ProfilePage implements OnInit {
         username: userData.username,
         email: userData.email,
         gdpr: userData.gdpr,
-        password: userData.password,
+        password: '********',
         img_url: userData.img_url?.includes(environment.apiUrl)
           ? userData.img_url
           : environment.apiUrl +
@@ -463,15 +463,35 @@ export class ProfilePage implements OnInit {
   async saveUser(updatedUser: {
     name: string;
     email: string;
-    password: string;
     username: string;
     gdpr: boolean;
-    img_url: string;
+    password?: string;
+    img_url?: string;
   }) {
-    this.user = { ...updatedUser };
+    this.user = { ...this.user, ...updatedUser };
+
+    const payload: {
+      name: string;
+      email: string;
+      username: string;
+      gdpr: boolean;
+      password?: string;
+      img_url?: string;
+    } = {
+      name: this.user.name ?? '',
+      email: this.user.email ?? '',
+      username: this.user.username ?? '',
+      gdpr: this.user.gdpr ?? false,
+      img_url: this.user.img_url ?? '',
+    };
+
+    const pwd = (updatedUser.password ?? '').trim();
+    if (pwd && pwd !== '********') {
+      payload.password = pwd;
+    }
 
     try {
-      await this.frontendService.updateUserData(this.user, true);
+      await this.frontendService.updateUserData(payload, true);
     } catch (err) {
       console.error('Error updating user', err);
     }
