@@ -65,6 +65,10 @@ ion-card-content {
   }
 }
 
+#menuButton {
+  align-self: flex-end;
+}
+
 .ion-padding {
   padding: 16px;
 }
@@ -154,7 +158,6 @@ swiper-container::part(bullet-active) {
 }
 .slide-description {
   margin: 1rem;
-  padding: 1rem;
   text-align: center;
   width: 80%;
   font-size: 3.5rem;

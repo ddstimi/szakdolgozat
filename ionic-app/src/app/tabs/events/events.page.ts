@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import {
   Chart,
@@ -17,7 +23,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { IonicSlides } from '@ionic/angular';
+import { IonicSlides, ActionSheetController } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
 import { frontendService, Concert } from 'src/app/services/frontendService';
 import { environment } from 'src/environments/environment.prod';
@@ -74,7 +80,9 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   constructor(
     private frontendService: frontendService,
-    private router: Router
+    private router: Router,
+    private actionSheetCtrl: ActionSheetController,
+    private cd: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -113,6 +121,11 @@ export class EventsPage implements OnInit, AfterViewInit {
     });
     this.selectedInterval = 'all';
     this.applyIntervalFilter();
+    this.cd.detectChanges();
+  }
+
+  async ionViewWillEnter() {
+    this.cd.detectChanges();
   }
 
   ngAfterViewInit() {
@@ -125,6 +138,125 @@ export class EventsPage implements OnInit, AfterViewInit {
         this.createRadarCharts();
       }
     }, 0);
+  }
+
+  async markNotGoing(concert: Concert) {
+    try {
+      const res = await this.frontendService.attendConcert(concert.id);
+      // your backend returns { attending: boolean }
+      if (!res.attending) {
+        this.upcoming = this.upcoming.filter((c) => c.id !== concert.id);
+      }
+    } catch (e) {
+      console.error('Failed to toggle attendance', e);
+    }
+  }
+
+  openTickets(concert: Concert) {
+    if (concert.ticket_url) {
+      window.open(concert.ticket_url, '_blank');
+    }
+  }
+
+  openDirections(concert: Concert) {
+    // simple Google Maps query with city + venue
+    const q = encodeURIComponent(`${concert.venue_name}, ${concert.city_name}`);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${q}`,
+      '_blank'
+    );
+  }
+
+  async addToCalendar(concert: Concert) {
+    // create an ICS file and trigger download
+    const starts = new Date(concert.date);
+    // assume 2-hour default duration
+    const ends = new Date(starts.getTime() + 2 * 60 * 60 * 1000);
+    const pad = (n: number) => (n < 10 ? '0' + n : '' + n);
+    const fmt = (d: Date) =>
+      `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(
+        d.getUTCDate()
+      )}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+
+    const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//YourApp//Concerts//EN
+BEGIN:VEVENT
+UID:${concert.id}@yourapp
+DTSTAMP:${fmt(new Date())}
+DTSTART:${fmt(starts)}
+DTEND:${fmt(ends)}
+SUMMARY:${concert.title}
+LOCATION:${concert.venue_name}, ${concert.city_name}
+DESCRIPTION:${concert.description ?? ''}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${concert.title.replace(/\s+/g, '_')}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async openUpcomingActions(concert: Concert) {
+    const sheet = await this.actionSheetCtrl.create({
+      header: 'Event options',
+      cssClass: 'action-sheet',
+      buttons: [
+        {
+          text: "I'm not going",
+          role: 'destructive',
+          icon: 'close-circle-outline',
+          handler: () => this.markNotGoing(concert),
+        },
+        {
+          text: 'Add to Calendar',
+          icon: 'calendar-outline',
+          handler: () => this.addToCalendar(concert),
+        },
+        {
+          text: 'Directions',
+          icon: 'navigate-outline',
+          handler: () => this.openDirections(concert),
+        },
+        {
+          text: 'Open tickets',
+          icon: 'pricetag-outline',
+          handler: () => this.openTickets(concert),
+        },
+        {
+          text: 'Share',
+          icon: 'share-social-outline',
+          handler: () => this.shareConcert(concert),
+        },
+        { text: 'Cancel', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  shareConcert(concert: Concert) {
+    const url = concert.ticket_url || document.location.href;
+    const text = `${concert.title} — ${concert.city_name} • ${
+      concert.venue_name
+    } on ${new Date(concert.date).toLocaleDateString()}`;
+    if (navigator.share) {
+      navigator.share({ title: concert.title, text, url }).catch(() => {});
+    } else {
+      // fallback: copy link
+      navigator.clipboard?.writeText(url);
+    }
+  }
+
+  getDaysUntil(dateIso: string): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const d = new Date(dateIso);
+    d.setHours(0, 0, 0, 0);
+    return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   }
   async updateStatistics() {
     try {

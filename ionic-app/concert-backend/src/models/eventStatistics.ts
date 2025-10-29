@@ -168,9 +168,7 @@ const EventsModel = {
 
     return enrichedConcerts;
   },
-  // ---------- DISTRIBUTION QUERIES (used for percentiles) ----------
 
-  // Total concerts per user (optionally filtered by fromDate)
   async getUserTotals(fromDate?: Date): Promise<DistRow[]> {
     let sql = `
       SELECT a.user_id, COUNT(*) AS cnt
@@ -189,7 +187,6 @@ const EventsModel = {
     return rows;
   },
 
-  // Per-user counts for a given GENRE id
   async getUserCountsByGenreId(
     genreId: number,
     fromDate?: Date
@@ -212,7 +209,6 @@ const EventsModel = {
     return rows;
   },
 
-  // Per-user counts for a given ARTIST id
   async getUserCountsByArtistId(
     artistId: number,
     fromDate?: Date
@@ -234,7 +230,6 @@ const EventsModel = {
     return rows;
   },
 
-  // Per-user counts for a given CITY id
   async getUserCountsByCityId(
     cityId: number,
     fromDate?: Date

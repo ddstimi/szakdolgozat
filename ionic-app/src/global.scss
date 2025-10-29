@@ -57,6 +57,58 @@ ion-app {
   --border-color: #80ffcc !important;
 }
 
+ion-action-sheet.action-sheet .action-sheet-group {
+  --background: rgba(90, 90, 95, 0.329);
+  --color: #ffffff;
+  --backdrop-opacity: 0.5;
+  --button-color: #ffffff;
+  --button-background: transparent;
+  --button-background-selected: rgba(255, 255, 255, 0.08);
+  --button-color-selected: #ffffff;
+  --border-radius: 18px;
+  --box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+}
+
+ion-action-sheet.action-sheet .action-sheet-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+ion-action-sheet.action-sheet .action-sheet-sub-title {
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+ion-action-sheet.action-sheet .action-sheet-group {
+  margin: 8px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+ion-action-sheet.action-sheet .action-sheet-button {
+  padding: 14px 18px;
+  font-size: 16px;
+  --button-color-hover: #ffffff8c;
+}
+ion-action-sheet.action-sheet .action-sheet-button .action-sheet-icon {
+  font-size: 20px;
+  margin-inline-end: 12px;
+  opacity: 0.95;
+}
+
+ion-action-sheet.action-sheet .btn-primary {
+  font-weight: 600;
+}
+ion-action-sheet.action-sheet .btn-destructive {
+  color: #ff6b6b !important;
+}
+
+ion-action-sheet.action-sheet .action-sheet-cancel {
+  color: #ff6b6b !important;
+  margin-top: 6px;
+  border-radius: 16px;
+}
+
 ion-content,
 ion-header,
 ion-footer,

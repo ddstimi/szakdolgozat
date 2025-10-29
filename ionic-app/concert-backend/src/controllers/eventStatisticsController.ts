@@ -1,4 +1,3 @@
-// src/controllers/eventStatisticsController.ts
 import { Request, Response } from 'express';
 import EventStatisticsService from '../services/eventStatisticsService';
 
@@ -13,7 +12,6 @@ const EventStatisticsController = {
         interval as string | undefined
       );
 
-      // insights now async (percentiles from DB)
       const insights = await EventStatisticsService.getPersonalizedInsights(
         userId,
         interval as string | undefined,
@@ -27,7 +25,7 @@ const EventStatisticsController = {
           genreData: stats.genreData,
           locationData: stats.locationData,
           artistData: stats.artistData,
-          insights, // { slides: string[] }
+          insights,
           events: stats.concerts.map((concert: any) => ({
             id: concert.id,
             title: concert.title,

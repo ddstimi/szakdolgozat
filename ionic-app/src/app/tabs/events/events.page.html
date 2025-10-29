@@ -4,21 +4,33 @@
 
     <div class="event-cards">
       <ion-card *ngFor="let concert of upcoming" class="event-card">
-        <ion-card-header>
+        <ion-card-header class="flex items-center justify-between">
           <ion-card-title>{{ concert.title }}</ion-card-title>
+
+          <ion-buttons id="menuButton">
+            <ion-button fill="clear" (click)="openUpcomingActions(concert)">
+              <ion-icon name="ellipsis-horizontal"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-card-header>
+
         <ion-card-content>
           <div class="location">
-            <ion-icon name="location-outline"></ion-icon>{{ concert.city_name+'
-            • '+concert.venue_name }}
+            <ion-icon name="location-outline"></ion-icon>
+            {{ concert.city_name + ' • ' + concert.venue_name }}
           </div>
           <div class="date">
-            <ion-icon name="calendar-outline"></ion-icon> {{ concert.date | date
-            : "yyyy-MM-dd" }}
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ concert.date | date: 'yyyy-MM-dd' }}
+            <span class="countdown" *ngIf="getDaysUntil(concert.date) >= 0">
+              • in {{ getDaysUntil(concert.date) }} day{{
+              getDaysUntil(concert.date) === 1 ? '' : 's' }}
+            </span>
           </div>
         </ion-card-content>
       </ion-card>
     </div>
+
     <hr class="section-divider" />
     <ion-title>Past Events</ion-title>
 

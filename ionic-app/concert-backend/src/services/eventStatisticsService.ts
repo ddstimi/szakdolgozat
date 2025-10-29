@@ -1,4 +1,3 @@
-// src/services/eventStatisticsService.ts
 import EventsModel from '../models/eventStatistics';
 
 function fromDateFor(interval?: string) {
@@ -19,7 +18,7 @@ function percentileRank(userValue: number, values: number[]) {
   const sorted = values.slice().sort((a, b) => a - b);
   let count = 0;
   for (const v of sorted) if (v <= userValue) count++;
-  return Math.round((count / sorted.length) * 100); // e.g. 92 = 92nd percentile
+  return Math.round((count / sorted.length) * 100);
 }
 
 const EventStatisticsService = {
@@ -31,10 +30,10 @@ const EventStatisticsService = {
     const locationData: Record<string, number> = {};
     const artistData: Record<string, number> = {};
     let totalConcerts = 0;
-    const now = new Date(); // ← add this
+    const now = new Date();
     concerts.forEach((concert: any) => {
       if (concert.cancelled) return;
-      if (new Date(concert.date) > now) return; // ← exclude future shows
+      if (new Date(concert.date) > now) return;
 
       totalConcerts++;
 
@@ -64,7 +63,6 @@ const EventStatisticsService = {
     };
   },
 
-  // No SQL here — only uses EventsModel to fetch distributions
   async getPersonalizedInsights(
     userId: number,
     interval: string | undefined,
@@ -79,7 +77,11 @@ const EventStatisticsService = {
   ) {
     const { totalConcerts, concerts, fromDate } = stats;
 
-    // find user's top item by id/name/count
+    const now = new Date();
+    const pastConcerts = concerts.filter(
+      (c) => !c.cancelled && new Date(c.date) <= now
+    );
+
     const pickTop = <T extends { id: number; name: string }>(arr: T[]) => {
       const counts = new Map<number, { name: string; count: number }>();
       for (const item of arr) {
@@ -95,15 +97,14 @@ const EventStatisticsService = {
       return best;
     };
 
-    const allGenres = concerts.flatMap((c: any) => c.genres || []);
-    const allArtists = concerts.flatMap((c: any) => c.artists || []);
-    const allCities = concerts.map((c: any) => c.city).filter(Boolean);
+    const allGenres = pastConcerts.flatMap((c) => c.genres || []);
+    const allArtists = pastConcerts.flatMap((c) => c.artists || []);
+    const allCities = pastConcerts.map((c) => c.city).filter(Boolean);
 
     const topGenre = pickTop(allGenres);
     const topArtist = pickTop(allArtists);
     const topCity = pickTop(allCities);
 
-    // distributions from the MODEL (SQL stays in the model)
     const userTotalsRows = await EventsModel.getUserTotals(fromDate);
     const userTotalsArray = userTotalsRows.map((r: { cnt: number }) => r.cnt);
 
@@ -134,26 +135,23 @@ const EventStatisticsService = {
       cityUserCounts = rows.map((r: { cnt: number }) => r.cnt);
     }
 
-    // user values
     const userTotal = totalConcerts;
     const userGenreCount = topGenre?.count ?? 0;
     const userArtistCount = topArtist?.count ?? 0;
     const userCityCount = topCity?.count ?? 0;
 
-    // percentiles -> "top X%"
     const pctTotal = percentileRank(userTotal, userTotalsArray);
     const pctGenre = percentileRank(userGenreCount, genreUserCounts);
     const pctArtist = percentileRank(userArtistCount, artistUserCounts);
     const pctCity = percentileRank(userCityCount, cityUserCounts);
 
-    const toTop = (p: number) => Math.max(1, 101 - p); // 92nd → top 9%
+    const toTop = (p: number) => Math.max(1, 101 - p);
 
     const topTotal = toTop(pctTotal);
     const topGenreP = toTop(pctGenre);
     const topArtistP = toTop(pctArtist);
     const topCityP = toTop(pctCity);
 
-    // fun, Wrapped-style, numbers-first, only personalized strings
     const slides: string[] = [
       topGenre
         ? `Genre unlocked: ${topGenre.name}. ${userGenreCount} ${
@@ -172,7 +170,7 @@ const EventStatisticsService = {
       topCity
         ? `${topCity.name} was your home base — ${userCityCount} show${
             userCityCount === 1 ? '' : 's'
-          } there, more than ${topCityP}% of users.`
+          } there — top ${topCityP}% of clubber in that city.`
         : `World tour vibes: no single city dominated your map.`,
       userTotal > 0
         ? `Attendance mode: ${userTotal} show${
