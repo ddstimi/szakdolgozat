@@ -28,6 +28,7 @@ import { Swiper } from 'swiper/types';
 import { frontendService, Concert } from 'src/app/services/frontendService';
 import { environment } from 'src/environments/environment.prod';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 
 Chart.register(
   RadarController,
@@ -41,6 +42,9 @@ Chart.register(
   Legend
 );
 
+declare const google: any;
+declare const gapi: any;
+
 @Component({
   selector: 'app-event-page',
   templateUrl: './events.page.html',
@@ -49,15 +53,17 @@ Chart.register(
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class EventsPage implements OnInit, AfterViewInit {
-  @ViewChild('genreRadarChart', { static: false }) genreRadarChartCanvas:
-    | ElementRef
-    | undefined;
-  @ViewChild('locationRadarChart', { static: false }) locationRadarChartCanvas:
-    | ElementRef
-    | undefined;
-  @ViewChild('artistRadarChart', { static: false }) artistRadarChartCanvas:
-    | ElementRef
-    | undefined;
+  @ViewChild('genreRadarChart', { static: false })
+  genreRadarChartCanvas?: ElementRef;
+  @ViewChild('locationRadarChart', { static: false })
+  locationRadarChartCanvas?: ElementRef;
+  @ViewChild('artistRadarChart', { static: false })
+  artistRadarChartCanvas?: ElementRef;
+
+  // Google Calendar (optional direct insert)
+  private tokenClient: any = null;
+  private gapiLoaded = false;
+  private accessToken: string | null = null;
 
   swiperModules = [IonicSlides];
   selectedChart: string = 'genre';
@@ -69,14 +75,16 @@ export class EventsPage implements OnInit, AfterViewInit {
   past: Concert[] = [];
   filteredPast: Concert[] = [];
 
-  filteredEvents: Event[] = [];
-  genreData: { [key: string]: number } = {};
-  locationData: { [key: string]: number } = {};
-  artistData: { [key: string]: number } = {};
+  genreData: Record<string, number> = {};
+  locationData: Record<string, number> = {};
+  artistData: Record<string, number> = {};
 
-  private genreChart: Chart | undefined;
-  private locationChart: Chart | undefined;
-  private artistChart: Chart | undefined;
+  private genreChart?: Chart;
+  private locationChart?: Chart;
+  private artistChart?: Chart;
+
+  activeSlideIndex = 0;
+  @ViewChild('swiper') swiperRef?: ElementRef;
 
   constructor(
     private frontendService: frontendService,
@@ -86,8 +94,7 @@ export class EventsPage implements OnInit, AfterViewInit {
   ) {}
 
   async ngOnInit() {
-    let token = this.frontendService.getToken();
-
+    const token = this.frontendService.getToken();
     if (!token) {
       this.router.navigate(['/login']);
       return;
@@ -98,27 +105,34 @@ export class EventsPage implements OnInit, AfterViewInit {
       this.router.navigate(['/login']);
       return;
     }
-    this.updateStatistics();
-    this.upcoming = await this.frontendService.getUpcomingByUser();
-    this.upcoming = this.upcoming.map((concert) => {
-      return {
+
+    // --- Google Calendar direct insert (optional) ---
+    // If you only want the browser-based “Add to Calendar”, you can remove these 3 lines
+    await this.loadGisScript();
+    this.initTokenClient();
+    await this.loadGapiClient();
+    // ------------------------------------------------
+
+    await this.updateStatistics();
+
+    this.upcoming = (await this.frontendService.getUpcomingByUser()).map(
+      (concert) => ({
         ...concert,
         image: concert.image?.includes(environment.apiUrl)
           ? concert.image
           : environment.apiUrl +
             (concert.image || '/profile-pictures/bikini.jpg'),
-      };
-    });
-    this.past = await this.frontendService.getPastByUser();
-    this.past = this.past.map((concert) => {
-      return {
-        ...concert,
-        image: concert.image?.includes(environment.apiUrl)
-          ? concert.image
-          : environment.apiUrl +
-            (concert.image || '/profile-pictures/bikini.jpg'),
-      };
-    });
+      })
+    );
+
+    this.past = (await this.frontendService.getPastByUser()).map((concert) => ({
+      ...concert,
+      image: concert.image?.includes(environment.apiUrl)
+        ? concert.image
+        : environment.apiUrl +
+          (concert.image || '/profile-pictures/bikini.jpg'),
+    }));
+
     this.selectedInterval = 'all';
     this.applyIntervalFilter();
     this.cd.detectChanges();
@@ -140,67 +154,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  async markNotGoing(concert: Concert) {
-    try {
-      const res = await this.frontendService.attendConcert(concert.id);
-      // your backend returns { attending: boolean }
-      if (!res.attending) {
-        this.upcoming = this.upcoming.filter((c) => c.id !== concert.id);
-      }
-    } catch (e) {
-      console.error('Failed to toggle attendance', e);
-    }
-  }
-
-  openTickets(concert: Concert) {
-    if (concert.ticket_url) {
-      window.open(concert.ticket_url, '_blank');
-    }
-  }
-
-  openDirections(concert: Concert) {
-    // simple Google Maps query with city + venue
-    const q = encodeURIComponent(`${concert.venue_name}, ${concert.city_name}`);
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${q}`,
-      '_blank'
-    );
-  }
-
-  async addToCalendar(concert: Concert) {
-    // create an ICS file and trigger download
-    const starts = new Date(concert.date);
-    // assume 2-hour default duration
-    const ends = new Date(starts.getTime() + 2 * 60 * 60 * 1000);
-    const pad = (n: number) => (n < 10 ? '0' + n : '' + n);
-    const fmt = (d: Date) =>
-      `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(
-        d.getUTCDate()
-      )}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
-
-    const ics = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//YourApp//Concerts//EN
-BEGIN:VEVENT
-UID:${concert.id}@yourapp
-DTSTAMP:${fmt(new Date())}
-DTSTART:${fmt(starts)}
-DTEND:${fmt(ends)}
-SUMMARY:${concert.title}
-LOCATION:${concert.venue_name}, ${concert.city_name}
-DESCRIPTION:${concert.description ?? ''}
-END:VEVENT
-END:VCALENDAR`;
-
-    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${concert.title.replace(/\s+/g, '_')}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
+  // ---------- Upcoming actions ----------
   async openUpcomingActions(concert: Concert) {
     const sheet = await this.actionSheetCtrl.create({
       header: 'Event options',
@@ -227,53 +181,167 @@ END:VCALENDAR`;
           icon: 'pricetag-outline',
           handler: () => this.openTickets(concert),
         },
-        {
-          text: 'Share',
-          icon: 'share-social-outline',
-          handler: () => this.shareConcert(concert),
-        },
         { text: 'Cancel', role: 'cancel' },
       ],
     });
     await sheet.present();
   }
 
-  shareConcert(concert: Concert) {
-    const url = concert.ticket_url || document.location.href;
-    const text = `${concert.title} — ${concert.city_name} • ${
-      concert.venue_name
-    } on ${new Date(concert.date).toLocaleDateString()}`;
-    if (navigator.share) {
-      navigator.share({ title: concert.title, text, url }).catch(() => {});
-    } else {
-      // fallback: copy link
-      navigator.clipboard?.writeText(url);
+  async markNotGoing(concert: Concert) {
+    try {
+      const res = await this.frontendService.attendConcert(concert.id); // toggles attending
+      if (!res.attending) {
+        this.upcoming = this.upcoming.filter((c) => c.id !== concert.id);
+      }
+    } catch (e) {
+      console.error('Failed to toggle attendance', e);
     }
   }
 
-  getDaysUntil(dateIso: string): number {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const d = new Date(dateIso);
-    d.setHours(0, 0, 0, 0);
-    return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  openTickets(concert: Concert) {
+    if (concert.ticket_url) {
+      window.open(concert.ticket_url, '_blank');
+    }
   }
+
+  openDirections(concert: Concert) {
+    const q = encodeURIComponent(`${concert.venue_name}, ${concert.city_name}`);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${q}`,
+      '_blank'
+    );
+  }
+
+  async addToCalendar(concert: Concert) {
+    if (!concert) return;
+
+    const title = encodeURIComponent(concert.title);
+    const details = encodeURIComponent(concert.description || '');
+    const location = encodeURIComponent(
+      `${concert.venue_name}, ${concert.city_name}`
+    );
+
+    const start = new Date(concert.date);
+    const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const formatDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
+
+    const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${formatDate(
+      start
+    )}/${formatDate(end)}`;
+
+    await Browser.open({ url });
+  }
+
+  private async loadGisScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.getElementById('gisScript')) return resolve();
+      const script = document.createElement('script');
+      script.id = 'gisScript';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  }
+
+  private initTokenClient() {
+    if (!environment.googleClientId) return;
+    this.tokenClient = google?.accounts?.oauth2?.initTokenClient?.({
+      client_id: environment.googleClientId,
+      scope: 'https://www.googleapis.com/auth/calendar.events',
+      callback: (tokenResponse: any) => {
+        this.accessToken = tokenResponse.access_token;
+      },
+    });
+  }
+
+  private async loadGapiClient(): Promise<void> {
+    return new Promise((resolve) => {
+      if (!window.hasOwnProperty('gapi')) return resolve();
+      gapi.load('client', async () => {
+        await gapi.client.init({
+          apiKey: environment.calendarApiKey || '',
+          discoveryDocs: [
+            'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+          ],
+        });
+        this.gapiLoaded = true;
+        resolve();
+      });
+    });
+  }
+
+  async addToGoogleCalendar(concert: Concert) {
+    if (!this.tokenClient) {
+      console.warn('Google token client not initialized.');
+      return;
+    }
+    this.tokenClient.requestAccessToken({ prompt: '' });
+
+    const start = Date.now();
+    while (!this.accessToken && Date.now() - start < 5000) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    if (!this.accessToken) {
+      console.error('No access token acquired');
+      return;
+    }
+    await this.insertEventToCalendar(concert);
+  }
+
+  private async insertEventToCalendar(concert: Concert) {
+    if (!this.gapiLoaded || !this.accessToken) return;
+
+    gapi.client.setToken({ access_token: this.accessToken });
+
+    const event = {
+      summary: concert.title,
+      description: concert.description || 'Concert event',
+      location: `${concert.venue_name}, ${concert.city_name}`,
+      start: {
+        dateTime: new Date(concert.date).toISOString(),
+        timeZone: 'Europe/Budapest',
+      },
+      end: {
+        dateTime: new Date(
+          new Date(concert.date).getTime() + 2 * 60 * 60 * 1000
+        ).toISOString(),
+        timeZone: 'Europe/Budapest',
+      },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'popup', minutes: 30 },
+          { method: 'popup', minutes: 24 * 60 },
+        ],
+      },
+    };
+
+    try {
+      await gapi.client.calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+      });
+      alert('🎉 Event added to your Google Calendar!');
+    } catch (error) {
+      console.error('Error adding event:', error);
+      alert('Failed to add event. Check console for details.');
+    }
+  }
+
   async updateStatistics() {
     try {
       const data = await this.frontendService.getEventStatistics(
         this.selectedInterval as any
       );
-
       this.totalConcerts = data.totalConcerts;
-
       this.genreData = data.genreData;
       this.artistData = data.artistData;
       this.locationData = data.locationData;
-
       this.chartDescriptions = data.insights?.slides || [];
-
       this.activeSlideIndex = 0;
-
       this.createRadarCharts();
     } catch (e) {
       console.error('Failed to load event statistics', e);
@@ -292,6 +360,16 @@ END:VCALENDAR`;
     }
   }
 
+  applyIntervalFilter() {
+    const intervalStart = this.getIntervalStartDate();
+    this.filteredPast = this.past.filter(
+      (concert) => new Date(concert.date) >= intervalStart
+    );
+    this.totalConcerts = this.filteredPast.length;
+    this.updateRadarData(this.filteredPast);
+    this.createRadarCharts();
+  }
+
   updateRadarData(concerts: Concert[]) {
     this.genreData = {};
     this.locationData = {};
@@ -299,9 +377,9 @@ END:VCALENDAR`;
 
     concerts.forEach((concert) => {
       concert.genre?.split(',').forEach((genre) => {
-        genre = genre.trim();
-        if (!genre) return;
-        this.genreData[genre] = (this.genreData[genre] || 0) + 1;
+        const g = genre.trim();
+        if (!g) return;
+        this.genreData[g] = (this.genreData[g] || 0) + 1;
       });
 
       if (concert.venue_name) {
@@ -316,21 +394,6 @@ END:VCALENDAR`;
     });
   }
 
-  applyIntervalFilter() {
-    const intervalStart = this.getIntervalStartDate();
-    this.filteredPast = this.past.filter(
-      (concert) => new Date(concert.date) >= intervalStart
-    );
-
-    this.totalConcerts = this.filteredPast.length;
-    this.updateRadarData(this.filteredPast);
-    this.createRadarCharts();
-  }
-
-  onIntervalChange(newInterval: string) {
-    this.selectedInterval = newInterval;
-    this.applyIntervalFilter();
-  }
   createRadarCharts() {
     if (
       !this.genreRadarChartCanvas ||
@@ -345,21 +408,21 @@ END:VCALENDAR`;
 
     this.genreChart = this.createChart(
       this.genreRadarChartCanvas.nativeElement,
-      'Genres ',
+      'Genres',
       this.genreData,
       'rgba(255, 99, 132, 0.6)',
       'rgba(255, 99, 132, 1)'
     );
     this.locationChart = this.createChart(
       this.locationRadarChartCanvas.nativeElement,
-      'Locations ',
+      'Locations',
       this.locationData,
       'rgba(74, 195, 144, 0.5)',
       'rgb(74, 195, 144)'
     );
     this.artistChart = this.createChart(
       this.artistRadarChartCanvas.nativeElement,
-      'Artists ',
+      'Artists',
       this.artistData,
       'rgb(180, 89, 255, 0.5)',
       'rgb(180, 89, 255)'
@@ -369,12 +432,12 @@ END:VCALENDAR`;
   private createChart(
     canvas: any,
     label: string,
-    dataObj: { [key: string]: number },
+    dataObj: Record<string, number>,
     bgColor: string,
     borderColor: string
   ): Chart {
     const labels = Object.keys(dataObj);
-    const values = labels.map((label) => dataObj[label]);
+    const values = labels.map((l) => dataObj[l]);
 
     return new Chart(canvas, {
       type: 'radar',
@@ -416,13 +479,15 @@ END:VCALENDAR`;
     });
   }
 
-  activeSlideIndex = 0;
-  swiperInstance!: Swiper;
-
-  @ViewChild('swiper')
-  swiperRef: ElementRef | undefined;
-
   onSlideChange() {
     this.activeSlideIndex = this.swiperRef?.nativeElement.swiper.activeIndex;
+  }
+
+  getDaysUntil(dateIso: string): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const d = new Date(dateIso);
+    d.setHours(0, 0, 0, 0);
+    return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   }
 }

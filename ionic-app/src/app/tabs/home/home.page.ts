@@ -130,7 +130,6 @@ export class HomePage {
         ? userData.img_url
         : environment.apiUrl +
           (userData.img_url || '/profile-pictures/bikini.jpg');
-      this.selectedPicture = this.user.img_url;
 
       this.userAttendingConcerts = (
         await this.frontendService.getUpcomingByUser()
