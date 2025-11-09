@@ -87,10 +87,7 @@ export class ProfilePage implements OnInit {
         email: userData.email,
         gdpr: userData.gdpr,
         password: '********',
-        img_url: userData.img_url?.includes(environment.apiUrl)
-          ? userData.img_url
-          : environment.apiUrl +
-            (userData.img_url || '/profile-pictures/bikini.jpg'),
+        img_url: userData.img_url,
       };
       this.selectedPicture = this.user.img_url;
       await this.loadPreferences();
@@ -184,39 +181,97 @@ export class ProfilePage implements OnInit {
 
   selectedPicture = '';
 
-  async selectPreset(img: string) {
-    this.selectedPicture = img;
-    console.log('Preset selected:', img);
-    try {
-      await this.updateProfilePicture();
-      console.log('Profile picture updated from preset.');
-    } catch (error) {
-      console.error('Failed to update profile picture from preset', error);
-    }
+  private preview(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.selectedPicture = reader.result as string;
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
   }
 
   onFileSelected(event: any) {
-    const file = event.target.files[0];
-    this.readImage(file);
-  }
-
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
+    const file: File | undefined = event.target.files?.[0];
+    if (file) this.startAvatarUpload(file);
   }
 
   async onDrop(event: DragEvent) {
     event.preventDefault();
-    const file = event.dataTransfer?.files[0];
-    if (file) {
-      this.readImage(file);
-      try {
-        const response = await this.frontendService.uploadImage(file);
-        this.user.img_url = response.user.img_url;
-        this.selectedPicture = response.user.img_url;
-      } catch (error) {
-        console.error('Upload error:', error);
-      }
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.startAvatarUpload(file);
+  }
+  isUploading = false;
+  uploadPct = 0;
+
+  private async startAvatarUpload(file: File) {
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      console.error('Invalid file type. Only JPEG/PNG allowed.');
+      return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      console.error('File too large (max 5MB)');
+      return;
+    }
+
+    this.preview(file);
+
+    this.isUploading = true;
+    this.uploadPct = 0;
+    this.cdr.detectChanges();
+
+    try {
+      const { user, publicUrl } = await this.frontendService.uploadAvatarToR2(
+        file,
+        true,
+        (pct) => {
+          this.uploadPct = pct;
+          this.cdr.detectChanges();
+        }
+      );
+
+      if (user?.img_url) {
+        this.user.img_url = user.img_url;
+        this.selectedPicture = user.img_url;
+      } else if (publicUrl) {
+        this.user.img_url = publicUrl;
+        this.selectedPicture = publicUrl;
+      }
+
+      this.cdr.detectChanges();
+      console.log('Profile picture updated ✔️');
+    } catch (err) {
+      console.error('Upload error', err);
+    } finally {
+      this.isUploading = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async selectPreset(img: string) {
+    this.selectedPicture = img;
+    try {
+      const user = await this.frontendService.updateUserProfilePicture(
+        img,
+        true
+      );
+      if (user?.img_url) {
+        this.user.img_url = user.img_url;
+        this.selectedPicture = user.img_url;
+      }
+    } catch (err) {
+      console.error('Failed to update profile picture from preset', err);
+    } finally {
+      this.cdr.detectChanges();
+    }
+  }
+
+  present(img: string) {
+    this.selectPreset(img);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 
   readImage(file: File) {
@@ -224,7 +279,6 @@ export class ProfilePage implements OnInit {
     reader.onload = async () => {
       this.selectedPicture = reader.result as string;
       try {
-        await this.frontendService.uploadImage(file);
         console.log('Profile picture updated successfully.');
       } catch (error) {
         console.error('Failed to update profile picture', error);

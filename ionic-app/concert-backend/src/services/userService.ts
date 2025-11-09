@@ -182,29 +182,26 @@ const UserService = {
     userId: string,
     imgUrl: string
   ): Promise<LoginResponse> => {
-    try {
-      const user = await UserModel.updateUserPic(parseInt(userId), imgUrl);
-      if (!user) {
-        throw new CustomError('User not found', 404);
-      }
+    const updated = await UserModel.updateUserPic(parseInt(userId, 10), imgUrl);
+    if (!updated) throw new CustomError('User not found', 404);
 
-      const token = jwt.sign(
-        {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        },
-        JWT_SECRET,
-        { expiresIn: '1h' }
-      );
+    const user = {
+      id: updated.id,
+      username: updated.username,
+      email: updated.email,
+      img_url: updated.img_url,
+      gdpr: updated.gdpr ?? undefined,
+      register_date: updated.register_date ?? undefined,
+      last_login: updated.last_login ?? undefined,
+    } as Omit<IUser, 'password'>;
 
-      return { user, token };
-    } catch (error) {
-      console.error('Update profile picture error:', error);
-      throw error instanceof CustomError
-        ? error
-        : new CustomError('Failed to update profile picture', 500);
-    }
+    const token = jwt.sign(
+      { id: updated.id, username: updated.username, email: updated.email },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    return { user, token };
   },
   attendConcert: async (
     userId: number,

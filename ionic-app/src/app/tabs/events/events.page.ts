@@ -94,6 +94,8 @@ export class EventsPage implements OnInit, AfterViewInit {
   ) {}
 
   async ngOnInit() {
+    this.cd.detectChanges();
+
     const token = this.frontendService.getToken();
     if (!token) {
       this.router.navigate(['/login']);
@@ -152,6 +154,7 @@ export class EventsPage implements OnInit, AfterViewInit {
         this.createRadarCharts();
       }
     }, 0);
+    this.cd.detectChanges();
   }
 
   // ---------- Upcoming actions ----------
@@ -185,6 +188,7 @@ export class EventsPage implements OnInit, AfterViewInit {
       ],
     });
     await sheet.present();
+    this.cd.detectChanges();
   }
 
   async markNotGoing(concert: Concert) {
@@ -196,6 +200,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     } catch (e) {
       console.error('Failed to toggle attendance', e);
     }
+    this.cd.detectChanges();
   }
 
   openTickets(concert: Concert) {

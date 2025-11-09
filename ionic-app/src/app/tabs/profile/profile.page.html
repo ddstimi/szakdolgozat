@@ -59,7 +59,7 @@
               class="round small selectable"
               *ngFor="let img of predefinedPics"
               [class.selected]="img === selectedPicture"
-              (click)="selectPreset(img)"
+              (click)="present(img)"
             >
               <ion-img [src]="img" class="preset-img" />
             </div>

@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import UserController from '../controllers/userController';
 import { authenticateJWT } from '../middleware/authMiddleware';
-import { uploadProfilePicture } from '../controllers/pictureController';
+import { uploadProfileDirect } from '../controllers/pictureController';
+import multer from 'multer';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const router = Router();
 
@@ -10,16 +16,17 @@ router.post('/login', UserController.login);
 router.post('/google-auth', UserController.googleAuth);
 router.get('/profile-info', authenticateJWT, UserController.userProfile);
 router.put('/update-profile', authenticateJWT, UserController.updateUser);
+router.patch('/update-picture', authenticateJWT, UserController.updateUserPic);
 router.patch(
   '/update-static-picture',
   authenticateJWT,
   UserController.updateStaticPic
 );
-router.patch(
-  '/update-picture',
+router.post(
+  '/picture/upload',
   authenticateJWT,
-  uploadProfilePicture,
-  UserController.updateUserPic
+  upload.single('file'),
+  uploadProfileDirect
 );
 router.put('/preferences', authenticateJWT, UserController.updateUser);
 router.post('/refresh', UserController.refreshSession);

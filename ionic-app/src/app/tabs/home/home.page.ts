@@ -123,30 +123,16 @@ export class HomePage {
 
     this.loggedIn = await this.frontendService.isLoggedIn();
 
+    this.loggedIn = await this.frontendService.isLoggedIn();
     if (this.loggedIn) {
-      const userData = await this.frontendService.getUserData();
-      this.user = userData;
-      this.user.img_url = userData.img_url?.includes(environment.apiUrl)
-        ? userData.img_url
-        : environment.apiUrl +
-          (userData.img_url || '/profile-pictures/bikini.jpg');
-
       this.userAttendingConcerts = (
         await this.frontendService.getUpcomingByUser()
       ).map((c) => +c.id);
-    }
-
-    this.loggedIn = await this.frontendService.isLoggedIn();
-    if (this.loggedIn) {
       console.log(
         'User is logged in, fetching top picks and popular concerts.'
       );
       const userData = await this.frontendService.getUserData();
       this.user = userData;
-      this.user.img_url = userData.img_url?.includes(environment.apiUrl)
-        ? userData.img_url
-        : environment.apiUrl +
-          (userData.img_url || '/profile-pictures/bikini.jpg');
       this.selectedPicture = this.user.img_url;
 
       this.userAttendingConcerts = (

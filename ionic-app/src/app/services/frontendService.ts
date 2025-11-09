@@ -1,6 +1,12 @@
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpEvent,
+  HttpEventType,
+  HttpProgressEvent,
+} from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 import { Router } from '@angular/router';
@@ -167,6 +173,62 @@ export class frontendService {
     }
   }
 
+  async uploadAvatarViaBackend(file: File, stayLoggedIn: boolean) {
+    const token = this.getToken();
+    if (!token) throw new Error('Not logged in');
+
+    const form = new FormData();
+    form.append('file', file);
+
+    const up: any = await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/api/users/picture/upload`, form, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+
+    const payload = up.publicUrl
+      ? { publicUrl: up.publicUrl }
+      : { key: up.key };
+    const user = await this.updateUserPicturePublicUrl(payload, stayLoggedIn);
+    return { user, publicUrl: up.publicUrl, key: up.key };
+  }
+
+  async uploadAvatarToR2(
+    file: File,
+    stayLoggedIn: boolean,
+    onProgress?: (pct: number) => void
+  ) {
+    if (onProgress) onProgress(5);
+    const res = await this.uploadAvatarViaBackend(file, stayLoggedIn);
+    if (onProgress) onProgress(100);
+    return res;
+  }
+
+  async updateUserPicturePublicUrl(
+    payload: { publicUrl?: string; key?: string },
+    stayLoggedIn: boolean
+  ) {
+    const token = this.getToken();
+    if (!token) throw new Error('Not logged in');
+
+    const res: any = await firstValueFrom(
+      this.http.patch(
+        `${environment.apiUrl}/api/users/update-picture`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+    );
+
+    if (stayLoggedIn && res?.token) {
+      localStorage.setItem('token', res.token);
+    } else if (res?.token) {
+      sessionStorage.setItem('token', res.token);
+    }
+    localStorage.setItem('user', JSON.stringify(res.user));
+
+    return res.user as any;
+  }
+
   async updateUserProfilePicture(
     imageUrl: string,
     stayLoggedIn: boolean
@@ -225,62 +287,6 @@ export class frontendService {
       sessionStorage.setItem('refresh_token', authResult.refreshToken);
     }
     localStorage.setItem('user', JSON.stringify(authResult.user));
-  }
-
-  async uploadImage(file: File) {
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (!validTypes.includes(file.type)) {
-      throw new Error('Invalid file type. Only JPEG/PNG allowed.');
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error('File too large (max 5MB)');
-    }
-
-    const formData = new FormData();
-    formData.append('profilePicture', file);
-
-    const headers = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.getToken()}`
-    );
-
-    try {
-      const response = await firstValueFrom(
-        this.http.patch<{ user: any; token: string }>(
-          `${environment.apiUrl}/api/users/update-picture`,
-          formData,
-          { headers }
-        )
-      );
-      return response;
-    } catch (error: any) {
-      if (
-        error.status === 401 ||
-        error.error?.message === 'TokenExpiredError'
-      ) {
-        const newToken = await this.refreshAccessToken();
-        if (!newToken) {
-          this.router.navigate(['/login']);
-          return null;
-        }
-        const headers = new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${newToken}`
-        );
-        const res: any = await firstValueFrom(
-          this.http.patch<{ user: any; token: string }>(
-            `${environment.apiUrl}/api/users/update-picture`,
-            formData,
-            { headers }
-          )
-        );
-        return res.user;
-      }
-
-      console.error('Upload failed:', error);
-      throw error;
-    }
   }
 
   async getPreferences(): Promise<any> {

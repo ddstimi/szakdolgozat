@@ -149,21 +149,30 @@ const UserController = {
       return next(error);
     }
   }) as RequestHandler,
-  updateUserPic: (async (req: Request, res: Response, next: NextFunction) => {
+  updateUserPic: (async (req, res, next) => {
     try {
-      console.log('Request files:', req.file); // Debug log
+      const userId = (req as any).user.id as number;
+      const { publicUrl, key } = req.body as {
+        publicUrl?: string;
+        key?: string;
+      };
 
-      if (!req.file) {
-        console.log('Request body:', req.body); // Check what's actually being received
-        return res.status(400).json({ message: 'No file uploaded' });
+      if (!publicUrl && !key) {
+        return res
+          .status(400)
+          .json({ message: 'publicUrl or key is required' });
       }
 
-      const userId = (req as any).user.id;
-      const imagePath = `/assets/profile-pictures/${req.file.filename}`;
+      const cdnBase = (process.env.CDN_BASE_URL || '').replace(/\/$/, '');
+      const finalUrl = publicUrl || (key ? `${cdnBase}/${key}` : '');
+
+      if (!finalUrl) {
+        return res.status(400).json({ message: 'Invalid image identifier' });
+      }
 
       const { user, token } = await UserService.updateUserPic(
-        userId.toString(),
-        imagePath
+        String(userId),
+        finalUrl
       );
 
       return res.status(200).json({
@@ -172,12 +181,12 @@ const UserController = {
         token,
       });
     } catch (error) {
-      console.error('Controller error:', error);
       return next(error);
     }
   }) as RequestHandler,
-  updateStaticPic: (async (req: Request, res: Response, next: NextFunction) => {
-    const userId = (req as any).user.id; // Assuming middleware set this from token
+
+  updateStaticPic: (async (req, res, next) => {
+    const userId = (req as any).user.id as number;
     const { img_url } = req.body;
 
     if (!img_url) {
@@ -185,8 +194,10 @@ const UserController = {
     }
 
     try {
-      const { user, token } = await UserService.updateUserPic(userId, img_url);
-
+      const { user, token } = await UserService.updateUserPic(
+        String(userId),
+        img_url
+      );
       return res.status(200).json({
         message: 'User updated successfully!',
         user,
