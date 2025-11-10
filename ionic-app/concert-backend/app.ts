@@ -8,6 +8,7 @@ const path = require('path');
 import preferencesRoutes from './src/routes/preferencesRoutes';
 import eventStatisticRoutes from './src/routes/eventStatisticsRoutes';
 import concertRoutes from './src/routes/concertRoutes';
+import notificationRoutes from './src/routes/notificationRoutes';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/event-statistics', eventStatisticRoutes);
 app.use('/api/concerts', concertRoutes);
-
+app.use('/api/notifications', notificationRoutes);
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the User Management API!');
 });
