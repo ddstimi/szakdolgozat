@@ -10,7 +10,11 @@
     </ion-header>
 
     <div class="notif-page-container">
-      <ion-accordion-group expand="first">
+      <ion-accordion-group
+        expand="new"
+        [multiple]="true"
+        [value]="['new', 'old']"
+      >
         <ion-accordion value="new">
           <ion-item slot="header" color="dark">
             <ion-label>New</ion-label>
@@ -53,7 +57,6 @@
               <ion-item-sliding
                 #slidingItem
                 *ngFor="let notif of readNotifications "
-                [@fadeOut]="notif.read ? 'fade' : 'visible'"
                 [class.read]="notif.read"
               >
                 <ion-item lines="none">

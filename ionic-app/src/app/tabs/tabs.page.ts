@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import {
   IonTabs,
@@ -68,8 +68,14 @@ export class TabsPage implements OnInit {
   async ngOnInit() {
     this.loggedIn = this.frontendService.isLoggedIn();
     if (this.loggedIn) {
-      this.upcoming = await this.frontendService.getUpcomingByUser();
-      this.upcomingNum = this.upcoming.length;
+      await this.refreshCounts();
+
+      this.platform.resume.subscribe(() => this.refreshCounts());
+      window.addEventListener('notif:changed', () => this.refreshCounts());
+      window.addEventListener('upcoming:changed', () => this.refreshCounts());
+
+      this.checkIfMobile();
+      this.platform.resize.subscribe(() => this.checkIfMobile());
     }
 
     this.checkIfMobile();
@@ -89,7 +95,24 @@ export class TabsPage implements OnInit {
     }
   }
   async ionViewWillEnter() {
+    if (this.frontendService.isLoggedIn()) await this.refreshCounts();
     this.cd.detectChanges();
+  }
+
+  private async refreshCounts() {
+    try {
+      if (!this.frontendService.isLoggedIn()) return;
+      const [upcoming, unread] = await Promise.all([
+        this.frontendService.getUpcomingByUser(),
+        this.frontendService.getUnreadNotificationCount(),
+      ]);
+      this.upcoming = upcoming;
+      this.upcomingNum = upcoming.length;
+      this.notifNum = unread;
+      this.cd.detectChanges();
+    } catch (e) {
+      console.error('refreshCounts failed', e);
+    }
   }
 
   onLogout() {

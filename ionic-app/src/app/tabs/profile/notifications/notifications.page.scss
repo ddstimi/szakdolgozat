@@ -2,15 +2,12 @@
   text-align: center;
   padding: 2rem;
   align-items: center;
- width: 70%;
- align-self: center;
- justify-self: center;
- align-content: center;
- margin-top: 7%;
- background: rgba(0, 0, 0, 0.3);
-   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-
- border-radius: 8px;
+  width: 70%;
+  margin: auto;
+  margin-top: 7%;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
 }
 
 ion-item-sliding {
@@ -20,33 +17,37 @@ ion-item-sliding {
   overflow: hidden;
   transition: transform 0.1s;
 }
-ion-item-option{
 
+ion-item-option {
+  margin: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 0px 12px 12px 0px;
 }
 
-ion-accordion{
-    background:rgba(0, 0, 0, 0.3) ;
-    
-ion-icon{
+ion-accordion {
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 0.5rem;
+  border-radius: 12px;
+
+  ion-icon {
     color: #f9f4f5cc;
-
-}
+  }
 }
 ion-item {
   --background: rgba(0, 0, 0, 0.3);
   --color: #f9f4f5cc;
   --padding-start: 16px;
   --padding-end: 16px;
-  border-radius: 6px;
-  --padding:1rem;
+  --border-radius: 12px;
+  --padding: 1rem;
 }
 
-.glow-msg{
-        border: solid 2px #c17b8c;
-    box-shadow: 0 0 10px #c17b8c81;
-    margin: 0.7rem;
-    border-radius: 6px;
-
+.glow-msg {
+  border: solid 2px #c17b8c;
+  box-shadow: 0 0 10px #c17b8c81;
+  margin: 0.7rem;
+  border-radius: 12px;
 }
 
 ion-label h2 {
@@ -68,30 +69,38 @@ ion-label p {
   margin-top: 6px;
 }
 
-
 .read {
   opacity: 0.8;
   filter: grayscale(20%);
+  ion-item-option {
+    margin: 0;
+    border-radius: 0px 4px 4px 0px;
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
 }
 
 @media (max-width: 769px) {
-    #container{
-        width: 90%;
-        margin-top: 5rem;
-    }
-    ion-item-sliding {
-        transform: scale(0.7);
-        gap: 0;
-        --width: 100%;
-        margin: 0;
-    }
-    ion-list{
-        padding: 0;
-        width: 100%;
-    }
-    ion-item>div{
-        width: 100%;
-        margin: 0;
-    }
-
+  #container {
+    width: 90%;
+    margin-top: 5rem;
+    font-size: smaller;
+    padding: 0.5rem;
+  }
+  ion-item-sliding {
+    transform: scaleY(0.75) scaleX(0.95);
+    --width: 100%;
+    margin: 0;
+  }
+  ion-list {
+    padding: 0;
+    width: 100%;
+  }
+  ion-accordion {
+    margin-bottom: 0.5rem;
+  }
+  ion-item > div {
+    width: 100%;
+    margin: 0;
+  }
 }

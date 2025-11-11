@@ -74,6 +74,7 @@ export class ConcertDetailsPage implements OnInit {
     try {
       const res = await this.frontendService.attendConcert(this.concert.id);
       this.attending = res.attending;
+      window.dispatchEvent(new CustomEvent('upcoming:changed'));
     } catch (err) {
       console.error('Failed to update attendance', err);
       alert('Failed to update attendance. Try again.');

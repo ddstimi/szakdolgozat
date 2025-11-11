@@ -66,7 +66,18 @@ export class ProfilePage implements OnInit {
     img_url: '',
   };
 
+  notifications: Array<{
+    id: number;
+    title: string;
+    message: string;
+    timeAgo: string;
+    read: boolean;
+  }> = [];
+  unreadCount = 0;
   async ngOnInit() {
+    await this.refreshNotificationsPreview();
+    this.cdr.detectChanges();
+
     let token = this.frontendService.getToken();
 
     if (!token) {
@@ -553,29 +564,40 @@ export class ProfilePage implements OnInit {
     this.showUserModal = false;
   }
 
-  notifications = [
-    {
-      title: 'New Concert Nearby!',
-      message:
-        'A new concert matching your preferences is available in Budapest.',
-      timeAgo: '2h ago',
-      read: false,
-    },
-    {
-      title: 'Ticket Price Drop!',
-      message: 'Prices dropped for Arctic Monkeys tickets!',
-      timeAgo: '1 day ago',
-      read: false,
-    },
-    {
-      title: 'New Artist in Your Favorites',
-      message: 'Billie Eilish has a new event in your region.',
-      timeAgo: '3 days ago',
-      read: false,
-    },
-  ];
+  private toTimeAgo(iso: string): string {
+    const t = new Date(iso).getTime();
+    const s = Math.floor((Date.now() - t) / 1000);
+    if (s < 60) return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24);
+    return `${d}d ago`;
+  }
 
-  unreadCount = this.notifications.filter((n) => !n.read).length;
+  private async refreshNotificationsPreview() {
+    try {
+      const rows = await this.frontendService.getNotifications(false);
+      const list = rows.map((n: any) => ({
+        id: n.id,
+        title: n.title,
+        message: n.message,
+        timeAgo: this.toTimeAgo(n.sent_date),
+        read: !!n.is_read,
+      }));
+      this.notifications = list.slice(0, 3);
+      this.unreadCount = list.filter((n) => !n.read).length;
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Failed to load notifications', err);
+    }
+  }
+
+  ionViewWillEnter() {
+    this.cdr.detectChanges();
+    this.refreshNotificationsPreview();
+  }
 
   openNotificationsPage() {
     this.router.navigate(['/tabs/profile/notifications']);
