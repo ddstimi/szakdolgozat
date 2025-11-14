@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import NotificationService from '../services/notificationService';
+import PushTokensModel from '../models/PushNotification';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -119,6 +120,78 @@ const notificationController = {
       res
         .status(500)
         .json({ success: false, message: 'Failed to create notification' });
+    }
+  }) as RequestHandler,
+
+  registerMyToken: (async (req, res): Promise<void> => {
+    const userId = getUserId(req);
+    const { token, platform } = req.body || {};
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    if (!token || !platform) {
+      res
+        .status(400)
+        .json({ success: false, message: 'token & platform required' });
+      return;
+    }
+    await PushTokensModel.upsert(userId, token, platform);
+    res.status(200).json({ success: true });
+  }) as RequestHandler,
+
+  revokeMyToken: (async (req, res): Promise<void> => {
+    const userId = getUserId(req);
+    const token = req.params.token;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    if (!token) {
+      res.status(400).json({ success: false, message: 'token required' });
+      return;
+    }
+    await PushTokensModel.revoke(userId, token);
+    res.status(200).json({ success: true });
+  }) as RequestHandler,
+
+  testMe: (async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req);
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { title, message, type, concertId } = req.body || {};
+
+    const finalTitle = title || 'Test notification 🎧';
+    const finalMessage = message || 'This is a test push + DB notification';
+    const finalType = type ? String(type) : null;
+    const finalConcertId = Number(concertId);
+
+    try {
+      const id = await NotificationService.createAndPush({
+        userId,
+        title: finalTitle,
+        message: finalMessage,
+        type: finalType,
+        concertId: finalConcertId,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          id,
+          title: finalTitle,
+          message: finalMessage,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send test notification',
+      });
     }
   }) as RequestHandler,
 };

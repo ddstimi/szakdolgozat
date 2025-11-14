@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import UserModel from '../models/User';
-import { IUser } from '../interfaces/IUser';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import SessionService from './sessionService';
@@ -15,7 +14,17 @@ interface RegisterUserData {
   password: string;
   gdpr?: boolean;
 }
-
+interface IUser {
+  id?: number;
+  name: string;
+  username: string;
+  email: string;
+  password?: string;
+  gdpr: boolean;
+  img_url?: string;
+  register_date?: Date;
+  last_login?: Date;
+}
 interface LoginResponse {
   user: Omit<IUser, 'password'>;
   token: string;

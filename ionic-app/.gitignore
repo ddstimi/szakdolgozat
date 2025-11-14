@@ -12,6 +12,10 @@ $RECYCLE.BIN/
 environment.ts
 environment.prod.ts
 
+*service-account.json
+concert-finder-27d6a-firebase-adminsdk-fbsvc-78e6768832.json
+
+
 *.log
 log.txt
 

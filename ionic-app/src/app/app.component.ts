@@ -1,20 +1,42 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet, IonHeader } from '@ionic/angular/standalone';
-import { register } from 'swiper/element/bundle';
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { IonicModule, ToastController } from '@ionic/angular';
 
-
-
-register();
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [ IonApp, IonRouterOutlet],
   standalone: true,
-    providers: [
-    provideAnimations()]
+  imports: [IonicModule],
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private toastCtrl: ToastController) {
+    this.setupPushListener();
+  }
+
+  setupPushListener() {
+    console.log('🎯 push listener active');
+    window.addEventListener('push-toast', async (ev: any) => {
+      console.log('🔥 push-toast event received', ev.detail);
+
+      const { title, body, data } = ev.detail || {};
+      const toast = await this.toastCtrl.create({
+        header: title || 'Notification',
+        message: body || '',
+        duration: 5000,
+        position: 'top',
+        buttons: [
+          {
+            text: 'Open',
+            handler: () => {
+              const link = data?.linkUrl;
+              if (link) {
+                window.location.href = link;
+              }
+            },
+          },
+        ],
+      });
+
+      toast.present();
+    });
+  }
 }

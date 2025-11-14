@@ -9,6 +9,7 @@ import { frontendService } from 'src/app/services/frontendService';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { PushService } from 'src/app/services/pushService';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -21,7 +22,8 @@ export class ProfilePage implements OnInit {
     private modalCtrl: ModalController,
     private frontendService: frontendService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private pushService: PushService
   ) {}
   predefinedPics: string[] = [
     environment.apiUrl + '/profile-pictures/hawer.jpg',
@@ -77,6 +79,7 @@ export class ProfilePage implements OnInit {
   async ngOnInit() {
     await this.refreshNotificationsPreview();
     this.cdr.detectChanges();
+    window.dispatchEvent(new CustomEvent('notif:changed'));
 
     let token = this.frontendService.getToken();
 
@@ -459,6 +462,15 @@ export class ProfilePage implements OnInit {
         this.notifyPush = Boolean(data.notifyPush);
 
         await this.savePreferences();
+        try {
+          if (this.notifyPush) {
+            await this.pushService.enablePushNotifications();
+          } else if (!this.notifyPush) {
+            await this.pushService.disablePushNotifications();
+          }
+        } catch (e) {
+          console.error('Push toggle error', e);
+        }
       }
     });
 

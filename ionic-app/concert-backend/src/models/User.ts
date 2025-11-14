@@ -1,7 +1,5 @@
-import { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
-import { IUser } from '../interfaces/IUser';
-import { UserInfo } from 'os';
 
 interface CreateUserData {
   name: string;
@@ -14,6 +12,17 @@ interface CountRow extends RowDataPacket {
   count: number;
 }
 
+interface IUser {
+  id?: number;
+  name: string;
+  username: string;
+  email: string;
+  password?: string;
+  gdpr: boolean;
+  img_url?: string;
+  register_date?: Date;
+  last_login?: Date;
+}
 interface userProfile {
   id: number;
   username: string;

@@ -12,6 +12,18 @@ router.get(
 );
 router.patch('/:id/read', authenticateJWT, notificationController.markRead);
 
+router.post(
+  '/push-tokens',
+  authenticateJWT,
+  notificationController.registerMyToken
+);
+router.delete(
+  '/push-tokens/:token',
+  authenticateJWT,
+  notificationController.revokeMyToken
+);
+
 router.post('/', /* adminMiddleware?, */ notificationController.create);
+router.post('/test-me', authenticateJWT, notificationController.testMe);
 
 export default router;

@@ -28,13 +28,16 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              }
-            ],
+"assets": [
+  "src/favicon.ico",
+  "src/assets",
+  "src/manifest.webmanifest",
+  {
+    "glob": "firebase-messaging-sw.js",
+    "input": "src",
+    "output": "/"
+  }
+],
             "styles": ["src/global.scss", "src/theme/variables.scss", "src/assets/ionicons/ionicons.min.css"],
             "scripts": [],
             "browser": "src/main.ts"
