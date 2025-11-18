@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicModule, ToastController } from '@ionic/angular';
-
+import { PushService } from './services/pushService';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -8,8 +8,12 @@ import { IonicModule, ToastController } from '@ionic/angular';
   templateUrl: 'app.component.html',
 })
 export class AppComponent {
-  constructor(private toastCtrl: ToastController) {
+  constructor(
+    private toastCtrl: ToastController,
+    private PushService: PushService
+  ) {
     this.setupPushListener();
+    this.PushService.startJobPolling(60_000);
   }
 
   setupPushListener() {
@@ -25,18 +29,19 @@ export class AppComponent {
         position: 'top',
         buttons: [
           {
-            text: 'Open',
-            handler: () => {
-              const link = data?.linkUrl;
-              if (link) {
-                window.location.href = link;
-              }
-            },
+            icon: 'close',
+            role: 'cancel',
           },
         ],
       });
 
       toast.present();
     });
+  }
+  ngOnDestroy(): void {
+    if (this.toastCtrl) {
+      window.removeEventListener('push-toast', this.toastCtrl as any);
+    }
+    this.PushService.stopJobPolling();
   }
 }

@@ -13,15 +13,18 @@ const PushService = {
   async sendToUser(userId: number, payload: PushPayload): Promise<void> {
     const tokens = await PushTokensModel.listActiveTokensByUserId(userId);
     if (!tokens.length) {
-      console.log('⚠ No active tokens for user', userId);
+      console.log('No active tokens for user', userId);
       return;
     }
 
-    console.log('🚀 Sending push to tokens:', tokens);
+    console.log('Sending push to tokens:', tokens);
 
     const resp = await messaging().sendEachForMulticast({
       tokens,
-      // **IMPORTANT**: data-only message
+      notification: {
+        title: payload.title,
+        body: payload.body,
+      },
       data: {
         title: payload.title,
         body: payload.body,
@@ -32,7 +35,7 @@ const PushService = {
     });
 
     console.log(
-      '📦 FCM sendEachForMulticast result:',
+      'FCM sendEachForMulticast result:',
       'success:',
       resp.successCount,
       'failure:',
@@ -42,7 +45,7 @@ const PushService = {
     resp.responses.forEach((r, i) => {
       if (!r.success) {
         console.error(
-          '❌ FCM send error for token',
+          'FCM send error for token',
           tokens[i],
           r.error?.code,
           r.error?.message
@@ -62,8 +65,9 @@ const PushService = {
         }
       }
     });
+
     if (bad.length) {
-      console.log('🧹 Pruning invalid tokens:', bad);
+      console.log('Pruning invalid tokens:', bad);
       await PushTokensModel.pruneInvalid(bad);
     }
   },
