@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ModalController, IonicModule } from '@ionic/angular';
@@ -49,10 +49,17 @@ export class LoginPage implements OnInit {
 
   stayLoggedIn = false;
 
-  async onRegister() {
-    if (this.registerData.password !== this.registerData.confirmPassword) {
-      return alert("Passwords don't match");
+  async onRegister(registerForm: NgForm) {
+    if (registerForm.invalid) {
+      registerForm.form.markAllAsTouched();
+      return;
     }
+
+    if (this.registerData.password !== this.registerData.confirmPassword) {
+      alert("Passwords don't match");
+      return;
+    }
+
     this.isLoading = true;
 
     try {
@@ -63,14 +70,29 @@ export class LoginPage implements OnInit {
         )
       );
       this.isSignUp = false;
-    } catch (err) {
+      registerForm.resetForm({
+        name: '',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        gdpr: false,
+      });
+    } catch (err: any) {
       console.error('Registration failed', err);
+      alert(
+        err.error?.message ||
+          'Registration failed. Please check your data and try again.'
+      );
+    } finally {
+      this.isLoading = false;
     }
   }
 
-  async onLogin() {
-    if (!this.loginData.username || !this.loginData.password) {
-      return alert('Please provide username and password');
+  async onLogin(loginForm: NgForm) {
+    if (loginForm.invalid) {
+      loginForm.form.markAllAsTouched();
+      return;
     }
 
     this.isLoading = true;
@@ -82,7 +104,6 @@ export class LoginPage implements OnInit {
         this.loginData.password,
         this.stayLoggedIn
       );
-
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       await this.router.navigate(['/tabs/home'], {
@@ -92,7 +113,9 @@ export class LoginPage implements OnInit {
 
       setTimeout(() => {
         const loginPage = document.querySelector('app-login');
-        if (loginPage) loginPage.remove();
+        if (loginPage) {
+          loginPage.remove();
+        }
       }, 300);
     } catch (error: any) {
       console.error('Login failed', error);

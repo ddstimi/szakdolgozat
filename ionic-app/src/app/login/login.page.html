@@ -5,7 +5,7 @@
 
       <ion-card class="form-card sign-in-card">
         <h1>Sign in</h1>
-        <form (ngSubmit)="onLogin()">
+        <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="loginData.username"
@@ -14,10 +14,18 @@
               labelPlacement="floating"
               placeholder="Username"
               required
+              minlength="3"
+              #loginUsername="ngModel"
             >
               <div slot="label">Username</div>
             </ion-input>
           </ion-item>
+          <ion-note
+            color="danger"
+            *ngIf="loginUsername.invalid && (loginUsername.dirty || loginUsername.touched)"
+          >
+            Username is required (min 3 characters)
+          </ion-note>
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="loginData.password"
@@ -27,10 +35,17 @@
               placeholder="Password"
               type="password"
               required
+              #loginPassword="ngModel"
             >
               <div slot="label">Password</div>
             </ion-input>
           </ion-item>
+          <ion-note
+            color="danger"
+            *ngIf="loginPassword.invalid && (loginPassword.dirty || loginPassword.touched)"
+          >
+            Password is required (min 8 characters)
+          </ion-note>
           <ion-button
             fill="outline"
             class="glow-blue"
@@ -64,7 +79,7 @@
 
       <ion-card class="form-card sign-up-card">
         <h1>Sign up</h1>
-        <form (ngSubmit)="onRegister()">
+        <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="registerData.name"
@@ -72,10 +87,19 @@
               label="Name"
               labelPlacement="floating"
               placeholder="Name"
+              required
+              minlength="3"
+              #regName="ngModel"
             >
-              <div slot="label">Username</div>
+              <div slot="label">Name</div>
             </ion-input>
           </ion-item>
+          <ion-note
+            color="danger"
+            *ngIf="regName.invalid && (regName.dirty || regName.touched)"
+          >
+            Name is required (min 3 characters)
+          </ion-note>
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="registerData.username"
@@ -83,10 +107,19 @@
               label="Username"
               labelPlacement="floating"
               placeholder="Username"
+              required
+              minlength="3"
+              #regUsername="ngModel"
             >
               <div slot="label">Username</div>
             </ion-input>
           </ion-item>
+          <ion-note
+            color="danger"
+            *ngIf="regUsername.invalid && (regUsername.dirty || regUsername.touched)"
+          >
+            Username is required (min 3 characters)
+          </ion-note>
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="registerData.email"
@@ -95,9 +128,19 @@
               labelPlacement="floating"
               placeholder="Email address"
               type="email"
+              required
+              email
+              #regEmail="ngModel"
             >
               <div slot="label">Email</div>
             </ion-input>
+
+            <ion-note
+              color="danger"
+              *ngIf="regEmail.invalid && (regEmail.dirty || regEmail.touched)"
+            >
+              Enter a valid email address
+            </ion-note>
           </ion-item>
           <ion-item lines="solid">
             <ion-input
@@ -108,10 +151,21 @@
               placeholder="Password"
               type="password"
               id="pwd"
+              required
+              minlength="8"
+              maxlength="20"
+              #regPassword="ngModel"
             >
               <div slot="label">Password</div>
             </ion-input>
           </ion-item>
+          <ion-note
+            color="danger"
+            *ngIf="regPassword.invalid && (regPassword.dirty || regPassword.touched)"
+          >
+            Password must be 8–20 characters
+          </ion-note>
+
           <ion-item lines="solid">
             <ion-input
               [(ngModel)]="registerData.confirmPassword"
@@ -121,15 +175,47 @@
               placeholder="Confirm Password"
               type="password"
               id="pwd"
+              required
+              minlength="8"
+              maxlength="20"
+              #regConfirmPassword="ngModel"
             >
               <div slot="label">Confirm Password</div>
             </ion-input>
           </ion-item>
-          <ion-checkbox [(ngModel)]="registerData.gdpr" name="gdpr"
+          <ion-note
+            color="danger"
+            *ngIf="
+      (regConfirmPassword.dirty || regConfirmPassword.touched) &&
+      registerData.password !== registerData.confirmPassword
+    "
+          >
+            Passwords do not match
+          </ion-note>
+          <ion-checkbox
+            [(ngModel)]="registerData.gdpr"
+            name="gdpr"
+            required
+            #gdprCtrl="ngModel"
             >I agree to the
             <a href="#" (click)="openGDPR()">Terms of GDPR</a></ion-checkbox
           >
-          <ion-button type="submit" fill="outline" class="glow-blue"
+          <ion-note
+            color="danger"
+            *ngIf="registerData.gdpr === false && (gdprCtrl.dirty || gdprCtrl.touched)"
+          >
+            You must accept GDPR to continue
+          </ion-note>
+          <ion-button
+            type="submit"
+            fill="outline"
+            class="glow-blue"
+            [disabled]="
+    isLoading ||
+    registerForm.invalid ||
+    registerData.password !== registerData.confirmPassword ||
+    !registerData.gdpr
+  "
             >Sign Up</ion-button
           >
           <h5>Or</h5>
