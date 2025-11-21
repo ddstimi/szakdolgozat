@@ -14,7 +14,6 @@
               labelPlacement="floating"
               placeholder="Username"
               required
-              minlength="3"
               #loginUsername="ngModel"
             >
               <div slot="label">Username</div>
@@ -24,7 +23,7 @@
             color="danger"
             *ngIf="loginUsername.invalid && (loginUsername.dirty || loginUsername.touched)"
           >
-            Username is required (min 3 characters)
+            Username is required
           </ion-note>
           <ion-item lines="solid">
             <ion-input

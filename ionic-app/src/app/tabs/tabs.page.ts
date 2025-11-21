@@ -94,6 +94,17 @@ export class TabsPage implements OnInit {
       this.router.navigate(['/tabs/search']);
     }
   }
+
+  onSearchCommit(event: any) {
+    const value = (event.detail?.value || '').trim();
+
+    if (!value || value.length < 5) {
+      return;
+    }
+
+    this.searchService.saveToHistory(value);
+  }
+
   async ionViewWillEnter() {
     if (this.frontendService.isLoggedIn()) await this.refreshCounts();
     this.cd.detectChanges();

@@ -1,4 +1,10 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  ChangeDetectorRef,
+  OnDestroy,
+} from '@angular/core';
 import {
   IonContent,
   IonChip,
@@ -35,7 +41,7 @@ import { ConcertDetailsPage } from '../concert-details/concert-details.page';
   ],
   providers: [ModalController],
 })
-export class SearchPage implements OnInit {
+export class SearchPage implements OnInit, OnDestroy {
   concerts: Concert[] = [];
   filteredResults: Concert[] = [];
   selectedCity = '';
@@ -43,6 +49,7 @@ export class SearchPage implements OnInit {
   recentSearches: string[] = [];
   searchQuery: string = '';
   private querySub?: Subscription;
+  private historySub?: Subscription;
   cities: string[] = [];
   genres: string[] = [];
   userAttendingConcerts: number[] = [];
@@ -61,6 +68,7 @@ export class SearchPage implements OnInit {
 
     this.concerts = await this.frontendService.getUpcomingConcerts();
     this.loggedIn = this.frontendService.isLoggedIn();
+
     if (this.loggedIn) {
       this.userAttendingConcerts = (
         await this.frontendService.getUpcomingByUser()
@@ -68,24 +76,23 @@ export class SearchPage implements OnInit {
     }
 
     this.concerts.forEach((c) => {
-      if (c.image) {
-        c.image = `${environment.apiUrl}${c.image}`;
-      }
+      if (c.image) c.image = `${environment.apiUrl}${c.image}`;
       c.is_attending = this.userAttendingConcerts.includes(c.id);
     });
+
     this.filteredResults = [...this.concerts];
+
     const citySet = new Set<string>();
     const genreSet = new Set<string>();
+
     this.concerts.forEach((c) => {
       if (c.city_name) citySet.add(c.city_name);
-      if (c.genre) {
-        for (const g of c.genre.split(',')) {
-          genreSet.add(g.trim());
-        }
-      }
+      if (c.genre) c.genre.split(',').forEach((g) => genreSet.add(g.trim()));
     });
+
     this.cities = Array.from(citySet).sort();
     this.genres = Array.from(genreSet).sort();
+
     this.querySub = this.searchService.currentQuery$.subscribe((query) => {
       this.ngZone.run(() => {
         this.searchQuery = query || '';
@@ -93,10 +100,26 @@ export class SearchPage implements OnInit {
       });
     });
 
+    this.historySub = this.searchService.history$.subscribe((history) => {
+      this.ngZone.run(() => {
+        this.recentSearches = history;
+        this.cd.detectChanges();
+      });
+    });
+
+    if (this.loggedIn) {
+      this.searchService.loadHistory();
+    }
+
     const initialQuery = this.searchService.getCurrentQuery();
     if (initialQuery) {
       this.ngZone.run(() => this.applyFilter(initialQuery));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.querySub?.unsubscribe();
+    this.historySub?.unsubscribe();
   }
 
   applyFilter(query: string) {
@@ -118,6 +141,7 @@ export class SearchPage implements OnInit {
 
     this.cd.detectChanges();
   }
+
   onFilterChange() {
     this.applyFilter(this.searchQuery);
   }
@@ -154,8 +178,12 @@ export class SearchPage implements OnInit {
         this.cd.detectChanges();
       }
     });
-    this.cd.detectChanges();
 
+    this.cd.detectChanges();
     await modal.present();
+  }
+
+  useRecentSearch(query: string) {
+    this.searchService.setQuery(query);
   }
 }

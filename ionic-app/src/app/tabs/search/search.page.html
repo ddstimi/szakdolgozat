@@ -2,7 +2,10 @@
   <div id="container">
     <div class="search-wrapper">
       <div class="recent-searches" *ngIf="recentSearches.length">
-        <ion-chip *ngFor="let item of recentSearches">
+        <ion-chip
+          *ngFor="let item of recentSearches"
+          (click)="useRecentSearch(item)"
+        >
           <ion-label>{{ item }}</ion-label>
         </ion-chip>
       </div>

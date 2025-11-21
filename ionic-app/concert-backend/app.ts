@@ -9,6 +9,7 @@ import preferencesRoutes from './src/routes/preferencesRoutes';
 import eventStatisticRoutes from './src/routes/eventStatisticsRoutes';
 import concertRoutes from './src/routes/concertRoutes';
 import notificationRoutes from './src/routes/notificationRoutes';
+import searchRoutes from './src/routes/searchRoutes';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/event-statistics', eventStatisticRoutes);
 app.use('/api/concerts', concertRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/search-history', searchRoutes);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
