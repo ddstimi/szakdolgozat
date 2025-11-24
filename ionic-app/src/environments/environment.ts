@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   googleClientId:
     '413636504400-i4ft6hbngklp9juman43te2vkmouatdg.apps.googleusercontent.com',
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://172.30.3.61:3000',
   firebase: {
     apiKey: 'AIzaSyCkj3IuSS5Xuq7NQ38vc1fL5kw-VmQa03s',
     authDomain: 'concert-finder-27d6a.firebaseapp.com',

@@ -282,6 +282,15 @@ ion-infinite-scroll {
   ion-tab-button {
     z-index: 7;
   }
+
+  ion-tabs {
+    --margin-bottom: 10rem !important;
+    margin-bottom: 10rem !important;
+  }
+  #tabs {
+    margin-bottom: 10rem !important;
+    --margin-bottom: 10rem !important;
+  }
 }
 
 .hollow {

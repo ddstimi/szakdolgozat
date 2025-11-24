@@ -22,22 +22,15 @@ export class PushService {
   private _messaging: Messaging | null = null;
   private _foregroundListenerAttached = false;
 
-  // ▶️ toast queue for 10s spacing
   private toastQueue: ToastItem[] = [];
   private toastTimer: any | null = null;
   private toastActive = false;
 
-  // ▶️ optional polling for runNotificationJobs
   private jobPollingId: any | null = null;
 
   constructor(private http: HttpClient) {
-    // attach foreground listener as early as possible
     this.initForegroundListener();
   }
-
-  // ──────────────────────────────────────────────
-  // Firebase / messaging init
-  // ──────────────────────────────────────────────
 
   private async ensureMessaging(): Promise<Messaging | null> {
     if (!(await isSupported())) {
@@ -75,7 +68,6 @@ export class PushService {
       const title = data.title || payload.notification?.title || 'Notification';
       const body = data.body || payload.notification?.body || '';
 
-      // still try native browser notification (no throttling needed here)
       try {
         if (Notification.permission === 'granted') {
           new Notification(title, { body });
@@ -84,19 +76,12 @@ export class PushService {
         console.warn('Browser Notification failed:', e);
       }
 
-      // ⬇️ Instead of dispatching push-toast immediately,
-      //    put it in the queue so that toasts show 10s apart
       this.enqueueToast({ title, body, data });
     });
   }
 
-  // ──────────────────────────────────────────────
-  // Toast queue (10s gap logic)
-  // ──────────────────────────────────────────────
-
   private enqueueToast(item: ToastItem): void {
     this.toastQueue.push(item);
-    // if nothing is running, start immediately with first toast
     if (!this.toastActive && !this.toastTimer) {
       this.processNextToast();
     }
@@ -112,25 +97,20 @@ export class PushService {
     this.toastActive = true;
     const next = this.toastQueue.shift()!;
 
-    const ev = new CustomEvent('push-toast', {
+    const event = new CustomEvent('push-toast', {
       detail: {
         title: next.title,
         body: next.body,
         data: next.data,
       },
     });
-    window.dispatchEvent(ev);
+    window.dispatchEvent(event);
 
-    // schedule the next toast in 10 seconds
     this.toastTimer = setTimeout(() => {
       this.toastActive = false;
       this.processNextToast();
     }, 10_000);
   }
-
-  // ──────────────────────────────────────────────
-  // Token + enable / disable push
-  // ──────────────────────────────────────────────
 
   private getAuthToken(): string | null {
     return localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -214,10 +194,6 @@ export class PushService {
     localStorage.removeItem('fcm_token');
   }
 
-  // ──────────────────────────────────────────────
-  // Run notification jobs (trigger backend)
-  // ──────────────────────────────────────────────
-
   async runNotificationJobs(): Promise<void> {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -239,11 +215,9 @@ export class PushService {
     }
   }
 
-  // optional helper: poll runNotificationJobs every N ms
   startJobPolling(intervalMs = 60_000): void {
     if (this.jobPollingId) return;
     this.jobPollingId = setInterval(() => {
-      // fire and forget; errors logged inside runNotificationJobs()
       void this.runNotificationJobs();
     }, intervalMs);
   }
