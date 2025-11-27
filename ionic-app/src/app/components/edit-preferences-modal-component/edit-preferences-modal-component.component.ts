@@ -62,6 +62,11 @@ export class EditPreferencesModalComponent {
   @Input() availableGenres: { id: number; name: string }[] = [];
   @Input() availableVenues: { id: number; name: string }[] = [];
 
+  filteredGenres: { id: number; name: string }[] = [];
+  filteredLocations: { id: number; name: string }[] = [];
+  filteredArtists: { id: number; name: string }[] = [];
+  filteredVenues: { id: number; name: string }[] = [];
+
   @Output() preferencesUpdated = new EventEmitter<{
     genres: number[];
     locations: number[];
@@ -245,5 +250,62 @@ export class EditPreferencesModalComponent {
     if (!this.availableLocations) return 'Loading...';
     const location = this.availableLocations.find((l) => l.id === id);
     return location?.name || `Location ${id}`;
+  }
+
+  onInputChange(type: PreferenceType, event: any) {
+    const value: string = (event?.detail?.value || '').toLowerCase();
+    this.setSelectedValue(type, event?.detail?.value || '');
+
+    if (!value.trim()) {
+      this.setFilteredOptions(type, []);
+      return;
+    }
+
+    const available = this.getAvailableOptions(type);
+    const filtered = available
+      .filter((opt) => opt.name.toLowerCase().includes(value))
+      .slice(0, 3);
+
+    this.setFilteredOptions(type, filtered);
+  }
+
+  selectSuggestion(type: PreferenceType, option: { id: number; name: string }) {
+    this.setSelectedValue(type, option.name);
+    this.setFilteredOptions(type, []);
+  }
+
+  private getAvailableOptions(
+    type: PreferenceType
+  ): { id: number; name: string }[] {
+    switch (type) {
+      case 'genres':
+        return this.availableGenres || [];
+      case 'locations':
+        return this.availableLocations || [];
+      case 'artists':
+        return this.availableArtists || [];
+      case 'venues':
+        return this.availableVenues || [];
+    }
+  }
+
+  private setFilteredOptions(
+    type: PreferenceType,
+    options: { id: number; name: string }[]
+  ) {
+    switch (type) {
+      case 'genres':
+        this.filteredGenres = options;
+        break;
+      case 'locations':
+        this.filteredLocations = options;
+        break;
+      case 'artists':
+        this.filteredArtists = options;
+        break;
+      case 'venues':
+        this.filteredVenues = options;
+        break;
+    }
   }
 }

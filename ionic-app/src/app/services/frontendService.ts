@@ -51,6 +51,14 @@ export class frontendService {
       throw error;
     }
   }
+
+  async loginWithGoogleResponse(
+    response: any,
+    stayLoggedIn: boolean
+  ): Promise<void> {
+    await this.setSession(response, stayLoggedIn);
+  }
+
   async getUserData() {
     try {
       const headers = new HttpHeaders().set(
@@ -142,12 +150,17 @@ export class frontendService {
       throw error;
     }
   }
-
   async refreshAccessToken(): Promise<string | null> {
-    const refreshToken = sessionStorage.getItem('refresh_token');
-    if (!localStorage.getItem('user')) {
+    const storedUser =
+      localStorage.getItem('user') || sessionStorage.getItem('user');
+    if (!storedUser) {
       return null;
     }
+
+    const refreshTokenLocal = localStorage.getItem('refresh_token');
+    const refreshTokenSession = sessionStorage.getItem('refresh_token');
+    const refreshToken = refreshTokenLocal || refreshTokenSession;
+    const useLocal = !!refreshTokenLocal;
 
     if (!refreshToken) {
       return null;
@@ -162,7 +175,11 @@ export class frontendService {
       console.log('Sending refresh token:', refreshToken);
       console.log('try token refresh', res);
       if (res.token) {
-        localStorage.setItem('token', res.token);
+        if (useLocal) {
+          localStorage.setItem('token', res.token);
+        } else {
+          sessionStorage.setItem('token', res.token);
+        }
         return res.token;
       }
       return null;

@@ -92,11 +92,14 @@ const UserController = {
     }
 
     try {
-      const { user, token } = await UserService.handleGoogleAuth(credential);
+      const { user, token, refreshToken } = await UserService.handleGoogleAuth(
+        credential
+      );
       return res.status(200).json({
         message: 'Google sign-in successful!',
         user,
         token,
+        refreshToken,
       });
     } catch (error: any) {
       console.error(error);

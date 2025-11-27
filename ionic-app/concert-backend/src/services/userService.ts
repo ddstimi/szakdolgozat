@@ -1,10 +1,11 @@
 import bcrypt from 'bcryptjs';
-import UserModel from '../models/User';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
-import SessionService from './sessionService';
-const client = new OAuth2Client(process.env['GOOGLE_CLIENT_ID']);
 
+import UserModel from '../models/User';
+import SessionService from './sessionService';
+
+const client = new OAuth2Client(process.env['GOOGLE_CLIENT_ID']);
 const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
 
 interface RegisterUserData {
@@ -14,6 +15,7 @@ interface RegisterUserData {
   password: string;
   gdpr?: boolean;
 }
+
 interface IUser {
   id?: number;
   name: string;
@@ -25,13 +27,19 @@ interface IUser {
   register_date?: Date;
   last_login?: Date;
 }
-interface LoginResponse {
+
+interface BaseAuthResponse {
   user: Omit<IUser, 'password'>;
   token: string;
 }
 
+interface LoginResponse extends BaseAuthResponse {
+  refreshToken: string;
+}
+
 class CustomError extends Error {
   statusCode: number;
+
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
@@ -43,38 +51,30 @@ const UserService = {
   registerUser: async (userData: RegisterUserData): Promise<number> => {
     const { name, username, email, password, gdpr } = userData;
 
-    const usernameExists = await UserModel.usernameExists(username);
-    if (usernameExists) {
+    if (await UserModel.usernameExists(username)) {
       throw new CustomError('Username already exists.', 409);
     }
 
-    const emailExists = await UserModel.emailExists(email);
-    if (emailExists) {
+    if (await UserModel.emailExists(email)) {
       throw new CustomError('Email already exists.', 409);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const userId = await UserModel.createUser({
+    return UserModel.createUser({
       name,
       username,
       email,
       hashedPassword,
       gdpr: gdpr || false,
     });
-
-    return userId;
   },
 
   loginUser: async (
     username: string,
     password: string,
     stayLoggedIn = false
-  ): Promise<{
-    user: Omit<IUser, 'password'>;
-    token: string;
-    refreshToken: string;
-  }> => {
+  ): Promise<LoginResponse> => {
     const user = await UserModel.findByUsername(username);
     if (!user || !user.password) {
       throw new CustomError('Invalid credentials', 401);
@@ -86,14 +86,15 @@ const UserService = {
     }
 
     await UserModel.updateLastLogin(user.id as number);
-    const { password: _, ...userDataWithoutPassword } = user;
+
+    const { password: _, ...userData } = user;
 
     const { token, refreshToken } = SessionService.createTokens(
       user,
       stayLoggedIn
     );
 
-    return { user: userDataWithoutPassword, token, refreshToken };
+    return { user: userData, token, refreshToken };
   },
 
   handleGoogleAuth: async (credential: string): Promise<LoginResponse> => {
@@ -122,29 +123,22 @@ const UserService = {
         gdpr: true,
       });
       user = await UserModel.findById(userId);
-
       if (!user) {
-        throw new CustomError(
-          'Failed to create user after Google authentication.',
-          500
-        );
+        throw new CustomError('User creation failed.', 500);
       }
     }
 
-    if (user.id === undefined) {
-      throw new CustomError('User ID is missing.', 500);
+    if (!user.id) {
+      throw new CustomError('User ID missing.', 500);
     }
+
     await UserModel.updateLastLogin(user.id);
 
-    const { password: _, ...userDataWithoutPassword } = user;
+    const { password: _, ...userData } = user;
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const { token, refreshToken } = SessionService.createTokens(user, true);
 
-    return { user: userDataWithoutPassword, token };
+    return { user: userData, token, refreshToken };
   },
 
   updateUser: async (
@@ -156,24 +150,22 @@ const UserService = {
       username?: string;
       gdpr?: boolean;
     }
-  ): Promise<LoginResponse> => {
-    const { name, email, password, username, gdpr } = updateData;
-
+  ): Promise<BaseAuthResponse> => {
     const updatedFields: any = {};
 
-    if (name !== undefined) updatedFields.name = name;
-    if (email !== undefined) updatedFields.email = email;
-    if (username !== undefined) updatedFields.username = username;
-    if (gdpr !== undefined) updatedFields.gdpr = gdpr;
+    if (updateData.name !== undefined) updatedFields.name = updateData.name;
+    if (updateData.email !== undefined) updatedFields.email = updateData.email;
+    if (updateData.username !== undefined)
+      updatedFields.username = updateData.username;
+    if (updateData.gdpr !== undefined) updatedFields.gdpr = updateData.gdpr;
 
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      updatedFields.password = hashedPassword;
+    if (updateData.password) {
+      updatedFields.password = await bcrypt.hash(updateData.password, 10);
     }
 
     const updatedUser = await UserModel.updateUserInfo(userId, updatedFields);
 
-    const { password: _, ...userDataWithoutPassword } = updatedUser;
+    const { password: _, ...userData } = updatedUser;
 
     const token = jwt.sign(
       {
@@ -185,24 +177,28 @@ const UserService = {
       { expiresIn: '1h' }
     );
 
-    return { user: userDataWithoutPassword, token };
+    return { user: userData, token };
   },
+
   updateUserPic: async (
     userId: string,
     imgUrl: string
-  ): Promise<LoginResponse> => {
+  ): Promise<BaseAuthResponse> => {
     const updated = await UserModel.updateUserPic(parseInt(userId, 10), imgUrl);
-    if (!updated) throw new CustomError('User not found', 404);
+    if (!updated) {
+      throw new CustomError('User not found', 404);
+    }
 
-    const user = {
+    const user: Omit<IUser, 'password'> = {
       id: updated.id,
       username: updated.username,
       email: updated.email,
       img_url: updated.img_url,
-      gdpr: updated.gdpr ?? undefined,
-      register_date: updated.register_date ?? undefined,
-      last_login: updated.last_login ?? undefined,
-    } as Omit<IUser, 'password'>;
+      gdpr: updated.gdpr ?? false,
+      register_date: updated.register_date,
+      last_login: updated.last_login,
+      name: updated.name,
+    };
 
     const token = jwt.sign(
       { id: updated.id, username: updated.username, email: updated.email },
@@ -212,16 +208,19 @@ const UserService = {
 
     return { user, token };
   },
+
   attendConcert: async (
     userId: number,
     concertId: number
   ): Promise<{ attending: boolean }> => {
     const user = await UserModel.findById(userId);
-    if (!user) throw new CustomError('User not found', 404);
+    if (!user) {
+      throw new CustomError('User not found', 404);
+    }
 
-    const isAttending = await UserModel.isAttendingConcert(userId, concertId);
+    const attending = await UserModel.isAttendingConcert(userId, concertId);
 
-    if (isAttending) {
+    if (attending) {
       await UserModel.removeAttendance(userId, concertId);
       return { attending: false };
     } else {

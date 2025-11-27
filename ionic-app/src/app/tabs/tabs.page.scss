@@ -26,6 +26,12 @@ ion-badge {
     }
 }
 
+@media (max-width: 640px) {
+    ion-searchbar {
+        margin-top: 1rem;
+    }
+}
+
 ion-searchbar {
     margin-left: auto;
     margin-right: 1rem;

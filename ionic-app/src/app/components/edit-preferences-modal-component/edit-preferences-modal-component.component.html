@@ -9,8 +9,9 @@
             color="primary"
             shape="round"
             (click)="closeModal()"
-            >Close</ion-button
           >
+            Close
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -21,11 +22,23 @@
         <ion-input
           [(ngModel)]="selectedArtist"
           placeholder="e.g., 30y"
+          (ionInput)="onInputChange('artists', $event)"
         ></ion-input>
       </ion-item>
-      <ion-button class="glow" expand="block" (click)="add('artists')"
-        >Add Artist</ion-button
-      >
+
+      <ion-list *ngIf="filteredArtists.length" class="autocomplete-list">
+        <ion-item
+          button
+          *ngFor="let artist of filteredArtists"
+          (click)="selectSuggestion('artists', artist)"
+        >
+          {{ artist.name }}
+        </ion-item>
+      </ion-list>
+
+      <ion-button class="glow" expand="block" (click)="add('artists')">
+        Add Artist
+      </ion-button>
 
       <ion-item>
         <ion-label>Selected Artists</ion-label>
@@ -39,17 +52,31 @@
           </ion-chip>
         </div>
       </ion-item>
+
       <hr class="section-divider" />
+
       <ion-item>
         <ion-label position="stacked">Add Preferred Genres</ion-label>
         <ion-input
           [(ngModel)]="selectedGenre"
           placeholder="e.g., Rock"
+          (ionInput)="onInputChange('genres', $event)"
         ></ion-input>
       </ion-item>
-      <ion-button class="glow" expand="block" (click)="add('genres')"
-        >Add Genre</ion-button
-      >
+
+      <ion-list *ngIf="filteredGenres.length" class="autocomplete-list">
+        <ion-item
+          button
+          *ngFor="let genre of filteredGenres"
+          (click)="selectSuggestion('genres', genre)"
+        >
+          {{ genre.name }}
+        </ion-item>
+      </ion-list>
+
+      <ion-button class="glow" expand="block" (click)="add('genres')">
+        Add Genre
+      </ion-button>
 
       <ion-item>
         <ion-label>Selected Genres</ion-label>
@@ -63,6 +90,7 @@
           </ion-chip>
         </div>
       </ion-item>
+
       <hr class="section-divider" />
 
       <ion-item>
@@ -70,11 +98,23 @@
         <ion-input
           [(ngModel)]="selectedVenue"
           placeholder="e.g., Jate Club"
+          (ionInput)="onInputChange('venues', $event)"
         ></ion-input>
       </ion-item>
-      <ion-button class="glow" expand="block" (click)="add('venues')"
-        >Add Venue</ion-button
-      >
+
+      <ion-list *ngIf="filteredVenues.length" class="autocomplete-list">
+        <ion-item
+          button
+          *ngFor="let venue of filteredVenues"
+          (click)="selectSuggestion('venues', venue)"
+        >
+          {{ venue.name }}
+        </ion-item>
+      </ion-list>
+
+      <ion-button class="glow" expand="block" (click)="add('venues')">
+        Add Venue
+      </ion-button>
 
       <ion-item>
         <ion-label>Selected Venues</ion-label>
@@ -88,17 +128,31 @@
           </ion-chip>
         </div>
       </ion-item>
+
       <hr class="section-divider" />
+
       <ion-item>
         <ion-label position="stacked">Add Preferred Cities</ion-label>
         <ion-input
           [(ngModel)]="selectedLocation"
           placeholder="e.g., Szeged"
+          (ionInput)="onInputChange('locations', $event)"
         ></ion-input>
       </ion-item>
-      <ion-button class="glow" expand="block" (click)="add('locations')"
-        >Add City</ion-button
-      >
+
+      <ion-list *ngIf="filteredLocations.length" class="autocomplete-list">
+        <ion-item
+          button
+          *ngFor="let location of filteredLocations"
+          (click)="selectSuggestion('locations', location)"
+        >
+          {{ location.name }}
+        </ion-item>
+      </ion-list>
+
+      <ion-button class="glow" expand="block" (click)="add('locations')">
+        Add City
+      </ion-button>
 
       <ion-item>
         <ion-label>Selected Cities</ion-label>
@@ -112,6 +166,7 @@
           </ion-chip>
         </div>
       </ion-item>
+
       <hr class="section-divider" />
 
       <hr class="section-divider" />
@@ -217,8 +272,8 @@
       </ion-item>
     </ion-list>
 
-    <ion-button expand="block" class="glow" (click)="savePrefs()"
-      >Save Preferences</ion-button
-    >
+    <ion-button expand="block" class="glow" (click)="savePrefs()">
+      Save Preferences
+    </ion-button>
   </div>
 </ion-content>

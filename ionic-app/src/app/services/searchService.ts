@@ -1,8 +1,8 @@
-// src/app/services/searchService.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { frontendService } from 'src/app/services/frontendService';
 
 interface SearchHistoryResponse {
   success: boolean;
@@ -18,7 +18,10 @@ export class SearchService {
   private historySource = new BehaviorSubject<string[]>([]);
   history$ = this.historySource.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private frontendService: frontendService
+  ) {
     this.id = Math.random();
   }
 
@@ -33,39 +36,59 @@ export class SearchService {
 
   saveToHistory(raw: string) {
     const query = (raw || '').trim();
-
-    if (!query || query.length < 5) {
-      return;
-    }
-
+    if (!query || query.length < 5) return;
     const current = this.historySource.getValue();
     if (current.length && current[0].toLowerCase() === query.toLowerCase()) {
       return;
     }
-
-    this.addToHistory(query);
+    void this.addToHistory(query);
   }
 
-  loadHistory() {
-    this.http
-      .get<SearchHistoryResponse>(`${environment.apiUrl}/api/search-history`)
-      .subscribe({
-        next: (res) => {
-          if (!res.success || !res.data) {
-            return;
-          }
+  async loadHistory(): Promise<void> {
+    let token = this.frontendService.getToken();
+    if (!token) return;
 
+    try {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      const res = await firstValueFrom(
+        this.http.get<SearchHistoryResponse>(
+          `${environment.apiUrl}/api/search-history`,
+          { headers }
+        )
+      );
+
+      if (!res.success || !res.data) return;
+      const queries = res.data.map((r) => r.query).filter((q) => !!q);
+      this.historySource.next(queries);
+    } catch (error: any) {
+      if (
+        error.status === 401 ||
+        error.error?.message === 'TokenExpiredError'
+      ) {
+        const newToken = await this.frontendService.refreshAccessToken();
+        if (!newToken) return;
+
+        try {
+          const headers = new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${newToken}`
+          );
+          const res = await firstValueFrom(
+            this.http.get<SearchHistoryResponse>(
+              `${environment.apiUrl}/api/search-history`,
+              { headers }
+            )
+          );
+
+          if (!res.success || !res.data) return;
           const queries = res.data.map((r) => r.query).filter((q) => !!q);
-
           this.historySource.next(queries);
-        },
-        error: (err) => {
-          console.error('Failed to load search history', err);
-        },
-      });
+        } catch {}
+      }
+    }
   }
 
-  private addToHistory(query: string) {
+  private async addToHistory(query: string): Promise<void> {
     const current = this.historySource.getValue();
     const withoutDup = current.filter(
       (q) => q.toLowerCase() !== query.toLowerCase()
@@ -73,12 +96,41 @@ export class SearchService {
     const updated = [query, ...withoutDup].slice(0, 10);
     this.historySource.next(updated);
 
-    this.http
-      .post(`${environment.apiUrl}/api/search-history`, { query })
-      .subscribe({
-        error: (err) => {
-          console.error('Failed to save search history', err);
-        },
-      });
+    let token = this.frontendService.getToken();
+    if (!token) return;
+
+    try {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(
+        this.http.post(
+          `${environment.apiUrl}/api/search-history`,
+          { query },
+          { headers }
+        )
+      );
+    } catch (error: any) {
+      if (
+        error.status === 401 ||
+        error.error?.message === 'TokenExpiredError'
+      ) {
+        const newToken = await this.frontendService.refreshAccessToken();
+        if (!newToken) return;
+
+        const headers = new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${newToken}`
+        );
+
+        try {
+          await firstValueFrom(
+            this.http.post(
+              `${environment.apiUrl}/api/search-history`,
+              { query },
+              { headers }
+            )
+          );
+        } catch {}
+      }
+    }
   }
 }

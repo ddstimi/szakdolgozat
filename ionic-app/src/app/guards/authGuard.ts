@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(): boolean {
+  async canActivate(): Promise<boolean> {
     if (!this.frontendService.isLoggedIn()) {
       this.router
         .navigate(['/login'], {

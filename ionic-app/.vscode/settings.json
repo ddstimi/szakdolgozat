@@ -3,5 +3,6 @@
     "@ionic/angular/common",
     "@ionic/angular"
   ],
-  "CodeGPT.apiKey": "Anthropic"
+  "CodeGPT.apiKey": "Anthropic",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
