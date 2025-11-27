@@ -24,6 +24,11 @@ ion-badge {
         margin-left: auto;
         margin-right: auto;
     }
+
+    ion-tabs#tabs {
+        padding-bottom: 14%;
+        z-index: 10000;
+    }
 }
 
 @media (max-width: 640px) {
