@@ -32,6 +32,47 @@
             >{{ genre }}</ion-select-option
           >
         </ion-select>
+        <div class="date-chip-row">
+          <ion-chip
+            class="blue-chip"
+            [color]="selectedDateRange === '' ? 'primary' : 'medium'"
+            (click)="selectedDateRange = ''; onFilterChange()"
+          >
+            <ion-label>All Dates</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            class="blue-chip"
+            [color]="selectedDateRange === 'today' ? 'primary' : 'medium'"
+            (click)="selectedDateRange = 'today'; onFilterChange()"
+          >
+            <ion-label>Today</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            class="blue-chip"
+            [color]="selectedDateRange === 'weekend' ? 'primary' : 'medium'"
+            (click)="selectedDateRange = 'weekend'; onFilterChange()"
+          >
+            <ion-label>This Weekend</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            class="blue-chip"
+            [color]="selectedDateRange === 'week' ? 'primary' : 'medium'"
+            (click)="selectedDateRange = 'week'; onFilterChange()"
+          >
+            <ion-label>This Week</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            class="blue-chip"
+            [color]="selectedDateRange === 'month' ? 'primary' : 'medium'"
+            (click)="selectedDateRange = 'month'; onFilterChange()"
+          >
+            <ion-label>This Month</ion-label>
+          </ion-chip>
+        </div>
       </div>
 
       <div class="results" *ngIf="filteredResults.length">
@@ -44,7 +85,7 @@
           [image]="concert.image"
           [genre]="concert.genre"
           [artist]="concert.artist_name"
-          [attending]="userAttendingConcerts.includes(+concert.id)"
+          [attending]="concert.is_attending"
           [loggedIn]="loggedIn"
           [ticket_available]="concert.ticket_available"
           (click)="openDetails(concert)"

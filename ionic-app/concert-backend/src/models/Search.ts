@@ -9,10 +9,7 @@ export interface SearchHistoryRow extends RowDataPacket {
 }
 
 const SearchModel = {
-  getByUserId: async (
-    userId: number,
-    limit: number = 10
-  ): Promise<SearchHistoryRow[]> => {
+  async getByUserId(userId: number, limit = 10): Promise<SearchHistoryRow[]> {
     const [rows] = await pool.query<SearchHistoryRow[]>(
       `
       SELECT id, user_id, query, search_date
@@ -26,11 +23,9 @@ const SearchModel = {
     return rows;
   },
 
-  addEntry: async (userId: number, query: string): Promise<void> => {
+  async addEntry(userId: number, query: string): Promise<void> {
     const cleaned = query.trim();
-    if (!cleaned) {
-      return;
-    }
+    if (!cleaned) return;
 
     await pool.query(
       `

@@ -25,7 +25,7 @@ const NotificationsModel = {
   async listByUserId(
     userId: number,
     unreadOnly = false,
-    limit = 100
+    limit = 99
   ): Promise<NotificationRow[]> {
     const [rows] = await pool.query<NotificationRow[]>(
       `
@@ -62,6 +62,7 @@ const NotificationsModel = {
 
   async create(input: CreateNotificationInput): Promise<number> {
     const { userId, title, message, type = null, concertId = null } = input;
+
     const [res] = await pool.query<ResultSetHeader>(
       `
       INSERT INTO notifications (user_id, concert_id, sent_date, read_date, is_read, title, message, type)
@@ -69,6 +70,7 @@ const NotificationsModel = {
       `,
       [userId, concertId, title, message, type]
     );
+
     return res.insertId;
   },
 };

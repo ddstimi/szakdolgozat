@@ -65,7 +65,7 @@ export class ConcertDetailsPage implements OnInit {
     await this.loadGisScript();
     this.initTokenClient();
     await this.loadGapiClient();
-    this.attending = await this.concert?.is_attending;
+    this.attending = !!this.concert?.is_attending;
   }
 
   async toggleAttend() {
@@ -74,6 +74,7 @@ export class ConcertDetailsPage implements OnInit {
     try {
       const res = await this.frontendService.attendConcert(this.concert.id);
       this.attending = res.attending;
+      this.concert.is_attending = res.attending;
       window.dispatchEvent(new CustomEvent('upcoming:changed'));
     } catch (err) {
       console.error('Failed to update attendance', err);

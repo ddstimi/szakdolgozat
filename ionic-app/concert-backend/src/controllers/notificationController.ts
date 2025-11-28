@@ -2,22 +2,24 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import NotificationService from '../services/notificationService';
 import PushTokensModel from '../models/PushNotification';
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: number;
-    username: string;
-    email: string;
-    gdpr: number;
-    img_url?: string;
-    register_date: string;
-    last_login: string;
-  };
+interface AuthenticatedUser {
+  id: number;
+  username: string;
+  email: string;
+  gdpr: number;
+  img_url?: string;
+  register_date: string;
+  last_login: string;
 }
 
-const getUserId = (req: Request) =>
+interface AuthenticatedRequest extends Request {
+  user?: AuthenticatedUser;
+}
+
+const getUserId = (req: Request): number | null =>
   (req as AuthenticatedRequest).user?.id ?? null;
 
-const notificationController = {
+const NotificationController = {
   listForMe: (async (
     req: Request,
     res: Response,
@@ -30,6 +32,7 @@ const notificationController = {
     }
 
     const unreadOnly = String(req.query.unreadOnly ?? 'false') === 'true';
+
     try {
       const data = await NotificationService.listForUser(userId, unreadOnly);
       res.status(200).json({ success: true, data });
@@ -51,6 +54,7 @@ const notificationController = {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
     }
+
     try {
       const count = await NotificationService.getUnreadCount(userId);
       res.status(200).json({ success: true, data: { count } });
@@ -126,6 +130,7 @@ const notificationController = {
   registerMyToken: (async (req, res): Promise<void> => {
     const userId = getUserId(req);
     const { token, platform } = req.body || {};
+
     if (!userId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
@@ -136,6 +141,7 @@ const notificationController = {
         .json({ success: false, message: 'token & platform required' });
       return;
     }
+
     await PushTokensModel.upsert(userId, token, platform);
     res.status(200).json({ success: true });
   }) as RequestHandler,
@@ -143,6 +149,7 @@ const notificationController = {
   revokeMyToken: (async (req, res): Promise<void> => {
     const userId = getUserId(req);
     const token = req.params.token;
+
     if (!userId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
@@ -151,6 +158,7 @@ const notificationController = {
       res.status(400).json({ success: false, message: 'token required' });
       return;
     }
+
     await PushTokensModel.revoke(userId, token);
     res.status(200).json({ success: true });
   }) as RequestHandler,
@@ -167,7 +175,10 @@ const notificationController = {
     const finalTitle = title || 'Test notification 🎧';
     const finalMessage = message || 'This is a test push + DB notification';
     const finalType = type ? String(type) : null;
-    const finalConcertId = Number(concertId);
+    const finalConcertId =
+      typeof concertId === 'number' || typeof concertId === 'string'
+        ? Number(concertId)
+        : null;
 
     try {
       const id = await NotificationService.createAndPush({
@@ -175,7 +186,7 @@ const notificationController = {
         title: finalTitle,
         message: finalMessage,
         type: finalType,
-        concertId: finalConcertId,
+        concertId: finalConcertId ?? undefined,
       });
 
       res.status(201).json({
@@ -196,4 +207,4 @@ const notificationController = {
   }) as RequestHandler,
 };
 
-export default notificationController;
+export default NotificationController;

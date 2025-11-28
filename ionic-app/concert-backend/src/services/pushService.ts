@@ -12,12 +12,7 @@ export type PushPayload = {
 const PushService = {
   async sendToUser(userId: number, payload: PushPayload): Promise<void> {
     const tokens = await PushTokensModel.listActiveTokensByUserId(userId);
-    if (!tokens.length) {
-      console.log('No active tokens for user', userId);
-      return;
-    }
-
-    console.log('Sending push to tokens:', tokens);
+    if (!tokens.length) return;
 
     const resp = await messaging().sendEachForMulticast({
       tokens,
@@ -34,26 +29,8 @@ const PushService = {
       },
     });
 
-    console.log(
-      'FCM sendEachForMulticast result:',
-      'success:',
-      resp.successCount,
-      'failure:',
-      resp.failureCount
-    );
-
-    resp.responses.forEach((r, i) => {
-      if (!r.success) {
-        console.error(
-          'FCM send error for token',
-          tokens[i],
-          r.error?.code,
-          r.error?.message
-        );
-      }
-    });
-
     const bad: string[] = [];
+
     resp.responses.forEach((r, i) => {
       if (!r.success) {
         const code = r.error?.code || '';
@@ -67,7 +44,6 @@ const PushService = {
     });
 
     if (bad.length) {
-      console.log('Pruning invalid tokens:', bad);
       await PushTokensModel.pruneInvalid(bad);
     }
   },

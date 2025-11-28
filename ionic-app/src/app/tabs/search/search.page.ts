@@ -54,6 +54,7 @@ export class SearchPage implements OnInit, OnDestroy {
   genres: string[] = [];
   userAttendingConcerts: number[] = [];
   loggedIn = false;
+  selectedDateRange = '';
 
   constructor(
     private frontendService: frontendService,
@@ -122,26 +123,6 @@ export class SearchPage implements OnInit, OnDestroy {
     this.historySub?.unsubscribe();
   }
 
-  applyFilter(query: string) {
-    const lower = (query || '').toLowerCase();
-
-    this.filteredResults = this.concerts.filter((c) => {
-      const title = (c.title || '').toLowerCase();
-      const artist = (c.artist_name || '').toLowerCase();
-
-      const matchesQuery =
-        !lower || title.includes(lower) || artist.includes(lower);
-      const matchesCity =
-        !this.selectedCity || c.city_name === this.selectedCity;
-      const matchesGenre =
-        !this.selectedGenre || c.genre?.includes(this.selectedGenre);
-
-      return matchesQuery && matchesCity && matchesGenre;
-    });
-
-    this.cd.detectChanges();
-  }
-
   onFilterChange() {
     this.applyFilter(this.searchQuery);
   }
@@ -185,5 +166,84 @@ export class SearchPage implements OnInit, OnDestroy {
 
   useRecentSearch(query: string) {
     this.searchService.setQuery(query);
+  }
+
+  applyFilter(query: string) {
+    const lower = (query || '').toLowerCase();
+
+    this.filteredResults = this.concerts.filter((c) => {
+      const title = (c.title || '').toLowerCase();
+      const artist = (c.artist_name || '').toLowerCase();
+      const date = new Date(c.date);
+
+      const matchesQuery =
+        !lower || title.includes(lower) || artist.includes(lower);
+
+      const matchesCity =
+        !this.selectedCity || c.city_name === this.selectedCity;
+
+      const matchesGenre =
+        !this.selectedGenre || c.genre?.includes(this.selectedGenre);
+
+      const matchesDate =
+        !this.selectedDateRange || this.isInRange(date, this.selectedDateRange);
+
+      return matchesQuery && matchesCity && matchesGenre && matchesDate;
+    });
+
+    this.sortByDate(this.filteredResults);
+    this.cd.detectChanges();
+  }
+  isInRange(date: Date, range: string): boolean {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (range === 'today') {
+      const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return d.getTime() === today.getTime();
+    }
+
+    if (range === 'week') {
+      const day = now.getDay();
+      const diffToMonday = day === 0 ? 6 : day - 1;
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - diffToMonday);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      return date >= monday && date <= sunday;
+    }
+
+    if (range === 'weekend') {
+      const day = date.getDay();
+      return day === 6 || day === 0;
+    }
+
+    if (range === 'month') {
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      return date >= monthStart && date <= monthEnd;
+    }
+
+    return true;
+  }
+
+  private sortByDate(list: Concert[]) {
+    list.sort((a, b) => {
+      const da = this.normalizeDate(a.date);
+      const db = this.normalizeDate(b.date);
+      return da.localeCompare(db);
+    });
+  }
+
+  private normalizeDate(dateStr: string | undefined): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toISOString().split('T')[0];
+    }
+    const parts = dateStr.split(' ');
+    return parts[0] || '';
   }
 }

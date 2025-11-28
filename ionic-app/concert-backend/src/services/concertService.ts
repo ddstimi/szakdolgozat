@@ -1,21 +1,24 @@
-import EventsModel from '../models/Concerts';
+import ConcertsModel from '../models/Concerts';
 
 const ConcertService = {
-  getTopPicks: async (userId: number) => {
-    return await EventsModel.getTopPicks(userId);
+  getTopPicks(userId: number) {
+    return ConcertsModel.getTopPicks(userId);
   },
 
-  getNearMe: async () => {
-    return await EventsModel.getPopular();
+  getNearMe() {
+    return ConcertsModel.getPopular();
   },
-  getUpcoming: async () => {
-    return await EventsModel.getUpcoming();
+
+  getUpcoming() {
+    return ConcertsModel.getUpcoming();
   },
-  getUpcomingByUserId: async (userId: number) => {
-    return await EventsModel.getUpcomingByUserId(userId);
+
+  getUpcomingByUserId(userId: number) {
+    return ConcertsModel.getUpcomingByUserId(userId);
   },
-  getPastByUserId: async (userId: number) => {
-    return await EventsModel.getPastByUserId(userId);
+
+  getPastByUserId(userId: number) {
+    return ConcertsModel.getPastByUserId(userId);
   },
 };
 

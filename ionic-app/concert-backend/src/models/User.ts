@@ -8,11 +8,12 @@ interface CreateUserData {
   hashedPassword: string;
   gdpr: boolean;
 }
+
 interface CountRow extends RowDataPacket {
   count: number;
 }
 
-interface IUser {
+export interface IUser {
   id?: number;
   name: string;
   username: string;
@@ -23,7 +24,8 @@ interface IUser {
   register_date?: Date;
   last_login?: Date;
 }
-interface userProfile {
+
+export interface UserProfile {
   id: number;
   username: string;
   name: string;
@@ -33,49 +35,60 @@ interface userProfile {
 }
 
 const UserModel = {
-  findByUsername: async (username: string): Promise<IUser | null> => {
+  async findByUsername(username: string): Promise<IUser | null> {
     const [rows] = await pool.execute<RowDataPacket[]>(
-      'SELECT id, username, email, password, gdpr, img_url, register_date, last_login FROM users WHERE username = ?',
+      `
+      SELECT id, username, email, password, gdpr, img_url, register_date, last_login
+      FROM users
+      WHERE username = ?
+      `,
       [username]
     );
     return rows.length > 0 ? (rows[0] as IUser) : null;
   },
 
-  findById: async (userId: number): Promise<IUser | null> => {
+  async findById(userId: number): Promise<IUser | null> {
     const [rows] = await pool.execute<RowDataPacket[]>(
-      'SELECT id, username, email, gdpr, img_url, register_date, last_login FROM users WHERE id = ?',
+      `
+      SELECT id, username, email, gdpr, img_url, register_date, last_login
+      FROM users
+      WHERE id = ?
+      `,
       [userId.toString()]
     );
     return rows.length > 0 ? (rows[0] as IUser) : null;
   },
 
-  createUser: async (userData: CreateUserData): Promise<number> => {
+  async createUser(userData: CreateUserData): Promise<number> {
     const { name, username, email, hashedPassword, gdpr } = userData;
-    const [result] = await pool.execute(
-      `INSERT INTO users 
+    const [result] = await pool.execute<ResultSetHeader>(
+      `
+      INSERT INTO users 
         (name, username, email, register_date, last_login, password, gdpr, img_url) 
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, NULL)`,
+      VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, NULL)
+      `,
       [name, username, email, hashedPassword, gdpr.toString()]
     );
-    return (result as ResultSetHeader).insertId;
+    return result.insertId;
   },
 
-  findByEmail: async (email: string): Promise<IUser | null> => {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [
-      email,
-    ]);
+  async findByEmail(email: string): Promise<IUser | null> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
     const users = rows as IUser[];
     return users[0] || null;
   },
 
-  updateLastLogin: async (userId: number): Promise<void> => {
+  async updateLastLogin(userId: number): Promise<void> {
     await pool.execute(
       'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?',
       [userId.toString()]
     );
   },
 
-  usernameExists: async (username: string): Promise<boolean> => {
+  async usernameExists(username: string): Promise<boolean> {
     const [rows] = await pool.execute<CountRow[]>(
       'SELECT COUNT(*) AS count FROM users WHERE username = ?',
       [username]
@@ -83,7 +96,7 @@ const UserModel = {
     return rows[0].count > 0;
   },
 
-  emailExists: async (email: string): Promise<boolean> => {
+  async emailExists(email: string): Promise<boolean> {
     const [rows] = await pool.execute<CountRow[]>(
       'SELECT COUNT(*) AS count FROM users WHERE email = ?',
       [email]
@@ -91,14 +104,16 @@ const UserModel = {
     return rows[0].count > 0;
   },
 
-  getUserInfo: async (userId: number): Promise<IUser | null> => {
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [
-      userId,
-    ]);
+  async getUserInfo(userId: number): Promise<IUser | null> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      'SELECT * FROM users WHERE id = ?',
+      [userId]
+    );
     const users = rows as IUser[];
     return users[0] || null;
   },
-  updateUserInfo: async (
+
+  async updateUserInfo(
     userId: number,
     updateFields: {
       name?: string;
@@ -107,7 +122,7 @@ const UserModel = {
       gdpr?: boolean;
       password?: string;
     }
-  ): Promise<any> => {
+  ): Promise<IUser | null> {
     const fields: string[] = [];
     const values: any[] = [];
 
@@ -118,46 +133,66 @@ const UserModel = {
       }
     }
 
+    if (!fields.length) {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        'SELECT * FROM users WHERE id = ?',
+        [userId.toString()]
+      );
+      return (rows as IUser[])[0] || null;
+    }
+
     values.push(userId.toString());
 
     const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
     await pool.execute(sql, values);
 
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [
-      userId.toString(),
-    ]);
-    return (rows as any[])[0];
+    const [rows] = await pool.query<RowDataPacket[]>(
+      'SELECT * FROM users WHERE id = ?',
+      [userId.toString()]
+    );
+    return (rows as IUser[])[0] || null;
   },
 
-  updateUserPic: async (userId: number, updateUrl: string): Promise<any> => {
-    const sqlUpdate = `UPDATE users SET img_url = ? WHERE id = ?`;
-    await pool.execute(sqlUpdate, [updateUrl, userId]);
+  async updateUserPic(
+    userId: number,
+    updateUrl: string
+  ): Promise<IUser | null> {
+    await pool.execute('UPDATE users SET img_url = ? WHERE id = ?', [
+      updateUrl,
+      userId,
+    ]);
 
-    const sqlSelect = `SELECT id, username, email, img_url FROM users WHERE id = ?`;
-    const [rows] = await pool.execute(sqlSelect, [userId]);
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      `
+      SELECT id, username, email, img_url
+      FROM users
+      WHERE id = ?
+      `,
+      [userId]
+    );
     const users = rows as IUser[];
     return users[0] || null;
   },
 
-  isAttendingConcert: async (
+  async isAttendingConcert(
     userId: number,
     concertId: number
-  ): Promise<boolean> => {
-    const [rows] = await pool.execute(
+  ): Promise<boolean> {
+    const [rows] = await pool.execute<RowDataPacket[]>(
       'SELECT 1 FROM attends WHERE user_id = ? AND concert_id = ?',
       [userId, concertId]
     );
     return (rows as any[]).length > 0;
   },
 
-  addAttendance: async (userId: number, concertId: number) => {
+  async addAttendance(userId: number, concertId: number): Promise<void> {
     await pool.execute(
       'INSERT INTO attends (user_id, concert_id) VALUES (?, ?)',
       [userId, concertId]
     );
   },
 
-  removeAttendance: async (userId: number, concertId: number) => {
+  async removeAttendance(userId: number, concertId: number): Promise<void> {
     await pool.execute(
       'DELETE FROM attends WHERE user_id = ? AND concert_id = ?',
       [userId, concertId]

@@ -16,9 +16,14 @@ const PushModel = {
     platform: 'web' | 'android' | 'ios'
   ): Promise<void> {
     await pool.query<ResultSetHeader>(
-      `INSERT INTO push_tokens (token, user_id, platform)
-       VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE user_id = VALUES(user_id), platform = VALUES(platform), revoked_at = NULL`,
+      `
+      INSERT INTO push_tokens (token, user_id, platform)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        user_id = VALUES(user_id),
+        platform = VALUES(platform),
+        revoked_at = NULL
+      `,
       [token, userId, platform]
     );
   },
@@ -40,6 +45,7 @@ const PushModel = {
 
   async pruneInvalid(tokens: string[]): Promise<void> {
     if (!tokens.length) return;
+
     const placeholders = tokens.map(() => '?').join(',');
     await pool.query(
       `UPDATE push_tokens SET revoked_at = NOW() WHERE token IN (${placeholders})`,

@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
-
-import UserModel from '../models/User';
+import UserModel, { IUser } from '../models/User';
 import SessionService from './sessionService';
 
 const client = new OAuth2Client(process.env['GOOGLE_CLIENT_ID']);
@@ -16,18 +15,6 @@ interface RegisterUserData {
   gdpr?: boolean;
 }
 
-interface IUser {
-  id?: number;
-  name: string;
-  username: string;
-  email: string;
-  password?: string;
-  gdpr: boolean;
-  img_url?: string;
-  register_date?: Date;
-  last_login?: Date;
-}
-
 interface BaseAuthResponse {
   user: Omit<IUser, 'password'>;
   token: string;
@@ -39,7 +26,6 @@ interface LoginResponse extends BaseAuthResponse {
 
 class CustomError extends Error {
   statusCode: number;
-
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
@@ -48,13 +34,12 @@ class CustomError extends Error {
 }
 
 const UserService = {
-  registerUser: async (userData: RegisterUserData): Promise<number> => {
+  async registerUser(userData: RegisterUserData): Promise<number> {
     const { name, username, email, password, gdpr } = userData;
 
     if (await UserModel.usernameExists(username)) {
       throw new CustomError('Username already exists.', 409);
     }
-
     if (await UserModel.emailExists(email)) {
       throw new CustomError('Email already exists.', 409);
     }
@@ -70,11 +55,11 @@ const UserService = {
     });
   },
 
-  loginUser: async (
+  async loginUser(
     username: string,
     password: string,
     stayLoggedIn = false
-  ): Promise<LoginResponse> => {
+  ): Promise<LoginResponse> {
     const user = await UserModel.findByUsername(username);
     if (!user || !user.password) {
       throw new CustomError('Invalid credentials', 401);
@@ -97,7 +82,7 @@ const UserService = {
     return { user: userData, token, refreshToken };
   },
 
-  handleGoogleAuth: async (credential: string): Promise<LoginResponse> => {
+  async handleGoogleAuth(credential: string): Promise<LoginResponse> {
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env['GOOGLE_CLIENT_ID'],
@@ -141,7 +126,7 @@ const UserService = {
     return { user: userData, token, refreshToken };
   },
 
-  updateUser: async (
+  async updateUser(
     userId: number,
     updateData: {
       name?: string;
@@ -150,8 +135,8 @@ const UserService = {
       username?: string;
       gdpr?: boolean;
     }
-  ): Promise<BaseAuthResponse> => {
-    const updatedFields: any = {};
+  ): Promise<BaseAuthResponse> {
+    const updatedFields: Partial<IUser> = {};
 
     if (updateData.name !== undefined) updatedFields.name = updateData.name;
     if (updateData.email !== undefined) updatedFields.email = updateData.email;
@@ -164,6 +149,9 @@ const UserService = {
     }
 
     const updatedUser = await UserModel.updateUserInfo(userId, updatedFields);
+    if (!updatedUser) {
+      throw new CustomError('User not found', 404);
+    }
 
     const { password: _, ...userData } = updatedUser;
 
@@ -180,10 +168,10 @@ const UserService = {
     return { user: userData, token };
   },
 
-  updateUserPic: async (
+  async updateUserPic(
     userId: string,
     imgUrl: string
-  ): Promise<BaseAuthResponse> => {
+  ): Promise<BaseAuthResponse> {
     const updated = await UserModel.updateUserPic(parseInt(userId, 10), imgUrl);
     if (!updated) {
       throw new CustomError('User not found', 404);
@@ -209,10 +197,10 @@ const UserService = {
     return { user, token };
   },
 
-  attendConcert: async (
+  async attendConcert(
     userId: number,
     concertId: number
-  ): Promise<{ attending: boolean }> => {
+  ): Promise<{ attending: boolean }> {
     const user = await UserModel.findById(userId);
     if (!user) {
       throw new CustomError('User not found', 404);
@@ -223,10 +211,10 @@ const UserService = {
     if (attending) {
       await UserModel.removeAttendance(userId, concertId);
       return { attending: false };
-    } else {
-      await UserModel.addAttendance(userId, concertId);
-      return { attending: true };
     }
+
+    await UserModel.addAttendance(userId, concertId);
+    return { attending: true };
   },
 };
 

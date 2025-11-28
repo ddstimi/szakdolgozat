@@ -2,11 +2,13 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import UserService from '../services/userService';
 import UserModel from '../models/User';
 import SessionService from '../services/sessionService';
-const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
 import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env['JWT_SECRET'] || 'your_jwt_secret';
 
 class CustomError extends Error {
   statusCode: number;
+
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
@@ -14,14 +16,17 @@ class CustomError extends Error {
   }
 }
 
+interface AuthenticatedRequest extends Request {
+  user?: { id: number };
+}
+
 const UserController = {
   register: (async (req: Request, res: Response, next: NextFunction) => {
     const { name, username, email, password, gdpr } = req.body;
 
     if (!name || !username || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'Please provide all required fields.' });
+      res.status(400).json({ message: 'Please provide all required fields.' });
+      return;
     }
 
     try {
@@ -32,17 +37,20 @@ const UserController = {
         password,
         gdpr,
       });
+
       res.status(201).json({
         message: 'User registered successfully!',
-        userId: userId,
+        userId,
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
-        return res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
+        return;
       }
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
+
   refreshToken: async (userId: number): Promise<string> => {
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -60,9 +68,10 @@ const UserController = {
     const { username, password, stayLoggedIn } = req.body;
 
     if (!username || !password) {
-      return res
+      res
         .status(400)
         .json({ message: 'Please provide username and password.' });
+      return;
     }
 
     try {
@@ -71,7 +80,8 @@ const UserController = {
         password,
         stayLoggedIn
       );
-      return res.status(200).json({
+
+      res.status(200).json({
         message: 'Login successful!',
         user,
         token,
@@ -79,56 +89,77 @@ const UserController = {
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
-        return res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
+        return;
       }
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
 
   googleAuth: (async (req: Request, res: Response, next: NextFunction) => {
     const { credential } = req.body;
+
     if (!credential) {
-      return res.status(400).json({ message: 'Missing Google credential.' });
+      res.status(400).json({ message: 'Missing Google credential.' });
+      return;
     }
 
     try {
       const { user, token, refreshToken } = await UserService.handleGoogleAuth(
         credential
       );
-      return res.status(200).json({
+
+      res.status(200).json({
         message: 'Google sign-in successful!',
         user,
         token,
         refreshToken,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
 
-  userProfile: (async (req: Request, res: Response, next: NextFunction) => {
-    const id = (req as any).user.id;
+  userProfile: (async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const id = req.user?.id;
 
     if (!id) {
-      return res.status(400).json({ message: 'There is no user logged in.' });
+      res.status(400).json({ message: 'There is no user logged in.' });
+      return;
     }
 
     try {
       const user = await UserModel.getUserInfo(id);
-      return res.status(200).json({
+      res.status(200).json({
         message: 'User data fetch successful!',
         user,
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
-        return res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
+        return;
       }
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
-  updateUser: (async (req: Request, res: Response, next: NextFunction) => {
-    const userId = (req as any).user.id;
+
+  updateUser: (async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
     const { name, email, password, username, gdpr } = req.body;
 
     try {
@@ -140,37 +171,48 @@ const UserController = {
         gdpr,
       });
 
-      return res.status(200).json({
+      res.status(200).json({
         message: 'User updated successfully!',
         user,
         token,
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
-        return res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
+        return;
       }
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
-  updateUserPic: (async (req, res, next) => {
+
+  updateUserPic: (async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const userId = (req as any).user.id as number;
+      const userId = req.user?.id;
       const { publicUrl, key } = req.body as {
         publicUrl?: string;
         key?: string;
       };
 
+      if (!userId) {
+        res.status(401).json({ message: 'Unauthorized' });
+        return;
+      }
+
       if (!publicUrl && !key) {
-        return res
-          .status(400)
-          .json({ message: 'publicUrl or key is required' });
+        res.status(400).json({ message: 'publicUrl or key is required' });
+        return;
       }
 
       const cdnBase = (process.env.CDN_BASE_URL || '').replace(/\/$/, '');
       const finalUrl = publicUrl || (key ? `${cdnBase}/${key}` : '');
 
       if (!finalUrl) {
-        return res.status(400).json({ message: 'Invalid image identifier' });
+        res.status(400).json({ message: 'Invalid image identifier' });
+        return;
       }
 
       const { user, token } = await UserService.updateUserPic(
@@ -178,22 +220,32 @@ const UserController = {
         finalUrl
       );
 
-      return res.status(200).json({
+      res.status(200).json({
         message: 'Profile picture updated successfully!',
         user,
         token,
       });
     } catch (error) {
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
 
-  updateStaticPic: (async (req, res, next) => {
-    const userId = (req as any).user.id as number;
+  updateStaticPic: (async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userId = req.user?.id;
     const { img_url } = req.body;
 
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
     if (!img_url) {
-      return res.status(400).json({ message: 'Image URL is required' });
+      res.status(400).json({ message: 'Image URL is required' });
+      return;
     }
 
     try {
@@ -201,24 +253,29 @@ const UserController = {
         String(userId),
         img_url
       );
-      return res.status(200).json({
+      res.status(200).json({
         message: 'User updated successfully!',
         user,
         token,
       });
     } catch (error) {
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
-  refreshSession: (async (req, res) => {
+
+  refreshSession: (async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
-    if (!refreshToken)
-      return res.status(400).json({ message: 'Refresh token required.' });
+    if (!refreshToken) {
+      res.status(400).json({ message: 'Refresh token required.' });
+      return;
+    }
 
     try {
       const payload: any = SessionService.verifyToken(refreshToken, true);
       const user = await UserModel.findById(payload.id);
-      if (!user) throw new Error('User not found');
+      if (!user) {
+        throw new Error('User not found');
+      }
 
       const newAccessToken = jwt.sign(
         { id: user.id, username: user.username, email: user.email },
@@ -233,26 +290,37 @@ const UserController = {
     }
   }) as RequestHandler,
 
-  attendConcert: (async (req: Request, res: Response, next: NextFunction) => {
-    const userId = (req as any).user.id;
+  attendConcert: (async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userId = req.user?.id;
     const { concertId } = req.body;
 
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
     if (!concertId) {
-      return res.status(400).json({ message: 'concertId is required.' });
+      res.status(400).json({ message: 'concertId is required.' });
+      return;
     }
 
     try {
       const result = await UserService.attendConcert(userId, concertId);
 
-      return res.status(200).json({
+      res.status(200).json({
         message: 'Concert attendance updated successfully!',
         attending: result.attending,
       });
     } catch (error: any) {
       if (error instanceof CustomError && error.statusCode) {
-        return res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
+        return;
       }
-      return next(error);
+      next(error);
     }
   }) as RequestHandler,
 };

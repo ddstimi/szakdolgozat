@@ -176,13 +176,13 @@ export class HomePage {
         this.popular = this.popular.filter((c) => !c.cancelled);
       }
       this.popular = this.popular.map((concert) => {
-        console.log(concert.description);
         return {
           ...concert,
           image: concert.image?.includes(environment.apiUrl)
             ? concert.image
             : environment.apiUrl +
               (concert.image || '/profile-pictures/bikini.jpg'),
+          is_attending: this.userAttendingConcerts.includes(concert.id),
         };
       });
     } else {

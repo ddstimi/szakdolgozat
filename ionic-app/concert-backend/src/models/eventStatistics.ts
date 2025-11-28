@@ -1,17 +1,26 @@
-import { Pool, RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
 
-interface UserConcert extends RowDataPacket {
-  id: number;
-  user_id: number;
-  concert_id: number;
-  addition_date: Date;
-}
 interface DistRow extends RowDataPacket {
   user_id: number;
   cnt: number;
 }
-interface Concert extends RowDataPacket {
+
+interface ConcertWithVenueAndCityRow extends RowDataPacket {
+  id: number;
+  title: string;
+  date: Date;
+  venue_id: number;
+  description: string | null;
+  ticket_url: string | null;
+  ticket_available: boolean;
+  cancelled: boolean;
+  venue_name: string;
+  city_id: number;
+  city_name: string;
+}
+
+interface Concert {
   id: number;
   title: string;
   date: Date;
@@ -22,13 +31,13 @@ interface Concert extends RowDataPacket {
   cancelled: boolean;
 }
 
-interface Venue extends RowDataPacket {
+interface Venue {
   id: number;
   name: string;
   city_id: number;
 }
 
-interface City extends RowDataPacket {
+interface City {
   id: number;
   name: string;
 }
@@ -43,22 +52,8 @@ interface Artist extends RowDataPacket {
   name: string;
 }
 
-interface ConcertWithVenueAndCity extends RowDataPacket {
-  id: number;
-  title: string;
-  date: Date;
-  venue_id: number;
-  description: string | null;
-  ticket_url: string | null;
-  ticket_available: boolean;
-  cancelled: boolean;
-  venue_name: string;
-  city_id: number;
-  city_name: string;
-}
-
 const EventsModel = {
-  getUserConcerts: async (
+  async getUserConcerts(
     userId: number,
     fromDate?: Date
   ): Promise<
@@ -67,20 +62,27 @@ const EventsModel = {
       venue: Venue;
       city: City;
     }[]
-  > => {
+  > {
     let query = `
       SELECT 
-        c.id, c.title, c.date, c.venue_id, c.description, c.ticket_url, 
-        c.ticket_available, c.cancelled,
-        v.name as venue_name, 
+        c.id,
+        c.title,
+        c.date,
+        c.venue_id,
+        c.description,
+        c.ticket_url,
+        c.ticket_available,
+        c.cancelled,
+        v.name AS venue_name,
         v.city_id,
-        ci.name as city_name
+        ci.name AS city_name
       FROM attends a
       JOIN concerts c ON a.concert_id = c.id
       JOIN venues v ON c.venue_id = v.id
       JOIN cities ci ON v.city_id = ci.id
       WHERE a.user_id = ?
     `;
+
     const params: any[] = [userId];
 
     if (fromDate) {
@@ -88,7 +90,10 @@ const EventsModel = {
       params.push(fromDate);
     }
 
-    const [rows] = await pool.query<ConcertWithVenueAndCity[]>(query, params);
+    const [rows] = await pool.query<ConcertWithVenueAndCityRow[]>(
+      query,
+      params
+    );
 
     return rows.map((row) => ({
       concert: {
@@ -100,25 +105,22 @@ const EventsModel = {
         ticket_url: row.ticket_url,
         ticket_available: row.ticket_available,
         cancelled: row.cancelled,
-        constructor: { name: 'RowDataPacket' },
-      } as Concert,
+      },
       venue: {
         id: row.venue_id,
         name: row.venue_name,
         city_id: row.city_id,
-        constructor: { name: 'RowDataPacket' },
-      } as Venue,
+      },
       city: {
         id: row.city_id,
         name: row.city_name,
-        constructor: { name: 'RowDataPacket' },
-      } as City,
+      },
     }));
   },
 
-  getConcertGenres: async (
+  async getConcertGenres(
     concertId: number
-  ): Promise<{ id: number; name: string }[]> => {
+  ): Promise<{ id: number; name: string }[]> {
     const [rows] = await pool.query<Genre[]>(
       `
       SELECT g.id, g.name 
@@ -126,28 +128,28 @@ const EventsModel = {
       JOIN genres g ON ag.genre_id = g.id
       JOIN concerts c ON ag.artist_id = c.artist_id
       WHERE c.id = ?
-    `,
+      `,
       [concertId]
     );
     return rows;
   },
 
-  getConcertArtists: async (
+  async getConcertArtists(
     concertId: number
-  ): Promise<{ id: number; name: string }[]> => {
+  ): Promise<{ id: number; name: string }[]> {
     const [rows] = await pool.query<Artist[]>(
       `
       SELECT a.id, a.name 
       FROM concerts c
       JOIN artists a ON c.artist_id = a.id
       WHERE c.id = ?
-    `,
+      `,
       [concertId]
     );
     return rows;
   },
 
-  getConcertStatistics: async (userId: number, fromDate?: Date) => {
+  async getConcertStatistics(userId: number, fromDate?: Date) {
     const concerts = await EventsModel.getUserConcerts(userId, fromDate);
 
     const enrichedConcerts = await Promise.all(
@@ -156,6 +158,7 @@ const EventsModel = {
           EventsModel.getConcertGenres(concert.id),
           EventsModel.getConcertArtists(concert.id),
         ]);
+
         return {
           ...concert,
           venue,
@@ -177,10 +180,12 @@ const EventsModel = {
       WHERE c.cancelled = 0 AND c.date <= NOW()
     `;
     const params: any[] = [];
+
     if (fromDate) {
       sql += ' AND c.date >= ?';
       params.push(fromDate);
     }
+
     sql += ' GROUP BY a.user_id';
 
     const [rows] = await pool.query<DistRow[]>(sql, params);
@@ -196,13 +201,17 @@ const EventsModel = {
       FROM attends a
       JOIN concerts c ON c.id = a.concert_id
       JOIN artist_genres ag ON ag.artist_id = c.artist_id
-      WHERE c.cancelled = 0 AND c.date <= NOW() AND ag.genre_id = ? 
+      WHERE c.cancelled = 0
+        AND c.date <= NOW()
+        AND ag.genre_id = ?
     `;
     const params: any[] = [genreId];
+
     if (fromDate) {
       sql += ' AND c.date >= ?';
       params.push(fromDate);
     }
+
     sql += ' GROUP BY a.user_id';
 
     const [rows] = await pool.query<DistRow[]>(sql, params);
@@ -217,13 +226,17 @@ const EventsModel = {
       SELECT a.user_id, COUNT(*) AS cnt
       FROM attends a
       JOIN concerts c ON c.id = a.concert_id
-      WHERE c.cancelled = 0 AND c.date <= NOW() AND c.artist_id = ?
+      WHERE c.cancelled = 0
+        AND c.date <= NOW()
+        AND c.artist_id = ?
     `;
     const params: any[] = [artistId];
+
     if (fromDate) {
       sql += ' AND c.date >= ?';
       params.push(fromDate);
     }
+
     sql += ' GROUP BY a.user_id';
 
     const [rows] = await pool.query<DistRow[]>(sql, params);
@@ -240,13 +253,17 @@ const EventsModel = {
       JOIN concerts c ON c.id = a.concert_id
       JOIN venues v ON v.id = c.venue_id
       JOIN cities ci ON ci.id = v.city_id
-      WHERE c.cancelled = 0 AND c.date <= NOW() AND ci.id = ?
+      WHERE c.cancelled = 0
+        AND c.date <= NOW()
+        AND ci.id = ?
     `;
     const params: any[] = [cityId];
+
     if (fromDate) {
       sql += ' AND c.date >= ?';
       params.push(fromDate);
     }
+
     sql += ' GROUP BY a.user_id';
 
     const [rows] = await pool.query<DistRow[]>(sql, params);
