@@ -10,6 +10,7 @@ import {
   Messaging,
 } from 'firebase/messaging';
 import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/services/authService';
 
 interface ToastItem {
   title: string;
@@ -19,8 +20,8 @@ interface ToastItem {
 
 @Injectable({ providedIn: 'root' })
 export class PushService {
-  private _messaging: Messaging | null = null;
-  private _foregroundListenerAttached = false;
+  private messagingInstance: Messaging | null = null;
+  private foregroundListenerAttached = false;
 
   private toastQueue: ToastItem[] = [];
   private toastTimer: any | null = null;
@@ -28,34 +29,29 @@ export class PushService {
 
   private jobPollingId: any | null = null;
 
-  constructor(private http: HttpClient) {
-    this.initForegroundListener();
+  constructor(private http: HttpClient, private auth: AuthService) {
+    void this.initForegroundListener();
   }
 
   private async ensureMessaging(): Promise<Messaging | null> {
     if (!(await isSupported())) {
-      console.warn('FCM not supported in this browser');
       return null;
     }
-    if (!this._messaging) {
+    if (!this.messagingInstance) {
       const app = initializeApp(environment.firebase);
-      this._messaging = getMessaging(app);
-      console.log('Messaging initialised', this._messaging);
+      this.messagingInstance = getMessaging(app);
     }
-    return this._messaging;
+    return this.messagingInstance;
   }
 
   private async initForegroundListener(): Promise<void> {
     const messaging = await this.ensureMessaging();
     if (!messaging) return;
 
-    if (this._foregroundListenerAttached) return;
-    this._foregroundListenerAttached = true;
-
-    console.log('Attaching onMessage foreground listener');
+    if (this.foregroundListenerAttached) return;
+    this.foregroundListenerAttached = true;
 
     onMessage(messaging, (payload) => {
-      console.log('FCM foreground message:', payload);
       window.dispatchEvent(new CustomEvent('notif:changed'));
 
       const data = (payload.data || {}) as {
@@ -72,9 +68,7 @@ export class PushService {
         if (Notification.permission === 'granted') {
           new Notification(title, { body });
         }
-      } catch (e) {
-        console.warn('Browser Notification failed:', e);
-      }
+      } catch {}
 
       this.enqueueToast({ title, body, data });
     });
@@ -113,21 +107,17 @@ export class PushService {
   }
 
   private getAuthToken(): string | null {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    return this.auth.getToken();
   }
 
   async enablePushNotifications(): Promise<string | null> {
-    console.log('enablePushNotifications() called');
-
     const messaging = await this.ensureMessaging();
     if (!messaging) return null;
 
     await this.initForegroundListener();
 
     const permission = await Notification.requestPermission();
-    console.log('permission:', permission);
     if (permission !== 'granted') {
-      console.warn('Permission not granted');
       return null;
     }
 
@@ -136,41 +126,35 @@ export class PushService {
       token = await getFcmToken(messaging, {
         vapidKey: environment.vapidKey,
       });
-      console.log('FCM token result:', token);
-    } catch (err) {
-      console.error('getFcmToken() FAILED:', err);
-    }
-
-    if (!token) {
-      console.warn('No token returned');
+    } catch {
       return null;
     }
 
-    const auth = this.getAuthToken();
-    console.log('auth token:', auth);
-    if (!auth) {
-      console.error('User NOT logged in');
+    if (!token) {
+      return null;
+    }
+
+    const authToken = this.getAuthToken();
+    if (!authToken) {
       return null;
     }
 
     try {
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.http.post(
           `${environment.apiUrl}/api/notifications/push-tokens`,
           { token, platform: 'web' },
           {
-            headers: new HttpHeaders().set('Authorization', `Bearer ${auth}`),
+            headers: new HttpHeaders().set(
+              'Authorization',
+              `Bearer ${authToken}`
+            ),
           }
         )
       );
-      console.log('SERVER SAVE TOKEN RESPONSE:', response);
-    } catch (err) {
-      console.error('Failed to send token to server:', err);
-    }
+    } catch {}
 
     localStorage.setItem('fcm_token', token);
-    console.log('Saved token to localStorage');
-
     return token;
   }
 
@@ -178,8 +162,8 @@ export class PushService {
     const token = localStorage.getItem('fcm_token');
     if (!token) return;
 
-    const auth = this.getAuthToken();
-    if (!auth) return;
+    const authToken = this.getAuthToken();
+    if (!authToken) return;
 
     await firstValueFrom(
       this.http.delete(
@@ -187,7 +171,10 @@ export class PushService {
           environment.apiUrl
         }/api/notifications/push-tokens/${encodeURIComponent(token)}`,
         {
-          headers: new HttpHeaders().set('Authorization', `Bearer ${auth}`),
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${authToken}`
+          ),
         }
       )
     );
@@ -195,9 +182,8 @@ export class PushService {
   }
 
   async runNotificationJobs(): Promise<void> {
-    const token = localStorage.getItem('token');
+    const token = this.getAuthToken();
     if (!token) {
-      console.warn('runNotificationJobs: no auth token');
       return;
     }
 
@@ -209,10 +195,7 @@ export class PushService {
           { headers: { Authorization: `Bearer ${token}` } }
         )
       );
-      console.log('Triggered notification jobs!');
-    } catch (err) {
-      console.error('runNotificationJobs FAILED:', err);
-    }
+    } catch {}
   }
 
   startJobPolling(intervalMs = 60_000): void {

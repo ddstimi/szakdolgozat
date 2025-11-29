@@ -3,21 +3,23 @@ ion-content {
   top: 0;
   z-index: 1000;
   background: var(--ion-background-color);
+  background-color: rgba(12, 12, 12, 0.801);
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: center;
-  background-color: rgba(12, 12, 12, 0.801);
+  animation: fadeIn 0.3s ease-in-out;
 
   ion-searchbar {
     width: 40%;
     max-width: 30rem;
     border-radius: 12px;
   }
-  animation: fadeIn 0.3s ease-in-out;
 }
+
 app-concert-card-full ion-card {
   flex-direction: column !important;
 }
+
 .filter-section {
   display: flex;
   justify-content: space-around;
@@ -46,20 +48,17 @@ app-concert-card-full ion-card {
     padding: 0.5rem;
     font-size: 0.9rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-in-out;
 
     &:hover {
       transform: scale(1.05);
-      transition: transform 0.1s ease-in-out;
     }
   }
 }
 
 .search-wrapper {
   width: 85%;
-  margin: 0 auto;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 5rem;
+  margin: 5rem auto 0 auto;
   transform: translateX(3%);
   border-radius: 1rem;
   padding: 1rem;
@@ -67,19 +66,41 @@ app-concert-card-full ion-card {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.282);
 }
 
-@media (max-width: 768px) {
+ion-card {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+ion-card-content {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f4f4f4;
+  padding: 1rem;
+}
+
+app-concert-details {
+  .modal-content {
+    background-color: #0e0e10df !important;
+    margin-top: 3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  ion-content {
+    padding: 0.5rem 0.75rem;
+
+    ion-searchbar {
+      width: 80%;
+      max-width: none;
+    }
+  }
+
   .search-wrapper {
-    width: 90%;
+    width: 92%;
     transform: none;
     margin-top: 4rem;
     padding: 0.75rem;
     box-shadow: none;
   }
 
-  ion-searchbar {
-    width: 70%;
-    max-width: none;
-  }
   .search-container {
     padding: 0.5rem 0.5rem;
   }
@@ -87,6 +108,8 @@ app-concert-card-full ion-card {
   .filter-section {
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0.5rem 0;
+
     ion-select {
       width: 100%;
     }
@@ -109,18 +132,50 @@ app-concert-card-full ion-card {
   }
 }
 
-ion-card {
-  background: rgba(0, 0, 0, 0.3);
-}
-ion-card-content {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #f4f4f4;
-  padding: 1rem;
-}
+@media (min-width: 481px) and (max-width: 1024px) {
+  ion-content {
+    padding: 0.5rem 1rem;
 
-app-concert-details {
-  .modal-content {
-    background-color: #0e0e10df !important;
-    margin-top: 3rem !important;
+    ion-searchbar {
+      width: 60%;
+      max-width: none;
+    }
+  }
+
+  .search-wrapper {
+    width: 90%;
+    transform: none;
+    margin: 5rem 1rem 0 auto;
+    padding: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.24);
+  }
+
+  .search-container {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .filter-section {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+
+    ion-select {
+      width: 50%;
+    }
+  }
+
+  .recent-searches {
+    padding: 0.5rem 0.5rem;
+    gap: 0.3rem;
+
+    ion-chip {
+      font-size: 0.85rem;
+      padding: 0.45rem;
+    }
+  }
+
+  .results {
+    padding: 0.75rem;
+    gap: 0.9rem;
   }
 }

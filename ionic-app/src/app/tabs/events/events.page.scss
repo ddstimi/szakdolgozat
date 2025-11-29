@@ -1,15 +1,18 @@
 @import url("https://fonts.cdnfonts.com/css/ruigslay");
 
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
 #container {
   display: flex;
   flex-direction: column;
-  height: fit-content;
   width: 80%;
+  height: auto;
+  margin: 5rem auto 2rem auto;
+  padding: 1rem;
   background-color: #0e0e1062 !important;
   border-radius: 1rem;
-  margin-top: 5%;
-  margin-left: auto;
-  margin-right: auto;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.282);
   animation: fadeIn ease-out 0.3s;
 }
@@ -25,13 +28,12 @@
 
 .statDiv {
   display: flex;
-  justify-content: center;
   flex-direction: row;
+  justify-content: center;
   width: 100%;
   height: auto;
   margin-top: 5%;
-  margin-bottom: 10rem;
-  padding: auto auto;
+  margin-bottom: 2.5rem;
 }
 
 ion-title {
@@ -48,17 +50,20 @@ ion-card-header {
 ion-card-content {
   display: flex;
   gap: 1rem;
-  color: #f9f4f5c2;
   justify-content: space-around;
   align-items: center;
+  color: #f9f4f5c2;
+
   .date {
     margin-right: 1rem;
     color: #c17b8c;
     font-size: medium;
   }
+
   .location {
     font-size: smaller;
   }
+
   ion-icon {
     margin-bottom: -2px !important;
     margin-right: 4px;
@@ -78,17 +83,16 @@ ion-card-content {
   margin: 20px 0;
 
   ion-card {
-    border-radius: 6px;
-    border: 1px solid #80ffcc2e;
-    box-shadow: 0 0 10px #80ffcc32;
-    padding: 1rem;
     width: 20rem;
     height: fit-content;
+    padding: 1rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    align-content: center;
     gap: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #80ffcc2e;
+    box-shadow: 0 0 10px #80ffcc32;
 
     .stat-label {
       font-size: 1.5rem !important;
@@ -111,22 +115,19 @@ ion-card-content {
 }
 
 .event-cards {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
   margin-bottom: 20px;
-  padding: 8px;
-  width: fit-content !important;
-  justify-self: center;
-  padding-left: 15%;
+  padding: 8px 1.5rem;
+
   .event-card {
     width: 80%;
-    max-width: 350px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
+    max-width: none;
     background-color: rgba(0, 0, 0, 0.274) !important;
     border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.667);
   }
 }
 
@@ -134,16 +135,19 @@ ion-card-content {
   flex: 1;
   max-width: 50%;
   margin-left: 5%;
+
   #statLabel {
     width: 80% !important;
     font-size: medium;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.566);
     background-color: rgba(0, 0, 0, 0.142) !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.566);
   }
+
   ion-label {
     margin-left: 1rem !important;
   }
 }
+
 swiper-container {
   flex: 1;
   max-width: 50%;
@@ -152,19 +156,21 @@ swiper-container {
   padding: 0;
   align-self: center;
 }
+
 swiper-container::part(bullet-active) {
   opacity: 1;
   background: #4ac390;
 }
+
 .slide-description {
+  width: 80%;
+  max-height: max-content;
   margin: 1rem;
   text-align: center;
-  width: 80%;
   font-size: 3.5rem;
-  max-height: max-content;
-  color: #f9f4f5;
   font-family: "Ruigslay", sans-serif;
   font-weight: bolder;
+  color: #f9f4f5;
   background: radial-gradient(
     rgba(90, 116, 110, 0.4),
     rgba(90, 116, 110, 0.15),
@@ -177,16 +183,15 @@ swiper-container::part(bullet-active) {
 canvas {
   width: 80% !important;
   height: auto !important;
-  margin: 0 auto;
+  margin: 0 auto 3rem;
   display: block;
   border-radius: 1rem;
   background-color: #55625c28;
   border: 2px solid #80ffcc7a;
   box-shadow: 0 0 15px #80ffcc46;
-  margin-bottom: 3rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: $bp-tablet) {
   #container {
     width: 90% !important;
     margin-top: 20%;
@@ -197,19 +202,9 @@ canvas {
     font-size: 1.5rem;
   }
 
-  .event-cards {
-    width: 100% !important;
-    margin: 0;
-    padding-left: 1.5rem;
-    padding-right: 1rem;
-    .event-card {
-      width: 100%;
-      margin-left: 0;
-    }
-  }
-
   .statDiv {
     flex-direction: column;
+    align-items: center;
   }
 
   .statistics ion-card {
@@ -218,9 +213,11 @@ canvas {
     border-radius: 6px;
     border: 2px solid #80ffcc;
     box-shadow: 0 0 10px #80ffccaa;
+
     .stat-label {
       font-size: 1rem !important;
     }
+
     .stat-number {
       font-size: 2rem !important;
     }
@@ -245,6 +242,15 @@ canvas {
     }
   }
 
+  .event-cards {
+    grid-template-columns: 1fr;
+    padding: auto;
+    gap: 6px;
+    .event-card {
+      width: 90%;
+    }
+  }
+
   swiper-container {
     max-width: 80%;
   }
@@ -255,11 +261,60 @@ canvas {
 
   .slide-description {
     align-self: center;
-    margin: auto auto;
+    margin: auto;
     font-size: medium;
   }
 
   .stat-cont {
     margin-top: 1rem;
+  }
+}
+
+@media (max-width: $bp-mobile) {
+  #container {
+    width: 95% !important;
+    margin-top: 25%;
+    border-radius: 0.75rem;
+  }
+
+  ion-title {
+    font-size: 1.3rem;
+    margin: 0.75rem;
+  }
+
+  .statistics {
+    margin: 12px 0;
+
+    ion-card {
+      width: 9rem;
+      padding: 0.75rem;
+
+      .stat-label {
+        font-size: 0.9rem !important;
+      }
+
+      .stat-number {
+        font-size: 1.8rem !important;
+      }
+    }
+  }
+
+  .slide-description {
+    width: 90%;
+    font-size: 1.1rem;
+    margin: 0.75rem auto;
+  }
+
+  .event-cards {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    .event-card {
+      width: 100%;
+    }
+  }
+
+  canvas {
+    width: 95% !important;
+    margin-bottom: 2rem;
   }
 }

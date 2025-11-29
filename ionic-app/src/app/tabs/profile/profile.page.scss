@@ -1,3 +1,6 @@
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+
 #container {
   text-align: center;
   padding: 2rem;
@@ -158,10 +161,6 @@ ion-modal ion-toolbar {
   background-color: #0e0e1074 !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
   align-items: center;
-  p {
-    justify-self: flex-start;
-    align-self: flex-start;
-  }
   color: #f9f4f5;
 
   .card-flex {
@@ -169,6 +168,8 @@ ion-modal ion-toolbar {
   }
 
   p {
+    justify-self: flex-start;
+    align-self: flex-start;
     font-size: larger;
   }
 
@@ -257,7 +258,7 @@ ion-list {
 .notif {
   display: flex;
   flex-direction: column;
-  gap: 0rem;
+  gap: 0;
   justify-content: center;
   align-self: center;
   justify-self: center;
@@ -270,25 +271,24 @@ ion-list {
     margin: 10px;
     border-radius: 8px;
     background-color: #07070755;
-    border-radius: 8px;
     padding: 0.5rem;
     width: 100%;
   }
 }
+
 .notif-card {
   width: 70%;
   max-width: 45rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   padding: 1rem;
   border-radius: 12px;
   background-color: #0e0e1074 !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.532);
   align-items: center;
   color: #f9f4f5;
-  margin-bottom: 2rem;
 
   ion-card-content {
     width: 100%;
@@ -317,7 +317,8 @@ ion-button#logout-btn {
   margin: auto;
 }
 
-@media (max-width: 769px) {
+/* Tablet ≤ 768px */
+@media (max-width: $bp-tablet) {
   .notif-card {
     width: 100%;
     margin: 0;
@@ -326,7 +327,8 @@ ion-button#logout-btn {
 
   #row {
     flex-direction: column;
-    padding: 0px !important;
+    padding: 0 !important;
+    width: 100%;
   }
 
   ion-modal {
@@ -356,9 +358,11 @@ ion-button#logout-btn {
   ion-toolbar ion-title {
     font-size: small;
   }
+
   h1 {
     margin-top: 20% !important;
   }
+
   #container {
     gap: 1rem !important;
     flex-direction: column;
@@ -367,19 +371,16 @@ ion-button#logout-btn {
 
   #col {
     width: 100%;
-    padding: 0px;
+    padding: 0;
     gap: 0;
-  }
-
-  #row {
-    width: 100%;
   }
 
   .main-picture-container {
     transform: scale(0.6);
-    margin-bottom: none;
+    margin-bottom: 0;
     width: 90%;
   }
+
   .small {
     width: 2.5rem !important;
     height: 2.5rem !important;
@@ -393,12 +394,12 @@ ion-button#logout-btn {
       flex-wrap: wrap;
       width: 100%;
       overflow-x: auto;
-      height: calc(max-height);
+      height: auto;
     }
   }
+
   #logout {
     padding: 2rem;
-    background: radial-gradient(rgba(0, 0, 0, 0.436), rgba(0, 0, 0, 0.075));
     max-width: 80%;
     align-self: center;
     justify-self: center;
@@ -407,7 +408,61 @@ ion-button#logout-btn {
     margin: auto;
     margin-top: 2rem;
   }
+
   .profile-card {
     width: 100% !important;
+  }
+}
+
+/* Phone ≤ 480px */
+@media (max-width: $bp-mobile) {
+  #container {
+    padding: 1.5rem 1rem;
+  }
+
+  #row,
+  #col {
+    padding: 0;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  #picture-card {
+    padding: 1rem;
+    max-width: 100%;
+
+    .main-picture-container {
+      transform: scale(0.55);
+      width: 100%;
+    }
+
+    .options-row {
+      height: auto;
+      gap: 0.25rem;
+    }
+  }
+
+  .profile-card {
+    padding: 1rem;
+    max-width: 100%;
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .notif-card {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  #logout {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  ion-card-title {
+    font-size: 1.2rem;
   }
 }

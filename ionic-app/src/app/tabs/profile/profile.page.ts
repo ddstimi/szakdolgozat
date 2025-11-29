@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EditPreferencesModalComponent } from '../../components/edit-preferences-modal-component/edit-preferences-modal-component.component';
 import { EditUserModalComponent } from '../../components/edit-user-modal-component/edit-user-modal-component.component';
-import { ModalController } from '@ionic/angular';
-import { IonicModule } from '@ionic/angular';
-import { frontendService } from 'src/app/services/frontendService';
+import { ModalController, IonicModule } from '@ionic/angular';
+import { AuthService } from 'src/app/services/authService';
 import { Router } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { PushService } from 'src/app/services/pushService';
+import { UserPreferencesService } from 'src/app/services/userPreferencesService';
+import { NotificationsClientService } from 'src/app/services/notificationService';
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -20,11 +21,14 @@ import { PushService } from 'src/app/services/pushService';
 export class ProfilePage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
-    private frontendService: frontendService,
+    private auth: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private pushService: PushService
+    private pushService: PushService,
+    private prefsService: UserPreferencesService,
+    private notificationsClient: NotificationsClientService
   ) {}
+
   predefinedPics: string[] = [
     environment.apiUrl + '/profile-pictures/hawer.jpg',
     environment.apiUrl + '/profile-pictures/krubi.jpg',
@@ -40,9 +44,9 @@ export class ProfilePage implements OnInit {
   locations: number[] = [];
   genres: number[] = [];
   venues: number[] = [];
-  seeCancelled: boolean = false;
-  seeNotAvailable: boolean = false;
-  notifyPush: boolean = false;
+  seeCancelled = false;
+  seeNotAvailable = false;
+  notifyPush = false;
 
   selectedGenre: number | null = null;
   selectedLocation: number | null = null;
@@ -76,25 +80,42 @@ export class ProfilePage implements OnInit {
     read: boolean;
   }> = [];
   unreadCount = 0;
+
+  showUserModal = false;
+  showPrefModal = false;
+
+  newGenre = '';
+  newLocation = '';
+  newArtist = '';
+
+  selectedPicture = '';
+  isUploading = false;
+  uploadPct = 0;
+
+  get isModalOpen(): boolean {
+    return this.showUserModal || this.showPrefModal;
+  }
+
   async ngOnInit() {
     await this.refreshNotificationsPreview();
     this.cdr.detectChanges();
     window.dispatchEvent(new CustomEvent('notif:changed'));
 
-    let token = this.frontendService.getToken();
+    let token = this.auth.getToken();
 
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    const newToken = await this.frontendService.refreshAccessToken();
+    const newToken = await this.auth.refreshAccessToken();
     if (!newToken) {
       this.router.navigate(['/login']);
       return;
     }
+
     try {
-      const userData = await this.frontendService.getUserData();
+      const userData = await this.auth.getUserData();
       this.user = {
         name: userData.name,
         username: userData.username,
@@ -105,12 +126,12 @@ export class ProfilePage implements OnInit {
       };
       this.selectedPicture = this.user.img_url;
       await this.loadPreferences();
+
       const [optionsResponse, preferencesResponse] = await Promise.all([
-        this.frontendService.getPreferenceOptions(),
-        this.frontendService.getPreferences(),
+        this.prefsService.getPreferenceOptions(),
+        this.prefsService.getPreferences(),
       ]);
 
-      console.log('Options API Response:', optionsResponse);
       this.availableGenres = optionsResponse.genres;
       this.availableArtists = optionsResponse.artists;
       this.availableVenues = optionsResponse.venues;
@@ -129,8 +150,7 @@ export class ProfilePage implements OnInit {
 
   async loadPreferences() {
     try {
-      const response = await this.frontendService.getPreferences();
-      console.log('Full preferences response:', response);
+      const response = await this.prefsService.getPreferences();
 
       this.genres = response.genres || [];
       this.artists = response.artists || [];
@@ -140,23 +160,11 @@ export class ProfilePage implements OnInit {
       this.seeNotAvailable = Boolean(response.preferences?.see_not_available);
       this.notifyPush = Boolean(response.preferences?.notify_push);
 
-      console.log('Preferences loaded with available data:', {
-        genreIds: this.genres,
-        availableGenres: this.availableGenres,
-      });
-
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading preferences:', error);
     }
   }
-
-  get isModalOpen(): boolean {
-    return this.showUserModal || this.showPrefModal;
-  }
-
-  showUserModal = false;
-  showPrefModal = false;
 
   async savePreferences() {
     try {
@@ -170,10 +178,7 @@ export class ProfilePage implements OnInit {
         venues: this.venues,
       };
 
-      console.log('Saving preferences:', prefs);
-
-      const response = await this.frontendService.updatePreferences(prefs);
-      console.log('Save response:', response);
+      const response = await this.prefsService.updatePreferences(prefs);
 
       if (response?.data) {
         this.seeCancelled = Boolean(response.data.see_cancelled);
@@ -189,11 +194,6 @@ export class ProfilePage implements OnInit {
 
     await this.loadPreferences();
   }
-  newGenre = '';
-  newLocation = '';
-  newArtist = '';
-
-  selectedPicture = '';
 
   private preview(file: File) {
     const reader = new FileReader();
@@ -214,8 +214,6 @@ export class ProfilePage implements OnInit {
     const file = event.dataTransfer?.files?.[0];
     if (file) this.startAvatarUpload(file);
   }
-  isUploading = false;
-  uploadPct = 0;
 
   private async startAvatarUpload(file: File) {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -235,7 +233,7 @@ export class ProfilePage implements OnInit {
     this.cdr.detectChanges();
 
     try {
-      const { user, publicUrl } = await this.frontendService.uploadAvatarToR2(
+      const { user, publicUrl } = await this.auth.uploadAvatarToR2(
         file,
         true,
         (pct) => {
@@ -253,7 +251,6 @@ export class ProfilePage implements OnInit {
       }
 
       this.cdr.detectChanges();
-      console.log('Profile picture updated ✔️');
     } catch (err) {
       console.error('Upload error', err);
     } finally {
@@ -265,10 +262,7 @@ export class ProfilePage implements OnInit {
   async selectPreset(img: string) {
     this.selectedPicture = img;
     try {
-      const user = await this.frontendService.updateUserProfilePicture(
-        img,
-        true
-      );
+      const user = await this.auth.updateUserProfilePicture(img, true);
       if (user?.img_url) {
         this.user.img_url = user.img_url;
         this.selectedPicture = user.img_url;
@@ -288,30 +282,15 @@ export class ProfilePage implements OnInit {
     event.preventDefault();
   }
 
-  readImage(file: File) {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      this.selectedPicture = reader.result as string;
-      try {
-        console.log('Profile picture updated successfully.');
-      } catch (error) {
-        console.error('Failed to update profile picture', error);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
   async updateProfilePicture() {
     try {
-      const response = await this.frontendService.updateUserProfilePicture(
+      const user = await this.auth.updateUserProfilePicture(
         this.selectedPicture,
         true
       );
-
-      if (response.user) {
-        this.user.img_url = response.user.img_url;
-
-        this.frontendService.storeToken(response.token);
+      if (user?.img_url) {
+        this.user.img_url = user.img_url;
+        this.selectedPicture = user.img_url;
       }
     } catch (error) {
       console.error('Failed to update profile picture', error);
@@ -432,6 +411,7 @@ export class ProfilePage implements OnInit {
       this.saveUser(data);
     }
   }
+
   async openEditPreferences() {
     const modal = await this.modalCtrl.create({
       component: EditPreferencesModalComponent,
@@ -465,7 +445,7 @@ export class ProfilePage implements OnInit {
         try {
           if (this.notifyPush) {
             await this.pushService.enablePushNotifications();
-          } else if (!this.notifyPush) {
+          } else {
             await this.pushService.disablePushNotifications();
           }
         } catch (e) {
@@ -476,15 +456,14 @@ export class ProfilePage implements OnInit {
 
     await modal.present();
   }
+
   closePrefModal() {
     document.body.classList.remove('modal-open');
     this.showPrefModal = false;
-
     this.modalCtrl.dismiss();
   }
 
   async updatePreferences(event: any) {
-    console.log('Updated preferences:', event);
     this.genres = event.genres;
     this.locations = event.locations;
     this.artists = event.artists;
@@ -494,29 +473,25 @@ export class ProfilePage implements OnInit {
   }
 
   getGenreName(id: number): string {
-    if (!this.availableGenres) return 'Loading...';
-
     const genre = this.availableGenres.find((g) => g.id === id);
     return genre?.name || `Genre ${id}`;
   }
 
   getArtistName(id: number): string {
-    if (!this.availableArtists) return 'Loading...';
     const artist = this.availableArtists.find((a) => a.id === id);
     return artist?.name || `Artist ${id}`;
   }
 
   getVenueName(id: number): string {
-    if (!this.availableVenues) return 'Loading...';
     const venue = this.availableVenues.find((v) => v.id === id);
     return venue?.name || `Venue ${id}`;
   }
 
   getLocationName(id: number): string {
-    if (!this.availableLocations) return 'Loading...';
     const location = this.availableLocations.find((l) => l.id === id);
     return location?.name || `Location ${id}`;
   }
+
   removeGenre(id: number) {
     this.genres = this.genres.filter((g) => g !== id);
     this.savePreferences();
@@ -568,7 +543,7 @@ export class ProfilePage implements OnInit {
     }
 
     try {
-      await this.frontendService.updateUserData(payload, true);
+      await this.auth.updateUserData(payload, true);
     } catch (err) {
       console.error('Error updating user', err);
     }
@@ -590,7 +565,7 @@ export class ProfilePage implements OnInit {
 
   private async refreshNotificationsPreview() {
     try {
-      const rows = await this.frontendService.getNotifications(false);
+      const rows = await this.notificationsClient.getNotifications(false);
       const list = rows.map((n: any) => ({
         id: n.id,
         title: n.title,
@@ -616,7 +591,7 @@ export class ProfilePage implements OnInit {
   }
 
   async onLogout() {
-    await this.frontendService.logout();
+    this.auth.logout();
     this.router.navigate(['/login'], {
       state: { fromLogout: true },
     });

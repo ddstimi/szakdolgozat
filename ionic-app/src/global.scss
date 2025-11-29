@@ -158,25 +158,12 @@ ion-alert {
   backdrop-filter: blur(6px) !important;
 }
 
-ion-searchbar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  z-index: 999;
-  padding: 0.5rem;
-}
-
 ion-header {
   display: flex;
   align-items: center;
-  padding: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
   background: none;
   height: fit-content;
-  padding: 2px;
+  padding: 0.5rem 0;
   --ion-border-color: transparent;
   --box-shadow: none;
   box-shadow: none !important;
@@ -186,13 +173,39 @@ ion-header {
 #concert {
   border-radius: 8px;
   box-shadow: 2px rgba(0, 0, 0, 0.778);
-  max-width: 90%;
-  min-width: 90%;
   justify-content: center;
   margin-bottom: auto;
   object-fit: cover;
   filter: blur(1px);
 }
+
+#base {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+}
+
+#base ion-header,
+#base ion-toolbar,
+#base ion-searchbar {
+  position: relative;
+  z-index: 2100;
+}
+
+ion-router-outlet#content {
+  position: relative;
+  z-index: 1;
+  padding-top: 5rem;
+}
+
+@media (max-width: 768px) {
+  ion-router-outlet#content {
+    padding-top: 3.25rem;
+  }
+}
+
 ion-infinite-scroll {
   width: 100%;
   padding-top: 10rem;
@@ -314,6 +327,10 @@ ion-infinite-scroll {
     margin-bottom: 10rem !important;
     --margin-bottom: 10rem !important;
   }
+}
+
+ion-content {
+  --padding-bottom: 0;
 }
 
 .hollow {

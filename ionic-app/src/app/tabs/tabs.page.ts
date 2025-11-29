@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import {
   IonTabs,
@@ -23,8 +23,10 @@ import {
   person,
   logOutOutline,
 } from 'ionicons/icons';
-import { frontendService, Concert } from '../services/frontendService';
+import { AuthService } from '../services/authService';
+import { ConcertsService, Concert } from '../services/concertService';
 import { SearchService } from '../services/searchService';
+import { NotificationsClientService } from '../services/notificationService';
 
 @Component({
   selector: 'app-tabs',
@@ -47,7 +49,7 @@ import { SearchService } from '../services/searchService';
   ],
 })
 export class TabsPage implements OnInit {
-  searchQuery: string = '';
+  searchQuery = '';
   loggedIn = false;
   upcoming: Concert[] = [];
   upcomingNum = 0;
@@ -58,15 +60,17 @@ export class TabsPage implements OnInit {
   constructor(
     private platform: Platform,
     private router: Router,
-    private frontendService: frontendService,
+    private auth: AuthService,
+    private concertsService: ConcertsService,
     private searchService: SearchService,
+    private notificationsClient: NotificationsClientService,
     private cd: ChangeDetectorRef
   ) {
     addIcons({ home, search, calendarOutline, person, logOutOutline });
   }
 
   async ngOnInit() {
-    this.loggedIn = this.frontendService.isLoggedIn();
+    this.loggedIn = this.auth.isLoggedIn();
     if (this.loggedIn) {
       await this.refreshCounts();
 
@@ -106,16 +110,16 @@ export class TabsPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    if (this.frontendService.isLoggedIn()) await this.refreshCounts();
+    if (this.auth.isLoggedIn()) await this.refreshCounts();
     this.cd.detectChanges();
   }
 
   private async refreshCounts() {
     try {
-      if (!this.frontendService.isLoggedIn()) return;
+      if (!this.auth.isLoggedIn()) return;
       const [upcoming, unread] = await Promise.all([
-        this.frontendService.getUpcomingByUser(),
-        this.frontendService.getUnreadNotificationCount(),
+        this.concertsService.getUpcomingByUser(),
+        this.notificationsClient.getUnreadNotificationCount(),
       ]);
       this.upcoming = upcoming;
       this.upcomingNum = upcoming.length;
@@ -127,6 +131,6 @@ export class TabsPage implements OnInit {
   }
 
   onLogout() {
-    this.frontendService.logout();
+    this.auth.logout();
   }
 }

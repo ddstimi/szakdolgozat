@@ -15,7 +15,8 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Concert, frontendService } from 'src/app/services/frontendService';
+import { AuthService } from 'src/app/services/authService';
+import { ConcertsService, Concert } from 'src/app/services/concertService';
 import { ConcertCardFullComponent } from 'src/app/components/concert-card-full/concert-card-full.component';
 import { environment } from 'src/environments/environment';
 import { SearchService } from 'src/app/services/searchService';
@@ -47,7 +48,7 @@ export class SearchPage implements OnInit, OnDestroy {
   selectedCity = '';
   selectedGenre = '';
   recentSearches: string[] = [];
-  searchQuery: string = '';
+  searchQuery = '';
   private querySub?: Subscription;
   private historySub?: Subscription;
   cities: string[] = [];
@@ -57,7 +58,8 @@ export class SearchPage implements OnInit, OnDestroy {
   selectedDateRange = '';
 
   constructor(
-    private frontendService: frontendService,
+    private auth: AuthService,
+    private concertsService: ConcertsService,
     private searchService: SearchService,
     private ngZone: NgZone,
     private cd: ChangeDetectorRef,
@@ -67,12 +69,12 @@ export class SearchPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.cd.detectChanges();
 
-    this.concerts = await this.frontendService.getUpcomingConcerts();
-    this.loggedIn = this.frontendService.isLoggedIn();
+    this.concerts = await this.concertsService.getUpcomingConcerts();
+    this.loggedIn = this.auth.isLoggedIn();
 
     if (this.loggedIn) {
       this.userAttendingConcerts = (
-        await this.frontendService.getUpcomingByUser()
+        await this.concertsService.getUpcomingByUser()
       ).map((c) => +c.id);
     }
 
@@ -194,6 +196,7 @@ export class SearchPage implements OnInit, OnDestroy {
     this.sortByDate(this.filteredResults);
     this.cd.detectChanges();
   }
+
   isInRange(date: Date, range: string): boolean {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());

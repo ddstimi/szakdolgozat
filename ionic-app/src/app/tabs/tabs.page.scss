@@ -8,32 +8,51 @@ ion-badge {
 }
 
 #base {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     backdrop-filter: blur(0.5rem);
-    z-index: 999;
+    z-index: 3000;
+}
+
+#base ion-header,
+#base ion-toolbar,
+#base ion-searchbar {
+    position: relative;
+    z-index: 3001;
+}
+
+ion-router-outlet#content {
+    position: relative;
+    z-index: 1;
+}
+
+ion-tabs#tabs {
+    z-index: 2500;
 }
 
 @media (max-width: 768px) {
     #base {
         background-color: rgba(0, 0, 0, 0.068);
-        z-index: 999;
     }
+
     ion-searchbar {
-        z-index: 1000;
+        z-index: 3001;
         display: block;
         height: 2rem;
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+@media (max-width: 480px) {
+    ion-searchbar {
+        margin-top: 1rem;
+    }
 
     ion-tabs#tabs {
         padding-bottom: 14%;
-        z-index: 10000;
-    }
-}
-
-@media (max-width: 640px) {
-    ion-searchbar {
-        margin-top: 1rem;
     }
 }
 
@@ -43,7 +62,7 @@ ion-searchbar {
     --box-shadow: none !important;
     filter: none !important;
     backdrop-filter: none;
-    z-index: 1000;
+    z-index: 3001;
 }
 
 @media (min-width: 768px) {
@@ -56,6 +75,7 @@ ion-searchbar {
             transform 0.3s ease,
             width 0.3s ease;
     }
+
     ion-searchbar {
         display: block;
         max-width: 25rem;

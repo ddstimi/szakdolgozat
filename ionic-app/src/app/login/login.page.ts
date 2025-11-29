@@ -5,10 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { GdprModalComponent } from './gdpr-modal/gdpr-modal/gdpr-modal.component';
-
-import { frontendService } from '../services/frontendService';
+import { AuthService } from '../services/authService';
 import { Router } from '@angular/router';
-import { AuthGuard } from '../guards/authGuard';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -42,10 +40,9 @@ export class LoginPage implements OnInit, AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    private frontendService: frontendService,
+    private auth: AuthService,
     private router: Router,
-    private modalController: ModalController,
-    private authGuard: AuthGuard
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {}
@@ -171,10 +168,9 @@ export class LoginPage implements OnInit, AfterViewInit {
     }
 
     this.isLoading = true;
-    console.log('Stay logged in:', this.stayLoggedIn);
 
     try {
-      const response = await this.frontendService.login(
+      const response = await this.auth.login(
         this.loginData.username,
         this.loginData.password,
         this.stayLoggedIn
@@ -263,7 +259,7 @@ export class LoginPage implements OnInit, AfterViewInit {
         })
       );
 
-      await this.frontendService.loginWithGoogleResponse(
+      await this.auth.loginWithGoogleResponse(
         googleResponse,
         this.stayLoggedIn
       );

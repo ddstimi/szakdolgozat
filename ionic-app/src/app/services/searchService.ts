@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { frontendService } from 'src/app/services/frontendService';
+import { AuthService } from 'src/app/services/authService';
 
 interface SearchHistoryResponse {
   success: boolean;
@@ -18,10 +18,7 @@ export class SearchService {
   private historySource = new BehaviorSubject<string[]>([]);
   history$ = this.historySource.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private frontendService: frontendService
-  ) {
+  constructor(private http: HttpClient, private auth: AuthService) {
     this.id = Math.random();
   }
 
@@ -45,7 +42,7 @@ export class SearchService {
   }
 
   async loadHistory(): Promise<void> {
-    let token = this.frontendService.getToken();
+    let token = this.auth.getToken();
     if (!token) return;
 
     try {
@@ -65,7 +62,7 @@ export class SearchService {
         error.status === 401 ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        const newToken = await this.frontendService.refreshAccessToken();
+        const newToken = await this.auth.refreshAccessToken();
         if (!newToken) return;
 
         try {
@@ -96,7 +93,7 @@ export class SearchService {
     const updated = [query, ...withoutDup].slice(0, 10);
     this.historySource.next(updated);
 
-    let token = this.frontendService.getToken();
+    let token = this.auth.getToken();
     if (!token) return;
 
     try {
@@ -113,7 +110,7 @@ export class SearchService {
         error.status === 401 ||
         error.error?.message === 'TokenExpiredError'
       ) {
-        const newToken = await this.frontendService.refreshAccessToken();
+        const newToken = await this.auth.refreshAccessToken();
         if (!newToken) return;
 
         const headers = new HttpHeaders().set(

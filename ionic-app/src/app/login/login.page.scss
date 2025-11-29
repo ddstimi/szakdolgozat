@@ -1,3 +1,7 @@
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
 ion-content {
   position: relative;
   --background: none;
@@ -6,10 +10,7 @@ ion-content {
   &::before {
     content: "";
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     background: url("src/assets/images/bb.jpg") no-repeat center center / cover;
     filter: blur(4px);
     z-index: 0;
@@ -17,40 +18,40 @@ ion-content {
 }
 
 .content-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  padding: 2rem;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   gap: 2rem;
+  height: 100vh;
+  padding: 2rem;
 
   &.signup-active {
     flex-direction: row-reverse;
   }
 
-  sign-in-card {
+  .sign-in-card {
     margin-right: 2rem;
   }
-  sign-up-card {
+
+  .sign-up-card {
     margin-left: 4rem !important;
   }
 
   #stayLoggedIn {
-    margin: 1rem auto 1rem auto;
+    margin: 1rem auto;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: $bp-tablet) {
     flex-direction: column;
     justify-content: flex-start;
     gap: 1rem;
     padding: 1rem;
 
     .sign-in-card {
-      margin-top: auto;
-      margin-bottom: auto;
+      margin: auto 0;
     }
   }
 }
@@ -60,9 +61,8 @@ ion-content {
   width: 60%;
   height: 80%;
   transition: all 0.5s ease-in-out;
-  align-self: auto;
 
-  @media (max-width: 768px) {
+  @media (max-width: $bp-tablet) {
     display: none;
   }
 }
@@ -72,7 +72,6 @@ ion-card.form-card {
   min-width: 320px;
   background-color: #09080ec8 !important;
   backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(4px);
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75);
   padding: 1rem;
@@ -101,16 +100,19 @@ ion-card.form-card {
   }
 
   .button-outline.glow-blue {
-    border: solid 1px #80fdff !important;
+    border: 1px solid #80fdff !important;
   }
+
   .glow-blue.md.button.button-outline.ion-activatable.ion-focusable {
-    --border: solid 1px #80fffd !important;
-    border: solid 1px #80fffb !important;
+    --border: 1px solid #80fffd !important;
+    border: 1px solid #80fffb !important;
     --border-color: #80ffff;
   }
+
   #sign-in {
     font-size: x-large;
   }
+
   form {
     width: 100%;
     display: flex;
@@ -129,16 +131,6 @@ ion-card.form-card {
       margin-bottom: 0.5rem;
       width: 90%;
       font-size: 14px;
-      height: fit-content;
-    }
-
-    .has-value.input-label-placement-floating.sc-ion-input-md-h input.sc-ion-input-md > #pwd {
-      font-variant-caps: normal !important;
-      --font-variant-caps: normal !important;
-    }
-
-    .ion-valid.sc-ion-input-md-h {
-      --highlight-color: #c17b8c;
     }
 
     ion-input {
@@ -151,22 +143,26 @@ ion-card.form-card {
     }
   }
 
-  @media (max-width: 768px) {
-    width: 90%;
-    margin-top: 2rem;
-
-    h1 {
-      font-size: 1.5rem;
-    }
-
-    form {
-      ion-button {
-        width: 80%;
-      }
-    }
-  }
   ion-checkbox::part(container) {
     --checkbox-background: #f9f4f568 !important;
+  }
+
+  @media (max-width: $bp-mobile) {
+    width: 90%;
+    min-width: unset;
+
+    h1 {
+      font-size: 1.3rem;
+    }
+
+    ion-button {
+      width: 80%;
+    }
+
+    form ion-item {
+      width: 95%;
+      font-size: 13px;
+    }
   }
 }
 

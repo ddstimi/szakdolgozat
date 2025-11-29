@@ -5,12 +5,11 @@
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  flex-direction: none;
 }
 
-ion-card{
-  padding: 0px;
-  margin: 0px;
+ion-card {
+  padding: 0;
+  margin: 0;
   height: 100%;
 }
 
@@ -23,35 +22,78 @@ ion-img {
   border-top-right-radius: 1rem;
 }
 
-ion-card-header{
+ion-card-header {
   background: rgba(0, 0, 0, 0.3);
   height: calc(100% - 45%);
-  ion-card-title{
-    font-size: smaller;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+
+  ion-card-title {
+    font-size: 0.95rem;
   }
-  ion-card-subtitle{
+
+  ion-card-content {
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+  }
+
+  ion-card-subtitle {
     color: #c17b8c;
-    ion-icon{
+    font-size: 0.8rem;
+
+    ion-icon {
       margin-bottom: -2px;
-      margin-right: 4px;  
+      margin-right: 4px;
     }
-    font-size: smaller;
   }
-  #checkmark{
-    font-size: 1.3rem !important;
+
+  #checkmark {
+    font-size: 1.3rem;
   }
-  ion-card-content{
-    font-size: smaller;
-    padding: 5%;
-  }
-  #flex{
+
+  #flex {
     display: flex;
-    justify-content: center;
-    align-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 5%;
-    padding: auto 8px !important;
+    gap: 0.5rem;
   }
 }
 
+@media (max-width: 480px) {
+  ion-card-header {
+    padding: 1rem 2rem;
+    gap: 0.2rem;
 
+    ion-card-title {
+      font-size: 0.85rem;
+    }
+
+    ion-card-content {
+      font-size: 0.75rem;
+    }
+
+    ion-card-subtitle {
+      font-size: 0.75rem;
+    }
+
+    #checkmark {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  ion-card-header {
+    padding: 0.45rem 0.7rem;
+
+    ion-card-title {
+      font-size: 0.9rem;
+    }
+
+    ion-card-content {
+      font-size: 0.8rem;
+    }
+  }
+}

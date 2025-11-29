@@ -29,7 +29,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
-import { frontendService } from 'src/app/services/frontendService';
+import { NotificationsClientService } from 'src/app/services/notificationService';
 
 type UINotif = {
   id: number;
@@ -77,7 +77,7 @@ type UINotif = {
   ],
 })
 export class NotificationsPage implements OnInit {
-  constructor(private frontendService: frontendService) {}
+  constructor(private notificationService: NotificationsClientService) {}
 
   notifications: UINotif[] = [];
   unreadNotifications: UINotif[] = [];
@@ -100,7 +100,7 @@ export class NotificationsPage implements OnInit {
   }
 
   async fetchNotifications() {
-    const rows = await this.frontendService.getNotifications(false);
+    const rows = await this.notificationService.getNotifications(false);
     this.notifications = rows.map((n: any) => ({
       id: n.id,
       title: n.title,
@@ -118,7 +118,7 @@ export class NotificationsPage implements OnInit {
   }
 
   async markAsRead(notif: UINotif, slidingItem: IonItemSliding) {
-    await this.frontendService.markNotificationRead(notif.id, true);
+    await this.notificationService.markNotificationRead(notif.id, true);
     notif.read = true;
     slidingItem.close();
     this.splitNotifications();
@@ -126,7 +126,7 @@ export class NotificationsPage implements OnInit {
   }
 
   async markAsUnread(notif: UINotif, slidingItem: IonItemSliding) {
-    await this.frontendService.markNotificationRead(notif.id, false);
+    await this.notificationService.markNotificationRead(notif.id, false);
     notif.read = false;
     slidingItem.close();
     this.splitNotifications();

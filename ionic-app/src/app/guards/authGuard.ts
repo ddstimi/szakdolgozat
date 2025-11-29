@@ -1,38 +1,24 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { frontendService } from '../services/frontendService';
+import { AuthService } from '../services/authService';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private frontendService: frontendService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   async canActivate(): Promise<boolean> {
-    if (!this.frontendService.isLoggedIn()) {
-      this.router
-        .navigate(['/login'], {
-          replaceUrl: true,
-          state: { clearHistory: true },
-        })
-        .then(() => {
-          this.forceRemoveStrayPages();
-        });
-      return false;
+    if (this.authService.isLoggedIn()) {
+      return true;
     }
-    return true;
-  }
 
-  private forceRemoveStrayPages() {
-    setTimeout(() => {
-      const profilePage = document.querySelector('app-profile');
-      if (profilePage) profilePage.remove();
+    await this.router.navigate(['/login'], {
+      replaceUrl: true,
+      state: { clearHistory: true },
+    });
 
-      const homePage = document.querySelector('app-home');
-      if (homePage) homePage.remove();
-    }, 300);
+    this.authService.forceRemoveStrayPages();
+    return false;
   }
 }
