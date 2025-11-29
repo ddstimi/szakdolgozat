@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { EditPreferencesModalComponent } from '../../components/edit-preferences-modal-component/edit-preferences-modal-component.component';
 import { EditUserModalComponent } from '../../components/edit-user-modal-component/edit-user-modal-component.component';
 import { ModalController, IonicModule } from '@ionic/angular';
-import { AuthService } from 'src/app/services/authService';
+import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { PushService } from 'src/app/services/pushService';
-import { UserPreferencesService } from 'src/app/services/userPreferencesService';
-import { NotificationsClientService } from 'src/app/services/notificationService';
+import { PushService } from 'src/app/services/push.service';
+import { UserPreferencesService } from 'src/app/services/user-preferences.service';
+import { NotificationsClientService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-profile',

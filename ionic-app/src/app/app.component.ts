@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { PushService } from './services/pushService';
+import { PushService } from './services/push.service';
 
 @Component({
   selector: 'app-root',

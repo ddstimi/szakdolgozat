@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { GdprModalComponent } from './gdpr-modal/gdpr-modal/gdpr-modal.component';
-import { AuthService } from '../services/authService';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 

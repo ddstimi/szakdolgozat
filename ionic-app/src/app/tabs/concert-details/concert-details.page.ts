@@ -17,8 +17,8 @@ import {
   IonChip,
   IonLabel,
 } from '@ionic/angular/standalone';
-import { ConcertsService, Concert } from 'src/app/services/concertService';
-import { CalendarService } from 'src/app/services/calendarService';
+import { ConcertsService, Concert } from 'src/app/services/concert.service';
+import { CalendarService } from 'src/app/services/calendar.service';
 
 @Component({
   selector: 'app-concert-details',

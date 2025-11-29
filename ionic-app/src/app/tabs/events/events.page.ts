@@ -24,12 +24,12 @@ import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicSlides } from '@ionic/angular';
 import { Swiper } from 'swiper/types';
-import { SessionService } from 'src/app/services/sessionService';
-import { Concert, ConcertsService } from 'src/app/services/concertService';
+import { SessionService } from 'src/app/services/session.service';
+import { Concert, ConcertsService } from 'src/app/services/concert.service';
 import { environment } from 'src/environments/environment.prod';
 import { Router } from '@angular/router';
-import { CalendarService } from 'src/app/services/calendarService';
-import { AuthService } from 'src/app/services/authService';
+import { CalendarService } from 'src/app/services/calendar.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 Chart.register(
   RadarController,

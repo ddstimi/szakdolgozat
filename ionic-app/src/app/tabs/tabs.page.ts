@@ -23,10 +23,10 @@ import {
   person,
   logOutOutline,
 } from 'ionicons/icons';
-import { AuthService } from '../services/authService';
-import { ConcertsService, Concert } from '../services/concertService';
-import { SearchService } from '../services/searchService';
-import { NotificationsClientService } from '../services/notificationService';
+import { AuthService } from '../services/auth.service';
+import { ConcertsService, Concert } from '../services/concert.service';
+import { SearchService } from '../services/search.service';
+import { NotificationsClientService } from '../services/notification.service';
 
 @Component({
   selector: 'app-tabs',

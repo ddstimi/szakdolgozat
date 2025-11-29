@@ -29,7 +29,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
-import { NotificationsClientService } from 'src/app/services/notificationService';
+import { NotificationsClientService } from 'src/app/services/notification.service';
 
 type UINotif = {
   id: number;

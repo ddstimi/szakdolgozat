@@ -21,9 +21,9 @@ import { ConcertCardComponent } from 'src/app/components/concert-card/concert-ca
 import { ConcertCardFullComponent } from '../../components/concert-card-full/concert-card-full.component';
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';
-import { AuthService } from 'src/app/services/authService';
-import { ConcertsService, Concert } from 'src/app/services/concertService';
-import { UserPreferencesService } from 'src/app/services/userPreferencesService';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConcertsService, Concert } from 'src/app/services/concert.service';
+import { UserPreferencesService } from 'src/app/services/user-preferences.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

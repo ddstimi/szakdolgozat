@@ -15,11 +15,11 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from 'src/app/services/authService';
-import { ConcertsService, Concert } from 'src/app/services/concertService';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConcertsService, Concert } from 'src/app/services/concert.service';
 import { ConcertCardFullComponent } from 'src/app/components/concert-card-full/concert-card-full.component';
 import { environment } from 'src/environments/environment';
-import { SearchService } from 'src/app/services/searchService';
+import { SearchService } from 'src/app/services/search.service';
 import { Subscription } from 'rxjs';
 import { ModalController } from '@ionic/angular';
 import { ConcertDetailsPage } from '../concert-details/concert-details.page';

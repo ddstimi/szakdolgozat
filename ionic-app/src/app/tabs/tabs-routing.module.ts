@@ -6,7 +6,7 @@ import { SearchPage } from './search/search.page';
 import { ProfilePage } from './profile/profile.page';
 import { EventsPage } from './events/events.page';
 import { ConcertDetailsPage } from './concert-details/concert-details.page';
-import { AuthGuard } from '../guards/authGuard';
+import { AuthGuard } from '../guards/auth.guard';
 import { NotificationsPage } from './profile/notifications/notifications.page';
 
 const routes: Routes = [
@@ -16,19 +16,19 @@ const routes: Routes = [
     children: [
       { path: 'home', component: HomePage },
       { path: 'search', component: SearchPage },
-      { path: 'events', component: EventsPage, canActivate: [AuthGuard]  },
-      { path: 'profile', component: ProfilePage, canActivate: [AuthGuard]  },
+      { path: 'events', component: EventsPage, canActivate: [AuthGuard] },
+      { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
       { path: 'concert-details', component: ConcertDetailsPage },
       { path: 'profile/notifications', component: NotificationsPage },
 
-      { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
-    ]
+      { path: '', redirectTo: '/tabs/home', pathMatch: 'full' },
+    ],
   },
-  { path: '', redirectTo: '/tabs/home', pathMatch: 'full' }
+  { path: '', redirectTo: '/tabs/home', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class TabsPageRoutingModule {}
